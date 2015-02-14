@@ -50,7 +50,7 @@ else
     disp('<a href = "http://downloads.sourceforge.net/mingw/MSYS-1.0.11.exe">http://downloads.sourceforge.net/mingw/MSYS-1.0.11.exe</a>')
 end
 
-disp('******************* Test Latex intallation  ***********************')
+disp('*************** Test Latex intallation - pdflatex.exe **************')
 disp(' ')
 % verifies if pdflatex is present via system cmd
 [status,cmdout] = system('pdflatex -version'); 
@@ -65,7 +65,7 @@ else
      disp('<a href = "http://miktex.org/download">http://miktex.org/download</a>')
 end
 
-disp('******************* Test Latex intallation  ***********************')
+disp('*************** Test Latex intallation - lualatex.exe **************')
 disp(' ')
 % verifies if lualatex is present via system cmd
 [status,cmdout] = system('lualatex -version');
@@ -80,7 +80,7 @@ else
      disp('<a href = "http://miktex.org/download">http://miktex.org/download</a>')
 end
 
-disp('******************* Test Latex intallation  ***********************')
+disp('************** Test Latex intallation - xelatex.exe ****************')
 disp(' ')
 % verifies if xelatex is present via system cmd
 [status,cmdout] = system('xelatex -version');
@@ -96,7 +96,7 @@ else
      disp('<a href = "http://miktex.org/download">http://miktex.org/download</a>')
 end
 
-disp('******************* Test Latex intallation latex. ***********************')
+disp('************** Test Latex intallation - latex.exe ******************')
 disp(' ')
 % verifies if latex is present via system cmd
 [status,cmdout] = system('latex -version');
@@ -112,6 +112,54 @@ else
 end
 
 disp('***************************  END **********************************')
+
+%% Check matlab enviroment
+
+
+
+
+
+
+%% Test matlab2tikz All
+
+wdir=pwd; % Get current directory
+[folder, name, ext] = fileparts(which('matlab2tikz_acidtest')); % Change directory
+cd(folder) 
+
+matlab2tikz_acidtest
+
+cd tex
+[status,cmdout] = system('make','-echo');
+
+
+
+%% Single matlab2tikz test 96 max
+
+wdir=pwd; % Get current directory
+[folder, name, ext] = fileparts(which('matlab2tikz_acidtest')); % Change directory
+cd(folder)
+
+matlab2tikz_acidtest(1)
+cd tex
+[status,cmdout] = system('make','-echo');
+
+if status % error
+    
+    
+else
+    testOK{}
+end
+
+% winopen('acid.pdf')
+cd(wdir)
+
+
+
+
+
+
+
+
 
 
     

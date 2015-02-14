@@ -55,7 +55,7 @@ function matlab2tikz_acidtest(varargin)
       error('Unknown environment. Need MATLAB(R) or GNU Octave.')
   end
 
-
+  
   % -----------------------------------------------------------------------
   ipp = m2tInputParser;
 
