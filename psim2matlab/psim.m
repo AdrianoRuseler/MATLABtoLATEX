@@ -1,7 +1,7 @@
 % =========================================================================
-% *** INDEX file
-% *** Sets and tests the MATLAB enviroment for using this pakage
-% *** Some examples are tested
+% *** PSIM INDEX file
+% ***  
+% ***  
 % =========================================================================
 % ***
 % *** The MIT License (MIT)
@@ -28,20 +28,11 @@
 % ***
 % =========================================================================
 
-clc % Lets clear some junk
-%% Lets test the MATLAB enviroment 
-status = testenviroment();
-disp(' ')
-disp(' ****************  Lets test the MATLAB enviroment *************')
-if status
-    disp('Something got wrong! See list above for more details!')
-else
-    disp('System enviroment seems to be OK!')
-end
 
+% Test enviroment
 
-%% Lets plot some figures
+%% Test some examples
+% Example 01 
 
-
-
+[folder, name, ext] = fileparts(which('psim')); 
 

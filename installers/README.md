@@ -1,3 +1,3 @@
 # Installers
 
-Softwares to generate figures from MATLAB to LATEX
+Some installers to get system ready for use.
