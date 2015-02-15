@@ -46,6 +46,16 @@ for p=1:length(pathsys)
   disp(list_exe{p})
 end
 cd(wdir); % Returns to working dir;
+%%
+
+if ~isfield(dirstruct,'simulatedir') % Check if directory for simulations is defined
+    dirstruct.simulatedir=uigetdir(pwd,'Select directory for PSIM simulations');
+    if isequal(dirstruct.simulatedir,0)
+        disp('User selected Cancel')        
+        return
+    end
+end
+
 
 
 %%

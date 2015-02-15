@@ -34,21 +34,19 @@ function PSIMdata = psim2matlab(PSIMtxt)
 
 % Loads directory structure
 try
-    dirstruct = evalin('base', 'dirstruct'); % Load dirstruct from base workspace
+    dirstruct = evalin('base', 'dirstruct');
+    disp(dirstruct)
 catch
-%     checkdirstruct % Well, check this out
-    [status, dirstruct]= checkdirstruct();
-%     dirstruct = evalin('base', 'dirstruct'); % Load dirstruct from base workspace
+    checkdirstruct % Well, check this out
 end
 
+
 if nargin <1  % PSIMtxt not supplied
-    if isfield(dirstruct,'simulatedir')
-        if isequal(exist(dirstruct.simulatedir,'dir'),7)
-            cd(dirstruct.simulatedir) % Change to directory with simutalad data
-        end
+    if isequal(exist(dirstruct.simulatedir,'dir'),7)
+        cd(dirstruct.simulatedir)
     end
-    [PSIMtxtFile, PSIMtxtPath] = uigetfile({'*.txt;*.fft;*.fra;*.csv;*.smv','PSIM Files (*.txt,*.fft,*.fra,*.csv,*.smv)'; ...
-        '*.txt','PSIM - txt (*.txt)';'*.fft','FFT Data (*.fft)';'*.fra','AC-Sweed (*.fra)';'*.csv','PSIM Excel (*.csv)';...
+    [PSIMtxtFile, PSIMtxtPath] = uigetfile({'*.txt;*.fra;*.csv','PSIM Files (*.txt,*.fra)'; ...
+        '*.txt','PSIM-Data (*.txt)';'*.fra','AC-Sweed (*.fra)';...
         '*.*','All files'}, 'Pick an PSIM-file');
     if isequal(PSIMtxtFile,0)
         disp('User selected Cancel')
@@ -59,45 +57,27 @@ if nargin <1  % PSIMtxt not supplied
 else
     if ~isequal(exist(PSIMtxt,'file'),2) % If file NOT exists
         disp([PSIMtxt ' Not found!'])
-        PSIMdata = psim2matlab(); % Load again
+        PSIMdata =[]; % Return empty data
         return
     end
 end
 
-% PSIMtxt
-[pathstr, name, ext] = fileparts(PSIMtxt);
 
-switch ext % Make a simple check of file extensions
-    case '.txt'
-         % Good to go!!
-    case '.csv' % Waiting for code implementation
-        disp('Export PSIM data to a *.txt file.')
-        cd(dirstruct.wdir)
-        PSIMdata =[];
-        return
-    case '.fra' % Waiting for code implementation
-        disp('Export PSIM data to a *.txt file.')
-        cd(dirstruct.wdir)
-        PSIMdata =[];
-        return
-            case '.fft' % Waiting for code implementation
-        disp('Export PSIM data to a *.txt file.')
-        cd(dirstruct.wdir)
-        PSIMdata =[];
-        return
-    case '.smv' % Waiting for code implementation
+
+
+  [pathstr, name, ext] = fileparts(PSIMtxt);   
+     dirstruct.simulatedir=pathstr;
+
+    if isequal(ext,'.smv') % Not supported here
         disp('Wrong file extension. Convert the file to a *.txt file.')
-        cd(dirstruct.wdir)
-        PSIMdata =[];
+         cd(dirstruct.wdir)
+         PSIMdata =[];
         return
-    otherwise
-        disp('Save simview data as *.txt file.')
-        cd(dirstruct.wdir)
-        PSIMdata =[];
-        return
-end
+    end 
     
-dirstruct.simulatedir=pathstr; % Update simulations dir
+    [pathstr, name, ext] = fileparts(PSIMtxtFile);  
+    
+      dirstruct.simulatedir=PSIMtxtPath; % Update simulations dir
     
 %  Create folder under psimdir to store mat file
 [s,mess,messid] = mkdir(dirstruct.psimdir, name); % Check here
@@ -106,17 +86,19 @@ dirstruct.psimstorage = [dirstruct.psimdir '\' name]; % Not sure
 
 %%  Load file .txt
 disp('Reading txt file....     Wait!')
+
 tic
 cd(dirstruct.simulatedir)
-[fileID,errmsg] = fopen(PSIMtxt);
-% [filename,permission,machinefmt,encodingOut] = fopen(fileID); 
-if fileID==-1
+fid = fopen(PSIMtxt);
+if fid==-1
     disp('File error!!')
     return
 end
 
+% [filename,permission,machinefmt,encodingOut] = fopen(fid); 
+
 % BufSize -> Maximum string length in bytes -> 4095
-tline = fgetl(fileID);
+tline = fgetl(fid);
 [header] = strread(tline,'%s','delimiter',' ');
 
 fstr='%f';
@@ -124,8 +106,8 @@ fstr='%f';
     fstr=[fstr '%f']; 
  end
  
-M = cell2mat(textscan(fileID,fstr));            
-fclose(fileID);
+M = cell2mat(textscan(fid,fstr));            
+fclose(fid);
 
 disp('Done!')
 
@@ -136,21 +118,17 @@ disp('Done!')
  PSIMdata.time=single(M(:,1));
  PSIMdata.signals.values=single(M(:,2:end));
  PSIMdata.signals.dimensions=size(M,2)-1;
-
- % Verifies header name
- for i=2:length(header)
-     if verLessThan('matlab', '8.2.0')
-         U = genvarname(header{i});
-         modified=1; % Just force update
-     else
-         [U, modified] = matlab.lang.makeValidName(header{i});
-     end
+%  invalid_name=1; 
+  for i=2:length(header)
+     [U, modified] = matlab.lang.makeValidName(header{i});
      if modified
-         disp(['Name ' header{i} ' modified to ' U ' (MATLAB valid name for variables)!!'])
-     end
-     PSIMdata.signals.label{i-1}=U;
- end
- 
+       disp(['Name ' header{i} ' modified to ' U ' (MATLAB valid name for variables)!!'])        
+%        changeName{invalid_name}=header{i};
+%        invalid_name=invalid_name+1; 
+    end
+    PSIMdata.signals.label{i-1}=U;
+  end
+  
  PSIMdata.PSIMheader=header; % For non valid variables
  PSIMdata.signals.title='';
  PSIMdata.signals.plotStyle=[0,0]; 
@@ -161,7 +139,9 @@ toc
 
 disp('Saving data file....')
 cd(dirstruct.psimstorage)
-save([name '_data.mat'], 'PSIMdata') 
+save([name '_data.mat'], 'PSIMdata')
+
+
 
 assignin('base','dirstruct',dirstruct);
 cd(dirstruct.root)

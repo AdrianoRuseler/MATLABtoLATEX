@@ -41,11 +41,6 @@ else
 end
 disp(' ')
 
-%% Set working folders
-
-
-
-builddirstruct
 
 %% Lets plot some figures
 

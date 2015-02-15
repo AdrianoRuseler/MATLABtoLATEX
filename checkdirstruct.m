@@ -1,5 +1,5 @@
 
-function status = checkdirstruct()
+function [status, dirstruct]= checkdirstruct()
 
 % =========================================================================
 % *** checkdirstruct
@@ -51,7 +51,7 @@ if exist('dirstruct.mat','file')% if dirstruct file exist, load it.
             tdir=uigetdir(wdir,['Select Directory for ' dirnames{d}]);
             if isequal(tdir,0)
                 disp('User selected Cancel')
-                status = 1; % Return 
+                status = 1; % Return flaging something wrong
                 return
             end
         end        
@@ -70,6 +70,8 @@ dirstruct.psimdir=[dirstruct.root '\psimdir'];
 dirstruct.scopedir=[dirstruct.root '\scopedir'];
 dirstruct.tikzdir=[dirstruct.root '\tikzdir'];
 
+disp(' ')
+disp('******************* Directory structure ***************************')
 disp(dirstruct) % Displays directory structure
  
 assignin('base','dirstruct',dirstruct); % Well, is this really necessary?

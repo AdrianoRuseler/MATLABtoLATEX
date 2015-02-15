@@ -137,9 +137,8 @@ disp(' ')
 
 %% checkdirstruct
 
-statusdir=checkdirstruct();
-status = xor(status,statusdir);
-
+checkdirstruct
+status = xor(status,statuspaths);
 disp(' ')
 disp('***************************  END **********************************')
 
