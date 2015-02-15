@@ -36,9 +36,7 @@ function PSIMdata = psim2matlab(PSIMtxt)
 try
     dirstruct = evalin('base', 'dirstruct'); % Load dirstruct from base workspace
 catch
-%     checkdirstruct % Well, check this out
-    [status, dirstruct]= checkdirstruct();
-%     dirstruct = evalin('base', 'dirstruct'); % Load dirstruct from base workspace
+    [status, dirstruct]= checkdirstruct(); % Well, check this out
 end
 
 if nargin <1  % PSIMtxt not supplied
