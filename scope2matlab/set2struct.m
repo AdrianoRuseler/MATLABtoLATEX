@@ -1,4 +1,4 @@
-function setstruct = set2struct
+
 %==========================================================================
 % The MIT License (MIT)
 % 
@@ -23,31 +23,93 @@ function setstruct = set2struct
 % SOFTWARE.
 %==========================================================================
 % 
-% setstruct = set2struct 
+% SCOPEdata = set2struct();
 % 
 % This function parses tektronix setup file FileName and returns it as a 
 % structure with section names and keys as fields.
 
 % =========================================================================
 
-% Pre load
+function [SCOPEdata] = set2struct(SCOPEset)
 
-  % Make sure that we get something
-    [FileName,PathName] = uigetfile('*.set','Select the scope setup file');
-    if isequal(FileName,0)
-        disp('User selected Cancel')
-        setstruct=[];  % We have to return something
+SCOPEdata=[]; % We have to return something
+% Loads directory structure
+try
+    dirstruct = evalin('base', 'dirstruct'); % Load dirstruct from base workspace
+catch
+    [status, dirstruct]= checkdirstruct(); % Well, check this out
+    if status
         return
-        %     else      
     end
-  
-%     [pathstr, name, ext] = fileparts(FileName);
+end
 
-% 
+
+if nargin <1 % PSIMini not supplied
+    if isfield(dirstruct,'aquisitiondir')
+        if isequal(exist(dirstruct.aquisitiondir,'dir'),7)
+            cd(dirstruct.aquisitiondir) % Change to directory with aquisition data
+        end
+    end      
+    [SCOPEsetFile,SCOPEsetPath] = uigetfile('*.set','Select the scope setup file');
+    if isequal(SCOPEsetFile,0)
+        disp('User selected Cancel')
+          return
+    end    
+     SCOPEset=[SCOPEsetPath SCOPEsetFile]; % Provide SCOPEset file 
+else
+     if ~isequal(exist(SCOPEset,'file'),2) % If file NOT exists
+        disp([SCOPEset ' Not found!'])
+        SCOPEdata = csv2struct(); % Load again
+        return
+     end    
+end
+
+
+% Try to Load SCOPEdata structure
+try
+    SCOPEdata = evalin('base', 'SCOPEdata'); % Load SCOPEdata from base workspace
+    %     disp('Load PSIMdata from base workspace')
+catch
+    % Load .mat file
+    if isfield(dirstruct,'scopestorage')
+        if isequal(exist(dirstruct.scopestorage,'dir'),7)
+            cd(dirstruct.scopestorage) % Change to directory with SCOPEdata
+            infolder = what; %look in current directory
+            matfiles=infolder.mat; % Get all mat files in this folder
+            for a=1:numel(matfiles) % Just loads all mfiles
+                load(char(matfiles(a)));
+            end
+            if isempty(SCOPEdata)
+                SCOPEdata = csv2struct();
+            end            
+        end
+    else
+        SCOPEdata = csv2struct();  % Ask for SCOPEdata file
+        if isempty(SCOPEdata) % If there is no data, just return
+            return
+        end
+    end
+end
+
+
+[pathstr, name, ext] = fileparts(SCOPEset);
+switch ext % Make a simple check of file extensions
+    case '.set'
+        % Good to go!!
+    otherwise
+        disp('We expect an *.set file.')
+        cd(dirstruct.wdir)
+        return
+end
+% Make name valid in MATLAB
+name = matlab.lang.makeValidName(name);
+
+dirstruct.aquisitiondir=pathstr; % Update aquisition dir
+
 % =========================================================================
-setstruct = [];                            % we have to return something
-
-[fileID,errmsg] = fopen([PathName FileName],'r');      % open file
+tic
+disp(['Reading file ' SCOPEset])
+[fileID,errmsg] = fopen(SCOPEset,'r');      % open file
 
 % Its OK to read this file?
 % [filename,permission,machinefmt,encodingOut] = fopen(fileID);
@@ -58,11 +120,7 @@ end
 
 while ~feof(fileID)                          % and read until it ends
     s = strtrim(fgetl(fileID));              % Remove any leading/trailing spaces
-    
-    %     s=':SEARCH:SEARCH1:TRIGGER:A:UPPERTHRESHOLD:REF2 2.5000'; % for test
-   % s= ':MATH:SPECTRAL:MAG DB';
-   % s=':MATH:DEFINE "(CH1+CH2+CH3)/3"'
-    
+  
     if isempty(s)  % If line is empty, keep going...
         continue;
     end;
@@ -100,7 +158,7 @@ while ~feof(fileID)                          % and read until it ends
         if isnan(FieldValue)
             FieldValue = strtok(strvalue{2},'"'); % Leave it as it was if is not a number;
         end
-        
+   
         % Applies to the structure
         eval(['setstruct.' structfiled '.' CurrMainField ' = FieldValue;'])
     end
@@ -108,7 +166,24 @@ end
 
 fclose(fileID);
 
-return;
+SCOPEdata.setstruct=setstruct; 
+
+cd(dirstruct.scopestorage)
+save([name '_data.mat'], 'SCOPEdata') 
+
+assignin('base','dirstruct',dirstruct);
+cd(dirstruct.root)
+save('dirstruct.mat','dirstruct')
+
+cd(dirstruct.wdir)
+toc
+disp('Done!!!!')
+
+
+
+
+
+
 
 
 

@@ -47,18 +47,12 @@ if exist('dirstruct.mat','file')% if dirstruct file exist, load it.
         if isequal(exist(getfield(dirstruct, dirnames{d}),'dir'),7)
             continue
         else
-            %             Invalid directory!! Ask for valid directory
-            tdir=uigetdir(wdir,['Select Directory for ' dirnames{d}]);
-            if isequal(tdir,0)
-                disp('User selected Cancel')
-                status = 1; % Return flaging something wrong
-                return
-            end
-        end        
-    end    
+            dirstruct = rmfield(dirstruct,dirnames{d}); % Remove field with invalid path
+        end
+    end
     disp(dirstruct)
-    cd(wdir) 
-    assignin('base','dirstruct',dirstruct); % Well, is this really necessary?
+    cd(wdir)
+    assignin('base','dirstruct',dirstruct); % Assign dirs structure in workspace
     return
 end
 

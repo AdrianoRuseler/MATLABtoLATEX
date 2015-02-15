@@ -34,7 +34,6 @@
 
 function [SCOPEdata] = csv2struct(SCOPEcsv)
 
-% csvstruct2 = csv2struct();
 % Loads directory structure
 try
     dirstruct = evalin('base', 'dirstruct'); % Load dirstruct from base workspace
@@ -69,7 +68,7 @@ switch ext % Make a simple check of file extensions
     case '.csv'
         % Good to go!!
     otherwise
-        disp('We expect an *csv file.')
+        disp('We expect an *.csv file.')
         cd(dirstruct.wdir)
         return
 end
