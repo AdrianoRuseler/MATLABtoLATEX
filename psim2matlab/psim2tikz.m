@@ -79,129 +79,160 @@ end
 
 plots=fieldnames(PSIMdata.simview); % Find plots in PSIMdata
 
-wstruct=eval(['PSIMdata.simview.' plots{1}]); % set struct to work
- disp(wstruct)
-
-if(wstruct.main.fft) % Not implemented yet
-    return
-end
-
-%      xaxis: 'Time'
-%     numscreen: 1
-%         xfrom: 0
-%           xto: 0.0167
-%         scale: 0
-%          xinc: 0.0020
-%           fft: 0
-%       default: 1
-
-% wstruct.view
-
-%   fontheight: -10
-%          bkcolor: 16777215
-%       fontweight: 0
-%             grid: 1
-%          fgcolor: 0
-%       fontitalic: 0
-%        gridcolor: 8421504
-%     hideaxistext: 0
-%     
-% wstruct.screen0
-
-
-%        scale: 0
-%           yinc: 200
-%        default: 1
-%          yfrom: -400
-%     curvecount: 3
-%             db: 0
-%           auto: 0
-%            yto: 400
-%         curve0: [1x1 struct]
-%         curve1: [1x1 struct]
-%         curve2: [1x1 struct]
- 
-% 
-% x=wstruct.main.xdata;
-% y=wstruct.screen0.curve0.data ;
-% 
-% plot(x,y)
-
-
-%% Plot figure to handle next
-
-for k = 1:wstruct.main.numscreen
-    h(k) = subplot(wstruct.main.numscreen,1,k);
-    eval(['wstruct.screen' num2str(k-1) '.handle=h(k);'])     
-end
-
-
-
-xto=wstruct.main.xto;
-xfrom=wstruct.main.xfrom;
-
-
-% Plot data file and generate handles;
-for s=0:wstruct.main.numscreen-1 % Screens Loop
-    axhandle = eval(['wstruct.screen' num2str(s) '.handle']);
-    legString={};
-    for c=0:eval(['wstruct.screen' num2str(s) '.curvecount'])-1 % Curves Loop
-        ydata = eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.data']);
-        curvehandle=plot(axhandle,wstruct.main.xdata,ydata);
-        eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.handle=curvehandle;']);
-        % Configure curves Plot
-        legString{c+1} = eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.label']);
-        hold(axhandle,'all')
-        
+for p = 1:length(plots)
+    wstruct=eval(['PSIMdata.simview.' plots{p}]); % set struct to work
+    disp(wstruct)
+    
+    if(wstruct.main.fft) % Not implemented yet
+        return
     end
     
-    xlim(axhandle,[xfrom,xto])
-    %     [xmin xmax ymin ymax]= axis(axhandle)
-    axes(axhandle)
-    % Configure Axes
-    yto=eval(['wstruct.screen' num2str(s) '.yto;']);
-    yfrom=eval(['wstruct.screen' num2str(s) '.yfrom;']);
-    ylim([yfrom,yto])
-    legend(axhandle,legString);
-    grid on
-    hold off % reset hold state
+    %      xaxis: 'Time'
+    %     numscreen: 1
+    %         xfrom: 0
+    %           xto: 0.0167
+    %         scale: 0
+    %          xinc: 0.0020
+    %           fft: 0
+    %       default: 1
+    
+    % wstruct.view
+    
+    %   fontheight: -10
+    %          bkcolor: 16777215
+    %       fontweight: 0
+    %             grid: 1
+    %          fgcolor: 0
+    %       fontitalic: 0
+    %        gridcolor: 8421504
+    %     hideaxistext: 0
+    %
+    % wstruct.screen0
+    
+    
+    %        scale: 0
+    %           yinc: 200
+    %        default: 1
+    %          yfrom: -400
+    %     curvecount: 3
+    %             db: 0
+    %           auto: 0
+    %            yto: 400
+    %         curve0: [1x1 struct]
+    %         curve1: [1x1 struct]
+    %         curve2: [1x1 struct]
+    
+    %
+    % x=wstruct.main.xdata;
+    % y=wstruct.screen0.curve0.data ;
+    %
+    % plot(x,y)
+    
+    
+    %% Plot figure to handle next
+    
+    for k = 1:wstruct.main.numscreen
+        h(k) = subplot(wstruct.main.numscreen,1,k);
+        eval(['wstruct.screen' num2str(k-1) '.handle=h(k);'])
+    end
+    
+    
+    xto=wstruct.main.xto;
+    xfrom=wstruct.main.xfrom;
+    
+    
+    % Plot data file and generate handles;
+    for s=0:wstruct.main.numscreen-1 % Screens Loop
+        axhandle = eval(['wstruct.screen' num2str(s) '.handle']);
+        legString={};
+        for c=0:eval(['wstruct.screen' num2str(s) '.curvecount'])-1 % Curves Loop
+            ydata = eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.data']);
+            curvehandle=plot(axhandle,wstruct.main.xdata,ydata);
+            eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.handle=curvehandle;']);
+            % Configure curves Plot
+            legString{c+1} = eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.label']);
+            hold(axhandle,'all')
+            
+        end
+        
+        xlim(axhandle,[xfrom,xto])
+        %     [xmin xmax ymin ymax]= axis(axhandle)
+        axes(axhandle)
+        % Configure Axes
+        yto=eval(['wstruct.screen' num2str(s) '.yto;']);
+        yfrom=eval(['wstruct.screen' num2str(s) '.yfrom;']);
+        ylim([yfrom,yto])
+        legend(axhandle,legString);
+        grid on
+        hold off % reset hold state
+    end
+    
+    xlabel(axhandle,wstruct.main.xaxis)
+    for s=0:wstruct.main.numscreen-2 % Screens Loop
+        axhandle = eval(['wstruct.screen' num2str(s) '.handle']);
+        set(axhandle,'XTickLabel',[])
+    end
+    
+    
+    %% Get csv data
+    if isequal(exist(dirstruct.psimstorage,'dir'),7)
+        cd(dirstruct.psimstorage)
+    end
+    
+    for s=0:wstruct.main.numscreen-1 % Screens Loop
+        csvheader='xdata';
+        SCREENdata=wstruct.main.xdata; %
+        for c=0:eval(['wstruct.screen' num2str(s) '.curvecount'])-1 % Curves Loop
+            ydata = eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.data']);
+            SCREENdata=horzcat(SCREENdata,ydata);
+            csvheader=[csvheader [', curve' num2str(c)]];
+        end
+        %
+        screenfile = ['screen' num2str(s) '.csv'];
+        fileID = fopen(screenfile,'w','n','UTF-8'); 
+        fprintf(fileID,'%s\r\n',csvheader); % Begin axis
+        fclose(fileID); % Close it.
+        
+        % write data
+        dlmwrite (screenfile, SCREENdata, '-append','newline','pc');
+    end
+    
+    
+    
+    %% Save file
+    % Grava pontos por screen0.txt
+    %  Create folder under tikzdir to store mat file
+    
+    fileID = fopen('preamble.tex','r'); % Opens preamble file
+    preamble = fread(fileID); % Copy content
+    fclose(fileID); % Close it.
+    
+    fileoutID = fopen([plots{p} '.tex'],'w');
+    fwrite(fileoutID,preamble)
+    
+    for s=0:wstruct.main.numscreen-1 % Screens Loop
+        fprintf(fileoutID,'\n%s\n','\begin{tikzpicture}');
+        fprintf(fileoutID,'%s\n','\begin{axis}'); % Begin axis
+        
+        % [xtick={-3,-2,...,3}, ytick={-3,-2,...,3},
+        % xmin=-3, xmax=3, ymin=-3, ymax=3]
+        for c=0:eval(['wstruct.screen' num2str(s) '.curvecount'])-1 % Curves Loop
+            str=['\addplot[solid,blue]table[x=xdata,y=curve' num2str(c) ',col sep=comma]{screen' num2str(s) '.csv};'];
+            % \addplot[solid,blue] table[x=xdata,y=column2,col sep=comma] {['screen' num2str(s) '.csv']};
+            fprintf(fileoutID,'%s\n',str);
+        end
+        
+        fprintf(fileoutID,'%s\n','\end{axis}');
+        
+        % Close tex file
+        fprintf(fileoutID,'\n\n%s\n','\end{tikzpicture}');
+    end
+    fprintf(fileoutID,'%s\n','\end{document}');
+    
+    fclose(fileoutID);
+    
+    
 end
-
-xlabel(axhandle,wstruct.main.xaxis)
-for s=0:wstruct.main.numscreen-2 % Screens Loop
-    axhandle = eval(['wstruct.screen' num2str(s) '.handle']);
-    set(axhandle,'XTickLabel',[])
-end
-
-
-%% Save file
-% Grava pontos por screen0.txt
-%  Create folder under tikzdir to store mat file
-
-fileID = fopen('preamble.tex','r'); % Opens preamble file
-preamble = fread(fileID); % Copy content
-fclose(fileID); % Close it.
-
-if isequal(exist(dirstruct.psimstorage,'dir'),7)
-    cd(dirstruct.psimstorage)
-end
-
-fileoutID = fopen([plots{1} '.tex'],'w');
-fwrite(fileoutID,preamble)
-fprintf(fileoutID,'%s\n','\begin{axis}'); % Begin axis
-
-% [xtick={-3,-2,...,3}, ytick={-3,-2,...,3},
-% xmin=-3, xmax=3, ymin=-3, ymax=3]
-
-fprintf(fileoutID,'%s\n','\end{axis}');
-
-% Close tex file
-fprintf(fileoutID,'\n\n%s\n','\end{tikzpicture}');
-fprintf(fileoutID,'%s\n','\end{document}');
-
-fclose(fileoutID);
-
-
 %% Compile figure
 
 if isequal(exist(dirstruct.tikzdir,'dir'),7)

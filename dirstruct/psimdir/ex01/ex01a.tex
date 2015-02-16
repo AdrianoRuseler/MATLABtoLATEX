@@ -7,11 +7,16 @@
 \usepackage{amsmath}
 
 \begin{document}
+
+
+
+
+
 \begin{tikzpicture}
-
-
-
 \begin{axis}
+\addplot[solid,blue]table[x=xdata,y=curve0,col sep=comma]{screen0.csv};
+\addplot[solid,blue]table[x=xdata,y=curve1,col sep=comma]{screen0.csv};
+\addplot[solid,blue]table[x=xdata,y=curve2,col sep=comma]{screen0.csv};
 \end{axis}
 
 
