@@ -1,5 +1,5 @@
 % =========================================================================
-%  SCOPE INDEX file
+%  PSIM Plot function
 %   
 %   
 % =========================================================================
@@ -28,31 +28,52 @@
 % 
 % =========================================================================
 
+function [status]=psim2tikz(PSIMdata)
 
-%% Load scope data points
-
-SCOPEdata = csv2struct();
-
-
-%% Load settings file
-
-SCOPEdata = set2struct();
-
-
-%% Load all at once
- [status, dirstruct]= checkdirstruct(); % Well, check this out
- 
-  [csvfilename, csvpathname] = uigetfile('*.csv', 'Select scope data aquisition', 'MultiSelect', 'off');
-    if isequal(csvfilename,0)
-        disp('User selected Cancel')
+status=0; % We have to return something
+% Loads directory structure
+try
+    dirstruct = evalin('base', 'dirstruct'); % Load dirstruct from base workspace
+catch
+    [status, dirstruct]= checkdirstruct(); % Well, check this out
+    if status
         return
     end
-    SCOPEcsv=[csvpathname csvfilename];
-[pathstr, name, ext] = fileparts(SCOPEcsv);
+end
 
-SCOPEdata = csv2struct([pathstr '\' name '.csv']);
-SCOPEdata = set2struct([pathstr '\' name '.set']);
 
-%% Plot scope data to tikz
 
-scope2tikz
+
+if nargin <1 % input file not supplied
+    % Try to Load SCOPEdata structure    
+    try
+        PSIMdata = evalin('base', 'PSIMdata'); % Load SCOPEdata from base workspace
+        %     disp('Load PSIMdata from base workspace')
+    catch
+        % Load .mat file
+        if isfield(dirstruct,'psimstorage')
+            if isequal(exist(dirstruct.psimstorage,'dir'),7)
+                cd(dirstruct.psimstorage) % Change to directory with SCOPEdata
+            end
+        end
+        PSIMdata=[]; % Begin with empty file
+        [PSIMdataFile,PSIMdataPath] = uigetfile('*.mat','Select the PSIMdata mat file');
+        if isequal(PSIMdataFile,0)
+            disp('User selected Cancel')
+            status=1;
+            return
+        end
+        load([PSIMdataPath PSIMdataFile]); % Load mat file
+        % Ask for SCOPEdata file
+        if isempty(PSIMdata) % If there is no data, just return
+            status=1;
+            return
+        end
+        
+    end
+end
+
+%% All data must be available here:
+PSIMdata
+
+

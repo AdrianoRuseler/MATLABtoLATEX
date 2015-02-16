@@ -44,7 +44,7 @@ catch
 end
 
 
-if nargin <1 % PSIMini not supplied
+if nargin <1 % input file not supplied
     if isfield(dirstruct,'aquisitiondir')
         if isequal(exist(dirstruct.aquisitiondir,'dir'),7)
             cd(dirstruct.aquisitiondir) % Change to directory with aquisition data

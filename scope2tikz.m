@@ -1,5 +1,5 @@
 % =========================================================================
-%  SCOPE INDEX file
+%  SCOPE Plot function
 %   
 %   
 % =========================================================================
@@ -29,30 +29,52 @@
 % =========================================================================
 
 
-%% Load scope data points
+function [status]=scope2tikz(SCOPEdata)
 
-SCOPEdata = csv2struct();
+status=0; % We have to return something
 
-
-%% Load settings file
-
-SCOPEdata = set2struct();
-
-
-%% Load all at once
- [status, dirstruct]= checkdirstruct(); % Well, check this out
- 
-  [csvfilename, csvpathname] = uigetfile('*.csv', 'Select scope data aquisition', 'MultiSelect', 'off');
-    if isequal(csvfilename,0)
-        disp('User selected Cancel')
+% Loads directory structure
+try
+    dirstruct = evalin('base', 'dirstruct'); % Load dirstruct from base workspace
+catch
+    [status, dirstruct]= checkdirstruct(); % Well, check this out
+    if status
         return
     end
-    SCOPEcsv=[csvpathname csvfilename];
-[pathstr, name, ext] = fileparts(SCOPEcsv);
+end
 
-SCOPEdata = csv2struct([pathstr '\' name '.csv']);
-SCOPEdata = set2struct([pathstr '\' name '.set']);
 
-%% Plot scope data to tikz
+if nargin <1 % input file not supplied
+    % Try to Load SCOPEdata structure    
+    try
+        SCOPEdata = evalin('base', 'SCOPEdata'); % Load SCOPEdata from base workspace
+        %     disp('Load PSIMdata from base workspace')
+    catch
+        % Load .mat file
+        if isfield(dirstruct,'scopestorage')
+            if isequal(exist(dirstruct.scopestorage,'dir'),7)
+                cd(dirstruct.scopestorage) % Change to directory with SCOPEdata
+            end
+        end
+        SCOPEdata=[]; % Begin with empty file
+        [SCOPEdataFile,SCOPEdataPath] = uigetfile('*.mat','Select the SCOPEdata mat file');
+        if isequal(SCOPEdataFile,0)
+            disp('User selected Cancel')
+            status=1;
+            return
+        end
+        load([SCOPEdataPath SCOPEdataFile]); % Load mat file
+        % Ask for SCOPEdata file
+        if isempty(SCOPEdata) % If there is no data, just return
+            status=1;
+            return
+        end
+        
+    end
+end
 
-scope2tikz
+%% All data must be available here:
+SCOPEdata
+
+
+
