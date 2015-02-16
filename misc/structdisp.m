@@ -1,3 +1,8 @@
+% =========================================================================
+%*** Displays struct content
+%***
+%***
+% =========================================================================
 %*** The MIT License (MIT)
 %*** 
 %*** Copyright (c) 2015 AdrianoRuseler
@@ -19,14 +24,20 @@
 %*** LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 %*** OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 %*** SOFTWARE.
+% =========================================================================
 
-function validname = getname(testname)
- % verifies if this name can be used in matlab struct enviroment
-     if verLessThan('matlab', '8.2.0')
-         % -- Put code to run under MATLAB 8.2.0 and earlier here --
-          validname = genvarname(lower(testname));
-     else
-         % -- Put code to run under MATLAB 8.2.0 and later here --
-          validname = matlab.lang.makeValidName(lower(testname));
-     end
-return;
+function status=structdisp(STRUCTdata)
+
+if isfield(STRUCTdata,'simview')
+    disp(STRUCTdata.simview)
+end
+
+
+
+if isfield(STRUCTdata,'setstruct')
+    disp(STRUCTdata.setstruct)
+end
+
+
+
+

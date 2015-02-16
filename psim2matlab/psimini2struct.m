@@ -145,8 +145,32 @@ for s=0:str2double(inistruct.main.numscreen)-1 % Screens Loop
 end
 
 
-eval(['PSIMdata.simview.' name '=simview'])
+%% Verifies PSIM variables to be compatible with MATLAB
+for i=1:length(PSIMdata.signals.label)
+    assignin('base',PSIMdata.signals.label{i},PSIMdata.signals.values(:,i)); % Not sure if this is the best way to do so;
+end
+    
+% Evaluate screen formula
+for s=0:simview.main.numscreen-1 % Screens Loop
+    for c=0:eval(['simview.screen' num2str(s) '.curvecount'])-1 % Curves Loop
+        formula{s+1,c+1}= eval(['simview.screen' num2str(s) '.curve' num2str(c) '.formula']);
+        [form, modified] = matlab.lang.makeValidName(formula{s+1,c+1}); % Problem here for minus signal
+        formuladata=evalin('base',form);
+        eval(['simview.screen' num2str(s) '.curve' num2str(c) '.data=formuladata;'])
+    end
+end
 
+% Clear variables from workspace
+% disp('Clear variables from workspace:')
+for i=1:length(PSIMdata.signals.label)
+    evalin('base', ['clear ' PSIMdata.signals.label{i}])     
+%      disp([var{i} ' Clear!!'])
+end
+
+simview.main.xdata=PSIMdata.time; % save time data (x axis data)
+
+%% Save data struct
+eval(['PSIMdata.simview.' name '=simview'])
 
 disp('Saving data file....')
 cd(dirstruct.psimstorage)

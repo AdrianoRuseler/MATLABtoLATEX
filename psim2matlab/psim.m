@@ -46,6 +46,6 @@ PSIMdata = psimini2struct();
 
 %% Now we are ready to plot from PSIM data;
 
-psim2tikz 
+psim2tikz(PSIMdata) 
 
 
