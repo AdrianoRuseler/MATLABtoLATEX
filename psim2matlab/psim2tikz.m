@@ -198,6 +198,9 @@ for p = 1:length(plots)
     end
     
     
+%     red, green, blue, cyan, magenta, yellow, black, gray,
+% white, darkgray, lightgray, brown, lime, olive, orange, pink, purple, teal, violet.
+    dec2hex(wstruct.view.bkcolor)
     
     %% Save file
     % Grava pontos por screen0.txt
@@ -217,13 +220,14 @@ for p = 1:length(plots)
         % [xtick={-3,-2,...,3}, ytick={-3,-2,...,3},
         % xmin=-3, xmax=3, ymin=-3, ymax=3]
         for c=0:eval(['wstruct.screen' num2str(s) '.curvecount'])-1 % Curves Loop
-            str=['\addplot[solid,blue]table[x=xdata,y=curve' num2str(c) ',col sep=comma]{screen' num2str(s) '.csv};'];
-            % \addplot[solid,blue] table[x=xdata,y=column2,col sep=comma] {['screen' num2str(s) '.csv']};
+            ccolor = eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.color']); %www.color-hex.com
+            strcolor=['\definecolor{s' num2str(s) 'c' num2str(c) '}{HTML}{' dec2hex(ccolor,6) '}']; %\definecolor{s0c0}{HTML}{DF7F50}
+            str=['\addplot[solid,s' num2str(s) 'c' num2str(c) ']table[x=xdata,y=curve' num2str(c) ',col sep=comma]{screen' num2str(s) '.csv};'];
+            fprintf(fileoutID,'%s\n',strcolor);
             fprintf(fileoutID,'%s\n',str);
         end
         
         fprintf(fileoutID,'%s\n','\end{axis}');
-        
         % Close tex file
         fprintf(fileoutID,'\n\n%s\n','\end{tikzpicture}');
     end

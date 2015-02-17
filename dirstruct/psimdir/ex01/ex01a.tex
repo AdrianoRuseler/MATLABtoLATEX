@@ -5,6 +5,7 @@
 \pgfplotsset{compat=newest}
 \usetikzlibrary{plotmarks}
 \usepackage{amsmath}
+\usepackage{color}
 
 \begin{document}
 
@@ -14,9 +15,12 @@
 
 \begin{tikzpicture}
 \begin{axis}
-\addplot[solid,blue]table[x=xdata,y=curve0,col sep=comma]{screen0.csv};
-\addplot[solid,blue]table[x=xdata,y=curve1,col sep=comma]{screen0.csv};
-\addplot[solid,blue]table[x=xdata,y=curve2,col sep=comma]{screen0.csv};
+\definecolor{s0c0}{HTML}{0000FF}
+\addplot[solid,s0c0]table[x=xdata,y=curve0,col sep=comma]{screen0.csv};
+\definecolor{s0c1}{HTML}{FF0000}
+\addplot[solid,s0c1]table[x=xdata,y=curve1,col sep=comma]{screen0.csv};
+\definecolor{s0c2}{HTML}{00FF00}
+\addplot[solid,s0c2]table[x=xdata,y=curve2,col sep=comma]{screen0.csv};
 \end{axis}
 
 
