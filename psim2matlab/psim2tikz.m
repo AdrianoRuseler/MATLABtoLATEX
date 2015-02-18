@@ -120,7 +120,7 @@ for p = 1:length(plots)
     %% Save tex file
     %  Create folder under tikzdir to store mat file
     
-    simviewcolor=0; % Plot with simview color settings
+    simviewcolor=1; % Plot with simview color settings
     shadesgray=0; % Plot with shades of gray
     
     fileID = fopen('preamble.tex','r'); % Opens preamble file
@@ -137,8 +137,11 @@ for p = 1:length(plots)
        axisheight='0.4\linewidth'; % Set axis height --  must fit on a single page  
     end
     
+    groupplotsrt=['\begin{groupplot}[group style={group size= 1 by ' num2str(wstruct.main.numscreen) ', vertical sep=0.1cm,  horizontal sep=1cm}]'];
+    fprintf(fileoutID,'%s\n',groupplotsrt);
+    
     for s=0:wstruct.main.numscreen-1 % Screens Loop
-        fprintf(fileoutID,'%s\n',['\begin{axis}[height=' axisheight ',width=' axiswidth ',grid=major,']); % Begin axis
+        fprintf(fileoutID,'\n%s\n',['\nextgroupplot[height=' axisheight ',width=' axiswidth ',grid=major,']); % Begin axis
         fprintf(fileoutID,'%s\n',['xmin=' num2str(wstruct.main.xfrom) ', xmax=' num2str(wstruct.main.xto) ',']); % Write x limits
         fprintf(fileoutID,'%s\n',['ymin=' num2str(eval(['wstruct.screen' num2str(s) '.yfrom'])) ', ymax=' num2str(eval(['wstruct.screen' num2str(s) '.yto'])) ',']); % Write y limits
         
@@ -149,7 +152,7 @@ for p = 1:length(plots)
             fprintf(fileoutID,'%s\n',['xlabel=' wstruct.main.xaxis ',']);
         end
             
-        fprintf(fileoutID,'%s\n','] % End of setings for axis'); % End of axis configurations
+        fprintf(fileoutID,'%s\n','] % End of setings for nextgroupplot'); % End of nextgroupplot configurations
         for c=0:eval(['wstruct.screen' num2str(s) '.curvecount'])-1 % Curves Loop
             linewidth = num2str(eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.thickness']));
             if simviewcolor % Use simwiew colors
@@ -165,15 +168,14 @@ for p = 1:length(plots)
                 addplotset=['solid,line width=' linewidth 'pt,c' num2str(c) 'color']; % Define settings for addplot
             end
             str=['\addplot[' addplotset ']table[x=xdata,y=curve' num2str(c) ',col sep=comma]{' plots{p} 'screen' num2str(s) '.csv};']; 
-%             legendstr=['\addlegendentry{$' eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.label']) '$};'];
+            legendstr=['\addlegendentry{$' eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.label']) '$};'];
             
             fprintf(fileoutID,'%s\n',str);
-%             fprintf(fileoutID,'%s\n',legendstr);
-        end        
-        fprintf(fileoutID,'%s\n','\end{axis}\\');        
+            fprintf(fileoutID,'%s\n',legendstr);
+        end            
     end
     
-    fprintf(fileoutID,'%s\n','}; % End of Matrix');
+    fprintf(fileoutID,'%s\n','\end{groupplot} % End of group');
     fprintf(fileoutID,'%s\n','\end{tikzpicture}');
     fprintf(fileoutID,'%s\n','\end{document}');    
     fclose(fileoutID);
@@ -188,6 +190,11 @@ end
 copyfile('Makefile',dirstruct.psimstorage)
 cd(dirstruct.psimstorage)
 [status,cmdout] = system('make','-echo');
+if status
+    warning('Something got wrong!!')
+else
+    disp('File compliled with success!!')
+end
 
 % Open output directory
 winopen(dirstruct.psimstorage)
