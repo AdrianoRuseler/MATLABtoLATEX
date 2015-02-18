@@ -1,0 +1,62 @@
+%
+\documentclass[tikz]{standalone}
+\usepackage{pgfplots}
+\usepackage{grffile}
+\pgfplotsset{compat=newest}
+\usetikzlibrary{plotmarks}
+\usepackage{amsmath}
+\usepackage{color} % Using this package, you can set the font color, text background, or page background
+
+% Defines color spec 
+% http://www.color-hex.com for color details
+\definecolor{dallcolor}{HTML}{303030} % Gray19
+\definecolor{ch1color}{HTML}{0000D6}
+\definecolor{ch2color}{HTML}{009D9A}
+\definecolor{ch3color}{HTML}{E600E6}
+\definecolor{ch4color}{HTML}{18A618}
+\definecolor{mathcolor}{HTML}{0000FF}
+\definecolor{ref1color}{HTML}{0000FF}
+\definecolor{ref2color}{HTML}{0000FF}
+\definecolor{ref3color}{HTML}{0000FF}
+\definecolor{ref4color}{HTML}{0000FF}
+\definecolor{d0color}{HTML}{2b2b2b}
+\definecolor{d1color}{HTML}{2b2b2b}
+\definecolor{d2color}{HTML}{2b2b2b}
+\definecolor{d3color}{HTML}{2b2b2b}
+\definecolor{d4color}{HTML}{2b2b2b}
+\definecolor{d5color}{HTML}{2b2b2b}
+\definecolor{d6color}{HTML}{2b2b2b}
+\definecolor{d7color}{HTML}{2b2b2b}
+\definecolor{d8color}{HTML}{2b2b2b}
+\definecolor{d9color}{HTML}{2b2b2b}
+\definecolor{d10color}{HTML}{2b2b2b}
+\definecolor{d11color}{HTML}{2b2b2b}
+\definecolor{d12color}{HTML}{2b2b2b}
+\definecolor{d13color}{HTML}{2b2b2b}
+\definecolor{d14color}{HTML}{2b2b2b}
+\definecolor{d15color}{HTML}{2b2b2b}
+\definecolor{bus1color}{HTML}{2b2b2b}
+\definecolor{bus2color}{HTML}{2b2b2b}
+\definecolor{bus3color}{HTML}{2b2b2b}
+\definecolor{bus4color}{HTML}{2b2b2b}
+
+
+
+\begin{document}
+ \begin{tikzpicture}   
+      \begin{axis}[
+          width=\linewidth, % Scale the plot to \linewidth
+          grid=major, % Display a grid
+       %   grid=both,
+          minor tick num=5,
+          grid style={solid,gray!25}, % Set the style
+                  xmin=-5,     % start the diagram at this x-coordinate
+                  xmax=5,    % end   the diagram at this x-coordinate
+                  ymin=-5,     % start the diagram at this y-coordinate
+                  ymax=5,   % end   the diagram at this y-coordinate
+          xticklabels={},
+          yticklabels={},
+        ]
+
+
+

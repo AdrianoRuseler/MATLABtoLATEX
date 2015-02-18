@@ -26,6 +26,7 @@
 %  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 %  SOFTWARE.
 % 
+% http://pgfplots.sourceforge.net/gallery.html
 % =========================================================================
 
 function [status, wstruct]=psim2tikz(PSIMdata)
@@ -74,6 +75,7 @@ end
 %% All data must be available here:
 
 if ~isfield(PSIMdata,'simview')
+    status=1;
     return
 end
 
@@ -81,62 +83,22 @@ plots=fieldnames(PSIMdata.simview); % Find plots in PSIMdata
 
 for p = 1:length(plots)
     wstruct=eval(['PSIMdata.simview.' plots{p}]); % set struct to work
-    disp(wstruct)
+%     disp(wstruct)
     
     if(wstruct.main.fft) % Not implemented yet
+        status=1;
         return
     end
-    
-    %      xaxis: 'Time'
-    %     numscreen: 1
-    %         xfrom: 0
-    %           xto: 0.0167
-    %         scale: 0
-    %          xinc: 0.0020
-    %           fft: 0
-    %       default: 1
-    
-    % wstruct.view
-    
-    %   fontheight: -10
-    %          bkcolor: 16777215
-    %       fontweight: 0
-    %             grid: 1
-    %          fgcolor: 0
-    %       fontitalic: 0
-    %        gridcolor: 8421504
-    %     hideaxistext: 0
-    %
-    % wstruct.screen0
-    
-    
-    %        scale: 0
-    %           yinc: 200
-    %        default: 1
-    %          yfrom: -400
-    %     curvecount: 3
-    %             db: 0
-    %           auto: 0
-    %            yto: 400
-    %         curve0: [1x1 struct]
-    %         curve1: [1x1 struct]
-    %         curve2: [1x1 struct]
-    
-    %
-    % x=wstruct.main.xdata;
-    % y=wstruct.screen0.curve0.data ;
-    %
-    % plot(x,y)
-    
+       
     
     %% Plot figure to handle next
+    % psim2plot
     
     for k = 1:wstruct.main.numscreen
         h(k) = subplot(wstruct.main.numscreen,1,k);
         eval(['wstruct.screen' num2str(k-1) '.handle=h(k);'])
     end
-    
-    
+        
     xto=wstruct.main.xto;
     xfrom=wstruct.main.xfrom;
     
@@ -198,11 +160,7 @@ for p = 1:length(plots)
     end
     
     
-%     red, green, blue, cyan, magenta, yellow, black, gray,
-% white, darkgray, lightgray, brown, lime, olive, orange, pink, purple, teal, violet.
-    dec2hex(wstruct.view.bkcolor)
-    
-    %% Save file
+    %% Save tex file
     % Grava pontos por screen0.txt
     %  Create folder under tikzdir to store mat file
     
@@ -211,7 +169,7 @@ for p = 1:length(plots)
     fclose(fileID); % Close it.
     
     fileoutID = fopen([plots{p} '.tex'],'w');
-    fwrite(fileoutID,preamble)
+    fwrite(fileoutID,preamble);
     
     for s=0:wstruct.main.numscreen-1 % Screens Loop
         fprintf(fileoutID,'\n%s\n','\begin{tikzpicture}');
