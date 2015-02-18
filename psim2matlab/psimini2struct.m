@@ -146,8 +146,8 @@ end
 
 
 %% Verifies PSIM variables to be compatible with MATLAB
-for i=1:length(PSIMdata.signals.label)
-    assignin('base',PSIMdata.signals.label{i},PSIMdata.signals.values(:,i)); % Not sure if this is the best way to do so;
+for i=1:length(PSIMdata.signals)
+    assignin('base',PSIMdata.signals(i).label,PSIMdata.signals(:,i).values); % Not sure if this is the best way to do so;
 end
     
 % Evaluate screen formula
@@ -162,8 +162,8 @@ end
 
 % Clear variables from workspace
 % disp('Clear variables from workspace:')
-for i=1:length(PSIMdata.signals.label)
-    evalin('base', ['clear ' PSIMdata.signals.label{i}])     
+for i=1:length(PSIMdata.signals)
+    evalin('base', ['clear ' PSIMdata.signals(i).label])     
 %      disp([var{i} ' Clear!!'])
 end
 

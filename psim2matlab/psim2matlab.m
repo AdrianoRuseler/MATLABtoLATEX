@@ -132,9 +132,8 @@ disp('Done!')
  disp('Converting to simulink struct data ....')
 
  PSIMdata.time=single(M(:,1));
- PSIMdata.signals.values=single(M(:,2:end));
- PSIMdata.signals.dimensions=size(M,2)-1;
 
+ PSIMdata.PSIMheader=header; % For non valid variables
  % Verifies header name
  for i=2:length(header)
      if verLessThan('matlab', '8.2.0')
@@ -146,12 +145,13 @@ disp('Done!')
      if modified
          disp(['Name ' header{i} ' modified to ' U ' (MATLAB valid name for variables)!!'])
      end
-     PSIMdata.signals.label{i-1}=U;
+     PSIMdata.signals(i-1).label=U;
+     PSIMdata.signals(i-1).values=single(M(:,i));
+     PSIMdata.signals(i-1).dimensions=1;   
+     PSIMdata.signals(i-1).title=U;
+     PSIMdata.signals(i-1).plotStyle=[0,0];
  end
- 
- PSIMdata.PSIMheader=header; % For non valid variables
- PSIMdata.signals.title='';
- PSIMdata.signals.plotStyle=[0,0]; 
+  
  PSIMdata.blockName=name;
  
 disp('Done!!!!')

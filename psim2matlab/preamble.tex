@@ -1,14 +1,39 @@
 %
 \documentclass[tikz]{standalone}
 \usepackage{pgfplots}
+\usetikzlibrary{matrix}
 \usepackage{grffile}
 \pgfplotsset{compat=newest}
 \usetikzlibrary{plotmarks}
 \usepackage{amsmath}
 \usepackage{color} % Using this package, you can set the font color, text background, or page background
 
+% Defines color spec 
+% http://www.color-hex.com for color details
+\definecolor{c0color}{HTML}{00FF00} 
+\definecolor{c1color}{HTML}{00FFFF}
+\definecolor{c2color}{HTML}{0080FF}
+\definecolor{c3color}{HTML}{0000FF}
+\definecolor{c4color}{HTML}{8000FF}
+\definecolor{c5color}{HTML}{FF00FF}
+\definecolor{c6color}{HTML}{FF0080}
+\definecolor{c7color}{HTML}{FF0000}
+\definecolor{c8color}{HTML}{800000}
+\definecolor{c9color}{HTML}{000000}
+
+% 10 Shades of gray
+\definecolor{c0gray}{HTML}{000000} 
+\definecolor{c1gray}{HTML}{202120}
+\definecolor{c2gray}{HTML}{363735}
+\definecolor{c3gray}{HTML}{4b4d4a}
+\definecolor{c4gray}{HTML}{4c4c4c}
+\definecolor{c5gray}{HTML}{595959}
+\definecolor{c6gray}{HTML}{666666}
+\definecolor{c7gray}{HTML}{666666}
+\definecolor{c8gray}{HTML}{474747}
+\definecolor{c9gray}{HTML}{a3a3a3}
+
 \begin{document}
 
-
-
-
+\begin{tikzpicture}
+\matrix{

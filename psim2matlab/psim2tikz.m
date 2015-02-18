@@ -32,6 +32,7 @@
 function [status, wstruct]=psim2tikz(PSIMdata)
 
 status=0; % We have to return something
+
 % Loads directory structure
 try
     dirstruct = evalin('base', 'dirstruct'); % Load dirstruct from base workspace
@@ -79,6 +80,8 @@ if ~isfield(PSIMdata,'simview')
     return
 end
 
+
+
 plots=fieldnames(PSIMdata.simview); % Find plots in PSIMdata
 
 for p = 1:length(plots)
@@ -89,53 +92,7 @@ for p = 1:length(plots)
         status=1;
         return
     end
-       
-    
-    %% Plot figure to handle next
-    % psim2plot
-    
-    for k = 1:wstruct.main.numscreen
-        h(k) = subplot(wstruct.main.numscreen,1,k);
-        eval(['wstruct.screen' num2str(k-1) '.handle=h(k);'])
-    end
-        
-    xto=wstruct.main.xto;
-    xfrom=wstruct.main.xfrom;
-    
-    
-    % Plot data file and generate handles;
-    for s=0:wstruct.main.numscreen-1 % Screens Loop
-        axhandle = eval(['wstruct.screen' num2str(s) '.handle']);
-        legString={};
-        for c=0:eval(['wstruct.screen' num2str(s) '.curvecount'])-1 % Curves Loop
-            ydata = eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.data']);
-            curvehandle=plot(axhandle,wstruct.main.xdata,ydata);
-            eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.handle=curvehandle;']);
-            % Configure curves Plot
-            legString{c+1} = eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.label']);
-            hold(axhandle,'all')
-            
-        end
-        
-        xlim(axhandle,[xfrom,xto])
-        %     [xmin xmax ymin ymax]= axis(axhandle)
-        axes(axhandle)
-        % Configure Axes
-        yto=eval(['wstruct.screen' num2str(s) '.yto;']);
-        yfrom=eval(['wstruct.screen' num2str(s) '.yfrom;']);
-        ylim([yfrom,yto])
-        legend(axhandle,legString);
-        grid on
-        hold off % reset hold state
-    end
-    
-    xlabel(axhandle,wstruct.main.xaxis)
-    for s=0:wstruct.main.numscreen-2 % Screens Loop
-        axhandle = eval(['wstruct.screen' num2str(s) '.handle']);
-        set(axhandle,'XTickLabel',[])
-    end
-    
-    
+           
     %% Get csv data
     if isequal(exist(dirstruct.psimstorage,'dir'),7)
         cd(dirstruct.psimstorage)
@@ -150,7 +107,7 @@ for p = 1:length(plots)
             csvheader=[csvheader [', curve' num2str(c)]];
         end
         %
-        screenfile = ['screen' num2str(s) '.csv'];
+        screenfile = [plots{p} 'screen' num2str(s) '.csv'];
         fileID = fopen(screenfile,'w','n','UTF-8'); 
         fprintf(fileID,'%s\r\n',csvheader); % Begin axis
         fclose(fileID); % Close it.
@@ -161,8 +118,10 @@ for p = 1:length(plots)
     
     
     %% Save tex file
-    % Grava pontos por screen0.txt
     %  Create folder under tikzdir to store mat file
+    
+    simviewcolor=0; % Plot with simview color settings
+    shadesgray=0; % Plot with shades of gray
     
     fileID = fopen('preamble.tex','r'); % Opens preamble file
     preamble = fread(fileID); % Copy content
@@ -171,26 +130,52 @@ for p = 1:length(plots)
     fileoutID = fopen([plots{p} '.tex'],'w');
     fwrite(fileoutID,preamble);
     
-    for s=0:wstruct.main.numscreen-1 % Screens Loop
-        fprintf(fileoutID,'\n%s\n','\begin{tikzpicture}');
-        fprintf(fileoutID,'%s\n','\begin{axis}'); % Begin axis
-        
-        % [xtick={-3,-2,...,3}, ytick={-3,-2,...,3},
-        % xmin=-3, xmax=3, ymin=-3, ymax=3]
-        for c=0:eval(['wstruct.screen' num2str(s) '.curvecount'])-1 % Curves Loop
-            ccolor = eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.color']); %www.color-hex.com
-            strcolor=['\definecolor{s' num2str(s) 'c' num2str(c) '}{HTML}{' dec2hex(ccolor,6) '}']; %\definecolor{s0c0}{HTML}{DF7F50}
-            str=['\addplot[solid,s' num2str(s) 'c' num2str(c) ']table[x=xdata,y=curve' num2str(c) ',col sep=comma]{screen' num2str(s) '.csv};'];
-            fprintf(fileoutID,'%s\n',strcolor);
-            fprintf(fileoutID,'%s\n',str);
-        end
-        
-        fprintf(fileoutID,'%s\n','\end{axis}');
-        % Close tex file
-        fprintf(fileoutID,'\n\n%s\n','\end{tikzpicture}');
+    axiswidth='\linewidth'; % Set axis width
+    if wstruct.main.numscreen==1
+       axisheight='0.8\linewidth'; % Set axis height --  must fit on a single page
+    else
+       axisheight='0.4\linewidth'; % Set axis height --  must fit on a single page  
     end
-    fprintf(fileoutID,'%s\n','\end{document}');
     
+    for s=0:wstruct.main.numscreen-1 % Screens Loop
+        fprintf(fileoutID,'%s\n',['\begin{axis}[height=' axisheight ',width=' axiswidth ',grid=major,']); % Begin axis
+        fprintf(fileoutID,'%s\n',['xmin=' num2str(wstruct.main.xfrom) ', xmax=' num2str(wstruct.main.xto) ',']); % Write x limits
+        fprintf(fileoutID,'%s\n',['ymin=' num2str(eval(['wstruct.screen' num2str(s) '.yfrom'])) ', ymax=' num2str(eval(['wstruct.screen' num2str(s) '.yto'])) ',']); % Write y limits
+        
+        if s<(wstruct.main.numscreen-1)
+            fprintf(fileoutID,'%s\n','xticklabels=\empty,xlabel=\empty,ylabel=\empty, % No xticks here'); % No xticks here
+        else
+            fprintf(fileoutID,'%s\n','xticklabel style={/pgf/number format/.cd,use comma,fixed,precision=3},');
+            fprintf(fileoutID,'%s\n',['xlabel=' wstruct.main.xaxis ',']);
+        end
+            
+        fprintf(fileoutID,'%s\n','] % End of setings for axis'); % End of axis configurations
+        for c=0:eval(['wstruct.screen' num2str(s) '.curvecount'])-1 % Curves Loop
+            linewidth = num2str(eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.thickness']));
+            if simviewcolor % Use simwiew colors
+                ccolor = eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.color']); %www.color-hex.com
+                strcolor=['\definecolor{s' num2str(s) 'c' num2str(c) '}{HTML}{' dec2hex(ccolor,6) '}']; %\definecolor{s0c0}{HTML}{DF7F50}
+                addplotset=['solid,line width=' linewidth 'pt,s' num2str(s) 'c' num2str(c) ]; % Define settings for addplot
+                fprintf(fileoutID,'%s\n',strcolor);
+            elseif shadesgray
+                % Use shades of gray
+                addplotset=['solid,line width=' linewidth 'pt,c' num2str(c) 'gray']; % Define settings for addplot            
+            else
+                % Use colors defined in preamble tex file
+                addplotset=['solid,line width=' linewidth 'pt,c' num2str(c) 'color']; % Define settings for addplot
+            end
+            str=['\addplot[' addplotset ']table[x=xdata,y=curve' num2str(c) ',col sep=comma]{' plots{p} 'screen' num2str(s) '.csv};']; 
+%             legendstr=['\addlegendentry{$' eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.label']) '$};'];
+            
+            fprintf(fileoutID,'%s\n',str);
+%             fprintf(fileoutID,'%s\n',legendstr);
+        end        
+        fprintf(fileoutID,'%s\n','\end{axis}\\');        
+    end
+    
+    fprintf(fileoutID,'%s\n','}; % End of Matrix');
+    fprintf(fileoutID,'%s\n','\end{tikzpicture}');
+    fprintf(fileoutID,'%s\n','\end{document}');    
     fclose(fileoutID);
     
     
