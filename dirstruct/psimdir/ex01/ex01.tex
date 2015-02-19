@@ -1,13 +1,24 @@
 %
-\documentclass[tikz]{standalone}
+\documentclass[9.5pt,tikz,varwidth=307pt]{standalone}
 \usepackage{pgfplots}
-\usetikzlibrary{matrix}
 \usepackage{grffile}
 \pgfplotsset{compat=newest}
 \usetikzlibrary{plotmarks}
 \usetikzlibrary{pgfplots.groupplots}
 \usepackage{amsmath}
 \usepackage{color} % Using this package, you can set the font color, text background, or page background
+
+\pgfplotsset{every axis legend/.style={
+	cells={anchor=center},% Centered entries
+	inner xsep=3pt,inner ysep=2pt,nodes={inner sep=2pt,text depth=0.15em},
+	anchor=north east,
+	shape=rectangle,
+	fill=white,
+	rounded corners,
+	draw=black,
+	at={(0.98,0.98)}
+	}
+}
 
 % Defines color spec 
 % http://www.color-hex.com for color details
@@ -37,42 +48,45 @@
 \begin{document}
 
 \begin{tikzpicture}
+\def \axiswidth {\linewidth} % Defines axis width value
+\def \axisheight {0.4\linewidth} % Defines axis height value
+
 \begin{groupplot}[group style={group size= 1 by 4, vertical sep=0.1cm,  horizontal sep=1cm}]
 
-\nextgroupplot[height=0.4\linewidth,width=\linewidth,grid=major,
+\nextgroupplot[height=\axisheight,width=\axiswidth,grid=major,
 xmin=0, xmax=0.0167,
 ymin=-480, ymax=480,
 xticklabels=\empty,xlabel=\empty,ylabel=\empty, % No xticks here
 ] % End of setings for nextgroupplot
 \definecolor{s0c0}{HTML}{4DB352}
 \addplot[solid,line width=1pt,s0c0]table[x=xdata,y=curve0,col sep=comma]{ex01screen0.csv};
-\addlegendentry{$Va$};
+\addlegendentry{$V_a$};
 \definecolor{s0c1}{HTML}{FF0000}
 \addplot[solid,line width=1pt,s0c1]table[x=xdata,y=curve1,col sep=comma]{ex01screen0.csv};
-\addlegendentry{$Vb$};
+\addlegendentry{$V_b$};
 \definecolor{s0c2}{HTML}{00FF00}
 \addplot[solid,line width=1pt,s0c2]table[x=xdata,y=curve2,col sep=comma]{ex01screen0.csv};
-\addlegendentry{$Vc$};
+\addlegendentry{$V_c$};
 
-\nextgroupplot[height=0.4\linewidth,width=\linewidth,grid=major,
+\nextgroupplot[height=\axisheight,width=\axiswidth,grid=major,
 xmin=0, xmax=0.0167,
 ymin=-480, ymax=480,
 xticklabels=\empty,xlabel=\empty,ylabel=\empty, % No xticks here
 ] % End of setings for nextgroupplot
 \definecolor{s1c0}{HTML}{0000FF}
 \addplot[solid,line width=1pt,s1c0]table[x=xdata,y=curve0,col sep=comma]{ex01screen1.csv};
-\addlegendentry{$Va$};
+\addlegendentry{$V_a$};
 
-\nextgroupplot[height=0.4\linewidth,width=\linewidth,grid=major,
+\nextgroupplot[height=\axisheight,width=\axiswidth,grid=major,
 xmin=0, xmax=0.0167,
 ymin=-480, ymax=480,
 xticklabels=\empty,xlabel=\empty,ylabel=\empty, % No xticks here
 ] % End of setings for nextgroupplot
 \definecolor{s2c0}{HTML}{0000FF}
 \addplot[solid,line width=1pt,s2c0]table[x=xdata,y=curve0,col sep=comma]{ex01screen2.csv};
-\addlegendentry{$Vb$};
+\addlegendentry{$V_b$};
 
-\nextgroupplot[height=0.4\linewidth,width=\linewidth,grid=major,
+\nextgroupplot[height=\axisheight,width=\axiswidth,grid=major,
 xmin=0, xmax=0.0167,
 ymin=-480, ymax=480,
 xticklabel style={/pgf/number format/.cd,use comma,fixed,precision=3},
@@ -80,7 +94,7 @@ xlabel=Time,
 ] % End of setings for nextgroupplot
 \definecolor{s3c0}{HTML}{0000FF}
 \addplot[solid,line width=1pt,s3c0]table[x=xdata,y=curve0,col sep=comma]{ex01screen3.csv};
-\addlegendentry{$Vc$};
+\addlegendentry{$V_c$};
 \end{groupplot} % End of group
 \end{tikzpicture}
 \end{document}

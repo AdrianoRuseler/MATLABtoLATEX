@@ -1,11 +1,13 @@
 %
-\documentclass[tikz]{standalone}
+\documentclass[varwidth=307pt]{standalone}
+\usepackage{tikz}
 \usepackage{pgfplots}
 \usepackage{grffile}
 \pgfplotsset{compat=newest}
 \usetikzlibrary{plotmarks}
 \usepackage{amsmath}
 \usepackage{color} % Using this package, you can set the font color, text background, or page background
+
 
 % Defines color spec 
 % http://www.color-hex.com for color details
@@ -45,6 +47,7 @@
 \begin{document}
  \begin{tikzpicture}   
       \begin{axis}[
+          height=\linewidth, % Scale the plot to \linewidth
           width=\linewidth, % Scale the plot to \linewidth
           grid=major, % Display a grid
        %   grid=both,
@@ -61,19 +64,26 @@
 
 
 \addplot[solid,ch1color]table[x=time,y=ch1,col sep=comma]{tek0009ch1.csv};
-\addplot[solid,ch2color]table[x=time,y=ch2,col sep=comma]{tek0009ch2.csv};
-\addplot[solid,ch3color]table[x=time,y=ch3,col sep=comma]{tek0009ch3.csv};
-\addplot[solid,ch4color]table[x=time,y=ch4,col sep=comma]{tek0009ch4.csv};
+%\addplot[solid,ch2color]table[x=time,y=ch2,col sep=comma]{tek0009ch2.csv};
+%\addplot[solid,ch3color]table[x=time,y=ch3,col sep=comma]{tek0009ch3.csv};
+%\addplot[solid,ch4color]table[x=time,y=ch4,col sep=comma]{tek0009ch4.csv};
 
 
       \end{axis}      
       \begin{axis}[ % Just to plot x  and y axis in the middle of figure
+        height=\linewidth, % Scale the plot to \linewidth
       	width=\linewidth, % Scale the plot to \linewidth
       	grid=none, minor tick num=5,
       	xmin=-5,xmax=5,ymin=-5,ymax=5,   % Axis Limits
       	axis x line=middle,axis y line=middle,
       	xticklabels=\empty,yticklabels=\empty,
       	]        	
-      \end{axis}             
+      \end{axis}    
+      
+      	         
     \end{tikzpicture}
+    
+  
+    
+    
 \end{document}

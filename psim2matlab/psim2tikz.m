@@ -123,25 +123,28 @@ for p = 1:length(plots)
     simviewcolor=1; % Plot with simview color settings
     shadesgray=0; % Plot with shades of gray
     
+
+    
     fileID = fopen('preamble.tex','r'); % Opens preamble file
     preamble = fread(fileID); % Copy content
     fclose(fileID); % Close it.
     
     fileoutID = fopen([plots{p} '.tex'],'w');
-    fwrite(fileoutID,preamble);
+    fwrite(fileoutID,preamble);   
     
-    axiswidth='\linewidth'; % Set axis width
+    fprintf(fileoutID,'%s\n','\def \axiswidth {\linewidth} % Defines axis width value');    
+        
     if wstruct.main.numscreen==1
-       axisheight='0.8\linewidth'; % Set axis height --  must fit on a single page
+       fprintf(fileoutID,'%s\n','\def \axisheight {0.8\linewidth} % Defines axis height value'); 
     else
-       axisheight='0.4\linewidth'; % Set axis height --  must fit on a single page  
+       fprintf(fileoutID,'%s\n','\def \axisheight {0.4\linewidth} % Defines axis height value');   
     end
     
     groupplotsrt=['\begin{groupplot}[group style={group size= 1 by ' num2str(wstruct.main.numscreen) ', vertical sep=0.1cm,  horizontal sep=1cm}]'];
-    fprintf(fileoutID,'%s\n',groupplotsrt);
+    fprintf(fileoutID,'\n%s\n',groupplotsrt);
     
     for s=0:wstruct.main.numscreen-1 % Screens Loop
-        fprintf(fileoutID,'\n%s\n',['\nextgroupplot[height=' axisheight ',width=' axiswidth ',grid=major,']); % Begin axis
+        fprintf(fileoutID,'\n%s\n','\nextgroupplot[height=\axisheight,width=\axiswidth,grid=major,'); % Begin axis
         fprintf(fileoutID,'%s\n',['xmin=' num2str(wstruct.main.xfrom) ', xmax=' num2str(wstruct.main.xto) ',']); % Write x limits
         fprintf(fileoutID,'%s\n',['ymin=' num2str(eval(['wstruct.screen' num2str(s) '.yfrom'])) ', ymax=' num2str(eval(['wstruct.screen' num2str(s) '.yto'])) ',']); % Write y limits
         
@@ -151,7 +154,7 @@ for p = 1:length(plots)
             fprintf(fileoutID,'%s\n','xticklabel style={/pgf/number format/.cd,use comma,fixed,precision=3},');
             fprintf(fileoutID,'%s\n',['xlabel=' wstruct.main.xaxis ',']);
         end
-            
+            %     cycle list name=linestyles*
         fprintf(fileoutID,'%s\n','] % End of setings for nextgroupplot'); % End of nextgroupplot configurations
         for c=0:eval(['wstruct.screen' num2str(s) '.curvecount'])-1 % Curves Loop
             linewidth = num2str(eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.thickness']));

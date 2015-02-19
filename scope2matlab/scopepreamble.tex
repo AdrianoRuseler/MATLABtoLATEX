@@ -1,5 +1,6 @@
 %
-\documentclass[tikz]{standalone}
+\documentclass[9.5pt,varwidth=307pt]{standalone}
+\usepackage{tikz}
 \usepackage{pgfplots}
 \usepackage{grffile}
 \pgfplotsset{compat=newest}
@@ -40,22 +41,20 @@
 \definecolor{bus3color}{HTML}{2b2b2b}
 \definecolor{bus4color}{HTML}{2b2b2b} 
 
-
-
 \begin{document}
  \begin{tikzpicture}   
       \begin{axis}[
-          width=\linewidth, % Scale the plot to \linewidth
-          grid=major, % Display a grid
-       %   grid=both,
-          minor tick num=5,
-          grid style={solid,gray!25}, % Set the style
-                  xmin=-5,     % start the diagram at this x-coordinate
-                  xmax=5,    % end   the diagram at this x-coordinate
-                  ymin=-5,     % start the diagram at this y-coordinate
-                  ymax=5,   % end   the diagram at this y-coordinate
-          xticklabels={},
-          yticklabels={},
+        height=\linewidth, % Scale the plot to \linewidth
+        width=\linewidth, % Scale the plot to \linewidth
+        grid=major, % Display a grid
+        minor tick num=5,
+        grid style={solid,gray!25}, % Set the style
+                xmin=-5,     % start the diagram at this x-coordinate
+                xmax=5,    % end   the diagram at this x-coordinate
+                ymin=-5,     % start the diagram at this y-coordinate
+                ymax=5,   % end   the diagram at this y-coordinate
+        xticklabels=\empty,
+        yticklabels=\empty,
         ]
 
 

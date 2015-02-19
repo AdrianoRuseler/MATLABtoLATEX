@@ -1,13 +1,26 @@
 %
-\documentclass[tikz]{standalone}
+\documentclass[9.5pt,varwidth=307pt]{standalone}
+\usepackage{tikz}
 \usepackage{pgfplots}
-\usetikzlibrary{matrix}
 \usepackage{grffile}
-\pgfplotsset{compat=newest}
 \usetikzlibrary{plotmarks}
 \usetikzlibrary{pgfplots.groupplots}
 \usepackage{amsmath}
 \usepackage{color} % Using this package, you can set the font color, text background, or page background
+
+\pgfplotsset{compat=newest}
+\pgfplotsset{every axis legend/.style={
+	cells={anchor=center},% Centered entries
+	inner xsep=3pt,inner ysep=2pt,nodes={inner sep=2pt,text depth=0.15em},
+	anchor=north east,
+	shape=rectangle,
+	fill=white,
+	draw=black,
+	rounded corners,
+	at={(0.98,0.98)}
+	}
+}
+
 
 % Defines color spec 
 % http://www.color-hex.com for color details
