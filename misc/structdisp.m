@@ -35,19 +35,10 @@ if isfield(STRUCTdata,'simview')
     disp(STRUCTdata.simview)
 end
 
-
-
 if isfield(STRUCTdata,'setstruct')
 
 fields=fieldnames(STRUCTdata.setstruct)
     disp(STRUCTdata.setstruct)
-
-
-
-
-
-
-
 
 
 end

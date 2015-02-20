@@ -1,12 +1,25 @@
 %
-\documentclass[9.5pt,varwidth=307pt]{standalone}
-\usepackage{tikz}
-\usepackage{pgfplots}
+%
+\documentclass[varwidth=307pt]{standalone}
+% \usepackage{tikz}
+\usepackage{pgfplots} % loads also tikz
 \usepackage{grffile}
-\pgfplotsset{compat=newest}
+\pgfplotsset{compat=newest} % This will configure the compatibility layer
 \usetikzlibrary{plotmarks}
 \usepackage{amsmath}
 \usepackage{color} % Using this package, you can set the font color, text background, or page background
+\usetikzlibrary{arrows,shapes,positioning}
+
+\tikzset{ % Set line width
+	ultra thin/.style= {line width=0.1pt},
+	very thin/.style=  {line width=0.2pt},
+	thin/.style=       {line width=0.4pt},% thin is the default
+	semithick/.style=  {line width=0.6pt},
+	thick/.style=      {line width=0.8pt},
+	very thick/.style= {line width=1.2pt},
+	ultra thick/.style={line width=1.6pt}
+}
+
 
 % Defines color spec 
 % http://www.color-hex.com for color details
@@ -41,6 +54,16 @@
 \definecolor{bus3color}{HTML}{2b2b2b}
 \definecolor{bus4color}{HTML}{2b2b2b} 
 
+% Definitions
+\def\refdist{2.5mm} % Channel ref arrow length
+\def\tipangleA{125} % Tip angle for CH1
+\def\tipangleB{125} % Tip angle for CH2
+\def\tipangleC{-45} % Tip angle for CH3
+\def\tipangleD{75} % Tip angle for CH4
+\def\tipangleE{75} % Tip angle for CH5
+\def\tipdist{5mm} % Tip arrow legth
+
+
 \begin{document}
  \begin{tikzpicture}   
       \begin{axis}[
@@ -49,13 +72,5 @@
         grid=major, % Display a grid
         minor tick num=5,
         grid style={solid,gray!25}, % Set the style
-                xmin=-5,     % start the diagram at this x-coordinate
-                xmax=5,    % end   the diagram at this x-coordinate
-                ymin=-5,     % start the diagram at this y-coordinate
-                ymax=5,   % end   the diagram at this y-coordinate
-        xticklabels=\empty,
-        yticklabels=\empty,
-        ]
-
-
-
+        xmin=-5,xmax=5,ymin=-5,ymax=5,  
+        xticklabels=\empty,yticklabels=\empty]

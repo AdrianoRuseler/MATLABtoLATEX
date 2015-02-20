@@ -64,12 +64,13 @@ if nargin <1 % input file not supplied
             return
         end
         load([SCOPEdataPath SCOPEdataFile]); % Load mat file
+        
         % Ask for SCOPEdata file
         if isempty(SCOPEdata) % If there is no data, just return
             status=1;
             return
         end
-        
+        assignin('base','SCOPEdata',SCOPEdata);
     end
 end
 
@@ -90,7 +91,7 @@ if isequal(exist(dirstruct.scopestorage,'dir'),7)
 end
 
 % wstruct.horizontal.recordlength
-downfactor=1;
+
 labels=lower({SCOPEdata.signals.label});
 selectnames=fieldnames(wstruct.select); % what channels are selected?
 csvheader='time'; % Initialize header
@@ -105,7 +106,9 @@ for s=1:length(selectnames) % Get with flag set to 1
             chindex = find(not(cellfun('isempty', strfind(labels,selectnames{s})))); % Solution by Jan Simon
             % Must be checked is data exists
             yscale = eval(['wstruct.' selectnames{s} '.scale;']);
-            ydata=SCOPEdata.signals(chindex).values/yscale;
+            ydata=SCOPEdata.signals(chindex).values/yscale;            
+            chpos=eval(['SCOPEdata.setstruct.' selectnames{s} '.position']);
+            ydata=ydata+chpos;
             SCREENdata=horzcat(SCREENdata,ydata);
             curves{c}=selectnames{s};
             c=c+1;
@@ -131,7 +134,8 @@ for p=1:length(curves)
     y=get(hl,'YData');
     close(get(get(hl,'Parent'),'Parent'))% Closes the figure
     x=x(:); % force vector to be vertical
-    y=y(:);
+    y=y(:);    
+ %   datatofit{p}=y; % Get this data for future use in labels
     curveheader=['time, ' curves{p}];
     Mdata=[x y];
     screenfile = [SCOPEdata.blockName curves{p} '.csv'];
@@ -145,9 +149,7 @@ end
 
 
 
- %% Save tex file
-    % Grava pontos por screen0.txt
-    %  Create folder under tikzdir to store mat file
+ %% Save tex file for full data version
     
     fileID = fopen('scopepreamble.tex','r'); % Opens preamble file
     preamble = fread(fileID); % Copy content
@@ -165,35 +167,44 @@ end
 %     fprintf(fileoutID,'%s\n','\begin{axis}'); % Begin axis
     screenfile = [SCOPEdata.blockName '.csv'];
     for c=1:length(curves) % Curves Loop
-        str=['\addplot[solid,' curves{c} 'color]table[x=time,y=' curves{c} ',col sep=comma]{' screenfile '};'];
-        fprintf(fileoutID,'%s\n',str);
+        fprintf(fileoutID,'\n%s\n',['% Arrows and labels for channel ' curves{c}]);
+        addplotstr=['\addplot[solid,' curves{c} 'color]table[x=time,y=' curves{c} ',col sep=comma]{' screenfile '}; % Add plot data'];
+        chpos=num2str(eval(['SCOPEdata.setstruct.' curves{c} '.position']));
+        refstr=['\node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,' curves{c} 'color}]0:{}}] at (axis cs:-5,' chpos '){}; % Print ref arrow'];
+        [xtip,ytip]=data2tip(SCREENdata(:,1),SCREENdata(:,c+1),c);
+        tipstr=['\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]\tipangle' char(c+64) ':{' upper(curves{c}) '}}] at (axis cs:' num2str(xtip) ',' num2str(ytip) '){}; % Print curve tip'];
+        
+        % write string on file
+        fprintf(fileoutID,'%s\n',addplotstr);
+        fprintf(fileoutID,'%s\n',refstr);
+        fprintf(fileoutID,'%s\n',tipstr);
     end
     
-%     fprintf(fileoutID,'%s\n','\end{axis}');
-    % Close tex file
-%     fprintf(fileoutID,'\n\n%s\n','\end{tikzpicture}');
-%     fprintf(fileoutID,'%s\n','\end{document}');
+%     SCOPEdata.setstruct.ch1.scale 
+%     SCOPEdata.setstruct.ch1.yunits    
 
     fwrite(fileoutID,endtex);
     fclose(fileoutID);
-    
-    % for downsample version    
+   
+ %%    For downsample version    
     fileoutID = fopen([SCOPEdata.blockName '.tex'],'w');
     fwrite(fileoutID,preamble);
-    
-%     fprintf(fileoutID,'\n%s\n','\begin{tikzpicture}');
-%     fprintf(fileoutID,'%s\n','\begin{axis}'); % Begin axis
-    
+       
     for c=1:length(curves) % Curves Loop
+        fprintf(fileoutID,'\n%s\n',['% Arrows and labels for channel ' curves{c}]);
         screenfile = [SCOPEdata.blockName curves{c} '.csv'];
-        str=['\addplot[solid,' curves{c} 'color]table[x=time,y=' curves{c} ',col sep=comma]{' screenfile '};'];
-        fprintf(fileoutID,'%s\n',str);
+        addplotstr=['\addplot[solid,' curves{c} 'color]table[x=time,y=' curves{c} ',col sep=comma]{' screenfile '};'];
+        chpos=num2str(eval(['SCOPEdata.setstruct.' curves{c} '.position']));
+        refstr=['\node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,' curves{c} 'color}]0:{}}] at (axis cs:-5,' chpos '){}; % Print ref arrow'];
+        [xtip,ytip]=data2tip(SCREENdata(:,1),SCREENdata(:,c+1),c);
+        tipstr=['\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]\tipangle'  char(c+64) ':{' upper(curves{c}) '}}] at (axis cs:' num2str(xtip) ',' num2str(ytip) '){}; % Print curve tip'];
+
+        % write string on file
+        fprintf(fileoutID,'%s\n',addplotstr);
+        fprintf(fileoutID,'%s\n',refstr);       
+        fprintf(fileoutID,'%s\n',tipstr);
     end
     
-%     fprintf(fileoutID,'%s\n','\end{axis}');
-    % Close tex file
-%     fprintf(fileoutID,'\n\n%s\n','\end{tikzpicture}');
-%     fprintf(fileoutID,'%s\n','\end{document}');
      fwrite(fileoutID,endtex);
     fclose(fileoutID);
     
@@ -208,7 +219,7 @@ copyfile('Makefile',dirstruct.scopestorage)
 cd(dirstruct.scopestorage)
 tic
 [status,cmdout] = system('make','-echo');
-t=toc;
+toc
 
 % Open output directory
 winopen(dirstruct.scopestorage)

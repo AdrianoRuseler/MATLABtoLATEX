@@ -52,6 +52,7 @@ if nargin <1  % PSIMtxt not supplied
     [csvfilename, csvpathname] = uigetfile('*.csv', 'Select scope data aquisition', 'MultiSelect', 'off');
     if isequal(csvfilename,0)
         disp('User selected Cancel')
+        SCOPEdata=[];
         return
     end
     SCOPEcsv=[csvpathname csvfilename];

@@ -56,3 +56,6 @@ SCOPEdata = set2struct([pathstr '\' name '.set']);
 %% Plot scope data to tikz
 
 scope2tikz(SCOPEdata)
+
+scope2tikz()
+
