@@ -161,14 +161,17 @@ end
     
     fileoutID = fopen([SCOPEdata.blockName 'full.tex'],'w');
     fwrite(fileoutID,preamble);
-           
-    fprintf(fileoutID,'\n%s\n',['xlabel=Tempo: \SI{' num2str(wstruct.horizontal.scale*1000,'%3.2f') '}{\milli\second}/div,']);
+    
+     xlabel=Tempo \SI{4.00}{\milli\second}/div,
+        
+        
+    fprintf(fileoutID,'\n%s\n','\begin{tikzpicture}');
     fprintf(fileoutID,'%s\n','] % End of axis configurations'); 
     screenfile = [SCOPEdata.blockName '.csv'];
     for c=1:length(curves) % Curves Loop
         fprintf(fileoutID,'\n%s\n',['% Arrows and labels for channel ' curves{c}]);
         addplotstr=['\addplot[solid,' curves{c} 'color]table[x=time,y=' curves{c} ',col sep=comma]{' screenfile '}; % Add plot data'];
-        chpos=num2str(eval(['wstruct.' curves{c} '.position']));
+        chpos=num2str(eval(['SCOPEdata.setstruct.' curves{c} '.position']));
         refstr=['\node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,' curves{c} 'color}]0:{}}] at (axis cs:-5,' chpos '){}; % Print ref arrow'];
         [xtip,ytip]=data2tip(SCREENdata(:,1),SCREENdata(:,c+1),c);
         tipstr=['\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]\tipangle' char(c+64) ':{' upper(curves{c}) '}}] at (axis cs:' num2str(xtip) ',' num2str(ytip) '){}; % Print curve tip'];
@@ -177,13 +180,10 @@ end
         fprintf(fileoutID,'%s\n',addplotstr);
         fprintf(fileoutID,'%s\n',refstr);
         fprintf(fileoutID,'%s\n',tipstr);
-        
-        % Legend entry
-        chscale=num2str(eval(['wstruct.' curves{c} '.scale']));
-        chunit=eval(['wstruct.' curves{c} '.yunits']);        
-        legstr=['\addlegendentry[align=center]{\varch' char(c+64) ' @ ' upper(curves{c}) '\\ \SI{' chscale '}{\' chunit '}/div}'];        
-        fprintf(fileoutID,'%s\n',legstr);        
     end
+    
+%     SCOPEdata.setstruct.ch1.scale 
+%     SCOPEdata.setstruct.ch1.yunits    
 
     fwrite(fileoutID,endtex);
     fclose(fileoutID);
@@ -191,15 +191,12 @@ end
  %%    For downsample version    
     fileoutID = fopen([SCOPEdata.blockName '.tex'],'w');
     fwrite(fileoutID,preamble);
-     
-    fprintf(fileoutID,'\n%s\n',['xlabel=Tempo: \SI{' num2str(wstruct.horizontal.scale*1000,'%3.2f') '}{\milli\second}/div,']);
-    fprintf(fileoutID,'%s\n','] % End of axis configurations'); 
-    
+       
     for c=1:length(curves) % Curves Loop
         fprintf(fileoutID,'\n%s\n',['% Arrows and labels for channel ' curves{c}]);
         screenfile = [SCOPEdata.blockName curves{c} '.csv'];
         addplotstr=['\addplot[solid,' curves{c} 'color]table[x=time,y=' curves{c} ',col sep=comma]{' screenfile '};'];
-        chpos=num2str(eval(['wstruct.' curves{c} '.position']));
+        chpos=num2str(eval(['SCOPEdata.setstruct.' curves{c} '.position']));
         refstr=['\node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,' curves{c} 'color}]0:{}}] at (axis cs:-5,' chpos '){}; % Print ref arrow'];
         [xtip,ytip]=data2tip(SCREENdata(:,1),SCREENdata(:,c+1),c);
         tipstr=['\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]\tipangle'  char(c+64) ':{' upper(curves{c}) '}}] at (axis cs:' num2str(xtip) ',' num2str(ytip) '){}; % Print curve tip'];
@@ -208,15 +205,9 @@ end
         fprintf(fileoutID,'%s\n',addplotstr);
         fprintf(fileoutID,'%s\n',refstr);       
         fprintf(fileoutID,'%s\n',tipstr);
-        
-        % Legend entry
-        chscale=num2str(eval(['wstruct.' curves{c} '.scale']));
-        chunit=eval(['wstruct.' curves{c} '.yunits']);        
-        legstr=['\addlegendentry[align=center]{\varch' char(c+64) ' @ ' upper(curves{c}) '\\ \SI{' chscale '}{\' chunit '}/div}'];        
-        fprintf(fileoutID,'%s\n',legstr);
     end
     
-    fwrite(fileoutID,endtex);
+     fwrite(fileoutID,endtex);
     fclose(fileoutID);
     
     

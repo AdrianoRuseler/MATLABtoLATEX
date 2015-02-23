@@ -59,3 +59,48 @@ scope2tikz(SCOPEdata)
 
 scope2tikz()
 
+
+%% Set options
+
+
+% Create list of time plot options
+
+P = timeoptions
+P2 = timeoptions('cstprefs')
+
+
+P.Title
+
+
+if nargin <2 % Look for options entry
+    % Options not supplied - use default
+    options.Title.String='';
+    options.Title.FontSize=9.5;
+    options.Title.FontType='';
+    options.Title.Color='';
+    
+    options.XLabel.String='';
+    options.XLabel.FontSize=9.5;
+    options.XLabel.FontType='';
+    options.XLabel.Color='';
+
+    options.YLabel.String='';
+    options.YLabel.FontSize=9.5;
+    options.YLabel.FontType='';
+    options.YLabel.Color='';
+    
+    options.XLabel=1;
+    
+    options.Compile=1;  % Compiles the latex code
+    options.FullData=1; % Generates figure with full data set
+    options.DSPlot=1; % downsampled plot
+    options.English=0; % Output in English?
+end
+    
+
+
+
+
+
+
+

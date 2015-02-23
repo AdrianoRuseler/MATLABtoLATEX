@@ -1,6 +1,6 @@
 %
-%
-\documentclass[varwidth=307pt]{standalone}
+
+\documentclass{standalone}
 % \usepackage{tikz}
 \usepackage{pgfplots} % loads also tikz
 \usepackage{grffile}
@@ -19,6 +19,10 @@
 	very thick/.style= {line width=1.2pt},
 	ultra thick/.style={line width=1.6pt}
 }
+
+\usepackage{siunitx}
+% \sisetup 
+\sisetup{scientific-notation = fixed, fixed-exponent = 0, round-mode = figures,round-precision = 3}
 
 
 % Defines color spec 
@@ -63,14 +67,38 @@
 \def\tipangleE{75} % Tip angle for CH5
 \def\tipdist{5mm} % Tip arrow legth
 
+% Defines axis aspect ratio
+\def \axisheight {\linewidth}
+\def \axiswidth {1.3\linewidth} 
+
+\def \varchA {$v_{A}$} % Variable at channel A (1);
+\def \varchB {$v_{B}$} % Variable at channel B (2);
+\def \varchC {$v_{C}$} % Variable at channel C (3);
+\def \varchD {$v_{D}$} % Variable at channel D (4);
+\def \varchE {$v_{E}$} % Variable at channel E (5); ...
+
+\pgfplotsset{every axis legend/.style={
+		cells={anchor=center},% Centered entries
+		inner xsep=3pt,inner ysep=2pt,
+		nodes={inner sep=10pt,text depth=0.15em},
+		anchor=north west,
+		shape=rectangle,
+		fill=white,
+		draw=white,
+		rounded corners,
+		line width=1.5pt,
+		at={(1.01,1)}
+	}
+}
+
 
 \begin{document}
  \begin{tikzpicture}   
       \begin{axis}[
-        height=\linewidth, % Scale the plot to \linewidth
-        width=\linewidth, % Scale the plot to \linewidth
+        height=\axisheight, % Scale the plot to \linewidth
+        width=\axiswidth, % Scale the plot to \linewidth
         grid=major, % Display a grid
         minor tick num=5,
         grid style={solid,gray!25}, % Set the style
-        xmin=-5,xmax=5,ymin=-5,ymax=5,  
-        xticklabels=\empty,yticklabels=\empty]
+        xmin=-5,xmax=5,ymin=-5,ymax=5,          
+        xticklabels=\empty,yticklabels=\empty, % End of preamble tex file
