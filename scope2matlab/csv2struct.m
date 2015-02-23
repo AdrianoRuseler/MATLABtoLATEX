@@ -121,6 +121,10 @@ for i=2:length(header)
         U = matlab.lang.makeValidName(header{i});
     end
     
+   if ~isempty(strfind(U,'MATH'))
+       U = 'math'; % Puts math as label only
+   end    
+    
     SCOPEdata.signals(i-1).label=U;
     SCOPEdata.signals(i-1).title=U;
     SCOPEdata.signals(i-1).plotStyle=[0,0];

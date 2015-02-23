@@ -9,6 +9,7 @@
 \usepackage{amsmath}
 \usepackage{color} % Using this package, you can set the font color, text background, or page background
 \usetikzlibrary{arrows,shapes,positioning}
+\usepackage{anyfontsize}
 
 \tikzset{ % Set line width
 	ultra thin/.style= {line width=0.1pt},
@@ -22,7 +23,7 @@
 
 \usepackage{siunitx}
 % \sisetup 
-\sisetup{scientific-notation = fixed, fixed-exponent = 0, round-mode = figures,round-precision = 3}
+\sisetup{scientific-notation = fixed, fixed-exponent = 0, round-mode = figures,round-precision = 3,output-decimal-marker = {,}}
 
 
 % Defines color spec 
@@ -93,6 +94,7 @@
 
 
 \begin{document}
+	\fontsize{10.5}{12}\selectfont
  \begin{tikzpicture}   
       \begin{axis}[
         height=\axisheight, % Scale the plot to \linewidth
@@ -106,27 +108,27 @@ xlabel=Tempo: \SI{4.00}{\milli\second}/div,
 ] % End of axis configurations
 
 % Arrows and labels for channel ch1
-\addplot[solid,ch1color]table[x=time,y=ch1,col sep=comma]{tek0009ch1.csv};
+\addplot[solid,ch1color]table[x=time,y=ch1,col sep=comma]{tek0003ch1.csv};
 \node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,ch1color}]0:{}}] at (axis cs:-5,0.06){}; % Print ref arrow
-\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]\tipangleA:{CH1}}] at (axis cs:3.6005,2){}; % Print curve tip
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]117:{CH1}}] at (axis cs:3.3295,1.9534){}; % Print curve tip
 \addlegendentry[align=center]{\varchA @ CH1\\ \SI{125}{\V}/div}
 
 % Arrows and labels for channel ch2
-\addplot[solid,ch2color]table[x=time,y=ch2,col sep=comma]{tek0009ch2.csv};
+\addplot[solid,ch2color]table[x=time,y=ch2,col sep=comma]{tek0003ch2.csv};
 \node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,ch2color}]0:{}}] at (axis cs:-5,0.02){}; % Print ref arrow
-\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]\tipangleB:{CH2}}] at (axis cs:-0.3995,2){}; % Print curve tip
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]121:{CH2}}] at (axis cs:1.924,1.9534){}; % Print curve tip
 \addlegendentry[align=center]{\varchB @ CH2\\ \SI{125}{\V}/div}
 
 % Arrows and labels for channel ch3
-\addplot[solid,ch3color]table[x=time,y=ch3,col sep=comma]{tek0009ch3.csv};
+\addplot[solid,ch3color]table[x=time,y=ch3,col sep=comma]{tek0003ch3.csv};
 \node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,ch3color}]0:{}}] at (axis cs:-5,0){}; % Print ref arrow
-\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]\tipangleC:{CH3}}] at (axis cs:-2.1995,-2.04){}; % Print curve tip
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]133:{CH3}}] at (axis cs:0.54147,1.9534){}; % Print curve tip
 \addlegendentry[align=center]{\varchC @ CH3\\ \SI{125}{\V}/div}
 
 % Arrows and labels for channel ch4
-\addplot[solid,ch4color]table[x=time,y=ch4,col sep=comma]{tek0009ch4.csv};
+\addplot[solid,ch4color]table[x=time,y=ch4,col sep=comma]{tek0003ch4.csv};
 \node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,ch4color}]0:{}}] at (axis cs:-5,-0.98){}; % Print ref arrow
-\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]\tipangleD:{CH4}}] at (axis cs:1.9005,3.88){}; % Print curve tip
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]128:{CH4}}] at (axis cs:-2.2926,3.9359){}; % Print curve tip
 \addlegendentry[align=center]{\varchD @ CH4\\ \SI{250}{\V}/div}
 
       \end{axis}   

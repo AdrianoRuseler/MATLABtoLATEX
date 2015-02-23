@@ -53,6 +53,8 @@ SCOPEdata = set2struct();
 SCOPEdata = csv2struct([pathstr '\' name '.csv']);
 SCOPEdata = set2struct([pathstr '\' name '.set']);
 
+scope2tikz(SCOPEdata)
+
 %% Plot scope data to tikz
 
 scope2tikz(SCOPEdata)
@@ -63,16 +65,9 @@ scope2tikz()
 %% Set options
 
 
-% Create list of time plot options
-
-P = timeoptions
-P2 = timeoptions('cstprefs')
 
 
-P.Title
 
-
-if nargin <2 % Look for options entry
     % Options not supplied - use default
     options.Title.String='';
     options.Title.FontSize=9.5;
@@ -95,12 +90,12 @@ if nargin <2 % Look for options entry
     options.FullData=1; % Generates figure with full data set
     options.DSPlot=1; % downsampled plot
     options.English=0; % Output in English?
-end
+    options.ManualTips=0; % 
+    options.DSpoints=5000;
+
+    scope2tikz(SCOPEdata,options)
+
+
     
-
-
-
-
-
-
+    
 

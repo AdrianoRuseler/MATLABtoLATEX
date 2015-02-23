@@ -104,3 +104,47 @@
            grid style={solid,gray!25}, % Set the style
            xmin=-5,xmax=5,ymin=-5,ymax=5,          
            xticklabels=\empty,yticklabels=\empty, % End of preamble tex file 
+xlabel=Tempo: \SI{4.00}{\milli\second}/div,
+] % End of axis configurations
+   \end{axis} 
+   \begin{axis}[
+   	height=\axisheight, % Scale the plot to \linewidth
+   	width=\axiswidth, % Scale the plot to \linewidth
+   	grid=none, minor tick num=5,
+   	xmin=-5,xmax=5,ymin=-5,ymax=5,   % Axis Limits
+   	axis x line=middle,axis y line=middle,
+   	xticklabels=\empty,yticklabels=\empty,
+   	] % End of axis configurations
+% Arrows and labels for channel ch1
+\addplot[solid,ch1color]table[x=time,y=ch1,col sep=comma]{tek0037ch1.csv};
+\node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,ch1color}]0:{}}] at (axis cs:-5,-3.7){}; % Print ref arrow
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]-30:{CH1}}] at (axis cs:1.924,-4.0525){}; % Print curve tip
+\addlegendentry[align=center]{\varchA @ CH1\\ \SI{500}{\V}/div}
+
+% Arrows and labels for channel ch2
+\addplot[solid,ch2color]table[x=time,y=ch2,col sep=comma]{tek0037ch2.csv};
+\node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,ch2color}]0:{}}] at (axis cs:-5,0.06){}; % Print ref arrow
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]-14:{CH2}}] at (axis cs:1.9009,-0.43732){}; % Print curve tip
+\addlegendentry[align=center]{\varchB @ CH2\\ \SI{500}{\V}/div}
+
+% Arrows and labels for channel ch3
+\addplot[solid,ch3color]table[x=time,y=ch3,col sep=comma]{tek0037ch3.csv};
+\node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,ch3color}]0:{}}] at (axis cs:-5,-1.78){}; % Print ref arrow
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]-12:{CH3}}] at (axis cs:1.8318,-2.2157){}; % Print curve tip
+\addlegendentry[align=center]{\varchC @ CH3\\ \SI{500}{\V}/div}
+
+% Arrows and labels for channel ch4
+\addplot[solid,ch4color]table[x=time,y=ch4,col sep=comma]{tek0037ch4.csv};
+\node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,ch4color}]0:{}}] at (axis cs:-5,-0.06){}; % Print ref arrow
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]51:{CH4}}] at (axis cs:1.0484,2.449){}; % Print curve tip
+\addlegendentry[align=center]{\varchD @ CH4\\ \SI{500}{\V}/div}
+
+% Arrows and labels for channel math
+\addplot[solid,mathcolor]table[x=time,y=math,col sep=comma]{tek0037math.csv};
+\node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,mathcolor}]0:{}}] at (axis cs:-5,0){}; % Print ref arrow
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]130:{MATH}}] at (axis cs:-1.5553,1.9825){}; % Print curve tip
+\addlegendentry[align=center]{\varchE @ MATH\\ \SI{500}{\V}/div}
+
+      \end{axis}             
+    \end{tikzpicture}
+\end{document} % End of file
