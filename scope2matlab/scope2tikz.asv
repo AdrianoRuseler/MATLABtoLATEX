@@ -219,7 +219,7 @@ for m=1:length(measurements)
                 else
                     measstr='';
                 end
-                measstr=[ measstr '\\' mfield.type ': \SI{' num2str(mfield.value) '}{\' units '}' ];
+                measstr=[ measstr '\\' mfield.type ': \SI{' num2str(mfield.value) '}{\' units '}' ]
                 eval(['wstruct.' lower(mfield.source1) '.legendmeas=measstr;']);
             case 'MEAN'
                 disp('MEAN')
@@ -233,7 +233,7 @@ for m=1:length(measurements)
                 else
                     measstr='';
                 end
-                measstr=[ measstr '\\' mfield.type ': \SI{' num2str(mfield.value) '}{\' units '}' ];
+                measstr=[ measstr '\\' mfield.type ': \SI{' num2str(mfield.value) '}{\' units '}' ]
                 eval(['wstruct.' lower(mfield.source1) '.legendmeas=measstr;']);
             otherwise
                 disp('otherwise')
@@ -269,7 +269,7 @@ end
  
      screenfile = [SCOPEdata.blockName '.csv'];
      for c=1:length(curves) % Curves Loop
-         addlegstr='}';
+         addlegstr='';
          fprintf(fileoutID,'\n%s\n',['% Arrows and labels for channel ' curves{c}]);
          addplotstr=['\addplot[solid,' curves{c} 'color]table[x=time,y=' curves{c} ',col sep=comma]{' screenfile '}; % Add plot data'];
          if strcmp(curves{c},'math') % If its a math channel
@@ -280,9 +280,7 @@ end
              chscale=num2str(eval(['wstruct.' curves{c} '.scale']));
              chunit=eval(['wstruct.' curves{c} '.yunits']);
              chpos=num2str(eval(['wstruct.' curves{c} '.position']));
-             if eval(['isfield(wstruct.' curves{c} ',''legendmeas'')'])
-                 addlegstr=[ eval(['wstruct.' curves{c} '.legendmeas']) '}'];
-             end
+             
          end
          refstr=['\node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,' curves{c} 'color}]0:{}}] at (axis cs:-5,' chpos '){}; % Print ref arrow'];
          if options.ManualTips
@@ -303,7 +301,7 @@ end
          
          
          
-         legstr=['\addlegendentry[align=center]{\varch' char(c+64) ' @ ' upper(curves{c}) '\\ \SI{' chscale '}{\' chunit '}/div' addlegstr];
+         legstr=['\addlegendentry[align=center]{\varch' char(c+64) ' @ ' upper(curves{c}) '\\ \SI{' chscale '}{\' chunit '}/div}' addlegstr];
          fprintf(fileoutID,'%s\n',legstr);
      end
      
@@ -319,25 +317,21 @@ end
     
     fprintf(fileoutID,'\n%s\n',['xlabel=Tempo: \SI{' num2str(wstruct.horizontal.scale*1000,'%3.2f') '}{\milli\second}/div,']);
     fprintf(fileoutID,'%s\n','] % End of axis configurations');
-    
+
     
     for c=1:length(curves) % Curves Loop
-        addlegstr='}';
         fprintf(fileoutID,'\n%s\n',['% Arrows and labels for channel ' curves{c}]);
         screenfile = [SCOPEdata.blockName curves{c} '.csv'];
         addplotstr=['\addplot[solid,' curves{c} 'color]table[x=time,y=' curves{c} ',col sep=comma]{' screenfile '};'];
         
         if strcmp(curves{c},'math') % If its a math channel
-            chpos = num2str(wstruct.math.vertical.position);
-            chunit = num2str(wstruct.math.vertical.units);
-            chscale = num2str(wstruct.math.vertical.scale);
+             chpos = num2str(wstruct.math.vertical.position);
+             chunit = num2str(wstruct.math.vertical.units);
+             chscale = num2str(wstruct.math.vertical.scale);
         else
             chscale=num2str(eval(['wstruct.' curves{c} '.scale']));
             chunit=eval(['wstruct.' curves{c} '.yunits']);
             chpos=num2str(eval(['wstruct.' curves{c} '.position']));
-            if eval(['isfield(wstruct.' curves{c} ',''legendmeas'')'])
-                addlegstr=[ eval(['wstruct.' curves{c} '.legendmeas']) '}'];
-            end
         end
         
         refstr=['\node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,' curves{c} 'color}]0:{}}] at (axis cs:-5,' chpos '){}; % Print ref arrow'];
@@ -356,7 +350,7 @@ end
         fprintf(fileoutID,'%s\n',tipstr);
         
         % Legend entry        
-        legstr=['\addlegendentry[align=center]{\varch' char(c+64) ' @ ' upper(curves{c}) '\\ \SI{' chscale '}{\' chunit '}/div' addlegstr];        
+        legstr=['\addlegendentry[align=center]{\varch' char(c+64) ' @ ' upper(curves{c}) '\\ \SI{' chscale '}{\' chunit '}/div}'];        
         fprintf(fileoutID,'%s\n',legstr);
     end
     

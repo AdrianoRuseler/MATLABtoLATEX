@@ -40,6 +40,7 @@ SCOPEdata = set2struct();
 
 
 %% Load all at once
+
  [status, dirstruct]= checkdirstruct(); % Well, check this out
  
   [csvfilename, csvpathname] = uigetfile('*.csv', 'Select scope data aquisition', 'MultiSelect', 'off');
@@ -53,7 +54,14 @@ SCOPEdata = set2struct();
 SCOPEdata = csv2struct([pathstr '\' name '.csv']);
 SCOPEdata = set2struct([pathstr '\' name '.set']);
 
-scope2tikz(SCOPEdata)
+    options.Compile=1;  % Compiles the latex code
+    options.FullData=0; % Generates figure with full data set
+    options.DSPlot=1; % downsampled plot
+    options.ManualTips=1; % Select manually tips positions
+    options.DSpoints=5000; % Data length for downsampled version
+    
+
+scope2tikz(SCOPEdata,options)
 
 %% Plot scope data to tikz
 
