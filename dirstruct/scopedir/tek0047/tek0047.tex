@@ -1,0 +1,148 @@
+%
+\documentclass{standalone}
+% \usepackage{tikz}
+\usepackage{pgfplots} % loads also tikz
+\usepackage{grffile}
+\pgfplotsset{compat=newest} % This will configure the compatibility layer
+\usetikzlibrary{plotmarks}
+\usepackage{amsmath}
+\usepackage{color} % Using this package, you can set the font color, text background, or page background
+\usetikzlibrary{arrows,shapes,positioning}
+\usepackage{anyfontsize}
+\usepackage{siunitx}
+
+
+\tikzset{ % Set line width
+	ultra thin/.style= {line width=0.1pt},
+	very thin/.style=  {line width=0.2pt},
+	thin/.style=       {line width=0.4pt},% thin is the default
+	semithick/.style=  {line width=0.6pt},
+	thick/.style=      {line width=0.8pt},
+	very thick/.style= {line width=1.2pt},
+	ultra thick/.style={line width=1.6pt}
+}
+
+
+
+
+
+% Defines color spec 
+% http://www.color-hex.com for color details
+\definecolor{dallcolor}{HTML}{303030} % Gray19
+\definecolor{ch1color}{HTML}{0000D6}
+\definecolor{ch2color}{HTML}{009D9A}
+\definecolor{ch3color}{HTML}{E600E6}
+\definecolor{ch4color}{HTML}{18A618}
+\definecolor{mathcolor}{HTML}{F70000}
+\definecolor{ref1color}{HTML}{0000FF}
+\definecolor{ref2color}{HTML}{0000FF}
+\definecolor{ref3color}{HTML}{0000FF}
+\definecolor{ref4color}{HTML}{0000FF}
+\definecolor{d0color}{HTML}{2b2b2b}
+\definecolor{d1color}{HTML}{2b2b2b}
+\definecolor{d2color}{HTML}{2b2b2b}
+\definecolor{d3color}{HTML}{2b2b2b}
+\definecolor{d4color}{HTML}{2b2b2b}
+\definecolor{d5color}{HTML}{2b2b2b}
+\definecolor{d6color}{HTML}{2b2b2b}
+\definecolor{d7color}{HTML}{2b2b2b}
+\definecolor{d8color}{HTML}{2b2b2b}
+\definecolor{d9color}{HTML}{2b2b2b}
+\definecolor{d10color}{HTML}{2b2b2b}
+\definecolor{d11color}{HTML}{2b2b2b}
+\definecolor{d12color}{HTML}{2b2b2b}
+\definecolor{d13color}{HTML}{2b2b2b}
+\definecolor{d14color}{HTML}{2b2b2b}
+\definecolor{d15color}{HTML}{2b2b2b}
+\definecolor{bus1color}{HTML}{2b2b2b}
+\definecolor{bus2color}{HTML}{2b2b2b}
+\definecolor{bus3color}{HTML}{2b2b2b}
+\definecolor{bus4color}{HTML}{2b2b2b} 
+
+% Definitions
+\def\refdist{2.5mm} % Channel ref arrow length
+\def\tipangleA{125} % Tip angle for CH1
+\def\tipangleB{125} % Tip angle for CH2
+\def\tipangleC{-45} % Tip angle for CH3
+\def\tipangleD{75} % Tip angle for CH4
+\def\tipangleE{75} % Tip angle for CH5
+\def\tipdist{5mm} % Tip arrow legth
+
+% Defines axis aspect ratio
+\def \axisheight {\linewidth}
+\def \axiswidth {1.3\linewidth} 
+
+\def \varchA {$v_{A}$} % Variable at channel A (1);
+\def \varchB {$v_{B}$} % Variable at channel B (2);
+\def \varchC {$v_{C}$} % Variable at channel C (3);
+\def \varchD {$v_{D}$} % Variable at channel D (4);
+\def \varchE {$v_{E}$} % Variable at channel E (5); ...
+
+\pgfplotsset{every axis legend/.style={
+		cells={anchor=center},% Centered entries
+		inner xsep=3pt,inner ysep=2pt,
+		nodes={inner sep=10pt,text depth=0.15em},
+		anchor=north west,
+		shape=rectangle,
+		fill=white,
+		draw=white,
+		rounded corners,
+		line width=1.5pt,
+		at={(1.01,1)}
+	}
+}
+
+
+\begin{document}
+	\fontsize{10.5}{12}\selectfont
+ \begin{tikzpicture}   
+      \begin{axis}[
+        height=\axisheight, % Scale the plot to \linewidth
+        width=\axiswidth, % Scale the plot to \linewidth
+        grid=major, % Display a grid
+        minor tick num=5,
+        grid style={solid,gray!25}, % Set the style
+        xmin=-5,xmax=5,ymin=-5,ymax=5,          
+        xticklabels=\empty,yticklabels=\empty, % End of preamble tex file
+xlabel=Time: \SI{4.00}{\milli\second}/div,
+] % End of axis configurations
+
+% Settings for siunitx package
+\sisetup{scientific-notation = fixed, fixed-exponent = 0, round-mode = places,round-precision = 2,output-decimal-marker = {.}}
+
+% Arrows and labels for channel ch1
+\addplot[solid,ch1color]table[x=time,y=ch1,col sep=comma]{tek0047ch1.csv};
+\node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,ch1color}]0:{}}] at (axis cs:-5,-3.68){}; % Print ref arrow
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]4:{CH1}}] at (axis cs:0.080645,-3.207){}; % Print curve tip
+\addlegendentry[align=center]{$CH1$ @ CH1\\ \SI{500}{\V}/div\\RMS: \SI{277.1089}{\V}}
+
+% Arrows and labels for channel ch2
+\addplot[solid,ch2color]table[x=time,y=ch2,col sep=comma]{tek0047ch2.csv};
+\node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,ch2color}]0:{}}] at (axis cs:-5,-0.22){}; % Print ref arrow
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]7:{CH2}}] at (axis cs:0.10369,0.087464){}; % Print curve tip
+\addlegendentry[align=center]{$CH2$ @ CH2\\ \SI{500}{\V}/div\\RMS: \SI{271.1974}{\V}}
+
+% Arrows and labels for channel ch3
+\addplot[solid,ch3color]table[x=time,y=ch3,col sep=comma]{tek0047ch3.csv};
+\node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,ch3color}]0:{}}] at (axis cs:-5,-2.02){}; % Print ref arrow
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]0:{CH3}}] at (axis cs:0.080645,-1.6327){}; % Print curve tip
+\addlegendentry[align=center]{$CH3$ @ CH3\\ \SI{500}{\V}/div\\RMS: \SI{272.9279}{\V}}
+
+% Arrows and labels for channel math
+\addplot[solid,mathcolor]table[x=time,y=math,col sep=comma]{tek0047math.csv};
+\node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,mathcolor}]0:{}}] at (axis cs:-5,2.58){}; % Print ref arrow
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]148:{MATH}}] at (axis cs:-1.6014,3.586){}; % Print curve tip
+\addlegendentry[align=center]{$MATH$ @ MATH\\ \SI{200}{\V}/div}
+      \end{axis}   
+   
+      \begin{axis}[ % Just to plot x  and y axis in the middle of figure
+		height=\axisheight, % Scale the plot to \linewidth
+        width=\axiswidth, % Scale the plot to \linewidth
+      	grid=none, minor tick num=5,
+      	xmin=-5,xmax=5,ymin=-5,ymax=5,   % Axis Limits
+      	axis x line=middle,axis y line=middle,
+      	xticklabels=\empty,yticklabels=\empty,
+      	]        	
+      \end{axis}             
+    \end{tikzpicture}
+\end{document} % End of file

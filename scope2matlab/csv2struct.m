@@ -88,6 +88,8 @@ HEADERLINES = 21;
 
 csvdata = importdata(SCOPEcsv, DELIMITER, HEADERLINES);
 
+
+
 for i=1:HEADERLINES-1
     sheader{i} = strsplit(csvdata.textdata{i,1},',');
 end
@@ -109,16 +111,20 @@ SCOPEdata.scopedata.yposition=str2double(sheader{16}{2});
 SCOPEdata.time=single(csvdata.data(:,1));
 header=csvdata.colheaders;
 
-for i=2:length(header)
-    SCOPEdata.signals(i-1).values=single(csvdata.data(:,i));
+i=2;
+for j=2:length(header)    
+   if isempty(header{j}) % When a channel is deselected, it appears as empty column
+       continue;
+   end    
+    SCOPEdata.signals(i-1).values=single(csvdata.data(:,j));
     SCOPEdata.signals(i-1).dimensions=1;
     
     if verLessThan('matlab', '8.2.0')
         % -- Put code to run under MATLAB 8.2.0 and earlier here --
-        U = genvarname(header{i});
+        U = genvarname(header{j});
     else
         % -- Put code to run under MATLAB 8.2.0 and later here --
-        U = matlab.lang.makeValidName(header{i});
+        U = matlab.lang.makeValidName(header{j});
     end
     
    if ~isempty(strfind(U,'MATH'))
@@ -128,6 +134,7 @@ for i=2:length(header)
     SCOPEdata.signals(i-1).label=U;
     SCOPEdata.signals(i-1).title=U;
     SCOPEdata.signals(i-1).plotStyle=[0,0];
+    i=i+1;
 end
 
 SCOPEdata.blockName=name;

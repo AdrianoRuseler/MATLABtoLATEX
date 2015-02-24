@@ -50,7 +50,9 @@ if nargin <2 % Look for options entry
     options.FullData=0; % Generates figure with full data set
     options.DSPlot=1; % downsampled plot
     options.ManualTips=1; % Select manually tips positions
+    options.SetVar=1; % Set channels associated variables
     options.DSpoints=5000; % Data length for downsampled version
+    options.English=1; % Output in English?
 end
     
 
@@ -149,7 +151,7 @@ if options.FullData
     dlmwrite (screenfile, SCREENdata, '-append','newline','pc');
     
     
-    if options.ManualTips % Gets pionts from plot
+    if options.ManualTips % Gets tips points from plot
         for p=1:length(curves)
             hf=plot(SCREENdata(:,1), SCREENdata(:,p+1));
             grid on
@@ -198,6 +200,24 @@ if options.DSPlot
     end    
 end
 
+%% Variables names
+if options.SetVar
+    dlg_title = 'Input for variables name';
+    num_lines = 1;
+    % Set channels names
+    for p=1:length(curves)
+        prompt{p}=['Enter ' upper(curves{p}) ' associated variable name:'];
+        def{p}=['$' upper(curves{p}) '$'];
+    end
+    
+    answer = inputdlg(prompt,dlg_title,num_lines,def);    
+    
+    for p=1:length(answer)        
+        eval(['wstruct.' curves{p} '.varname=''' answer{p} ''';']);
+%         eval(['wstruct.' curves{p} '.varname'])
+    end
+end
+
 %% mesurements
 
 measnames=fieldnames(wstruct.measurement); % what channels are selected?
@@ -206,10 +226,10 @@ measurements= {measnames{not(cellfun('isempty', strfind(measnames,'meas')))}};
 for m=1:length(measurements)
     mfield =  eval(['wstruct.measurement.' measurements{m}]); % get mesurement field
     if mfield.state % Get mesurement
-        disp(mfield)
+%         disp(mfield)
         switch mfield.type
             case 'RMS'
-                disp('RMS')
+%                 disp('RMS')
                 chindex = find(not(cellfun('isempty', strfind(labels,lower(mfield.source1))))); %
                 ydata=SCOPEdata.signals(chindex).values;
                 mfield.value = rms(ydata);
@@ -222,7 +242,7 @@ for m=1:length(measurements)
                 measstr=[ measstr '\\' mfield.type ': \SI{' num2str(mfield.value) '}{\' units '}' ];
                 eval(['wstruct.' lower(mfield.source1) '.legendmeas=measstr;']);
             case 'MEAN'
-                disp('MEAN')
+%                 disp('MEAN')
                 chindex = find(not(cellfun('isempty', strfind(labels,lower(mfield.source1))))); %
                 ydata=SCOPEdata.signals(chindex).values;
                 mfield.value = mean(ydata);
@@ -240,9 +260,6 @@ for m=1:length(measurements)
         end
     end
 end
-
-% answer = inputdlg(prompt,dlg_title,num_lines,defAns,options)
-
 
 
 %% Read predefined files
@@ -263,9 +280,19 @@ end
  if options.FullData     
      fileoutID = fopen([SCOPEdata.blockName 'full.tex'],'w');
      fwrite(fileoutID,preamble);
+     if options.English
+         xlabelstr='Time';
+        siunitxstr= '\sisetup{scientific-notation = fixed, fixed-exponent = 0, round-mode = places,round-precision = 2,output-decimal-marker = {.}}';
+     else
+         xlabelstr='Tempo';
+        siunitxstr= '\sisetup{scientific-notation = fixed, fixed-exponent = 0, round-mode = places,round-precision = 2,output-decimal-marker = {,}}';
+     end
+         
+     fprintf(fileoutID,'\n%s\n',['xlabel=' xlabelstr ': \SI{' num2str(wstruct.horizontal.scale*1000,'%3.2f') '}{\milli\second}/div,']);
+     fprintf(fileoutID,'%s\n','] % End of axis configurations');     
      
-     fprintf(fileoutID,'\n%s\n',['xlabel=Tempo: \SI{' num2str(wstruct.horizontal.scale*1000,'%3.2f') '}{\milli\second}/div,']);
-     fprintf(fileoutID,'%s\n','] % End of axis configurations');
+     fprintf(fileoutID,'\n%s\n','% Settings for siunitx package');     
+     fprintf(fileoutID,'%s\n',siunitxstr);   
  
      screenfile = [SCOPEdata.blockName '.csv'];
      for c=1:length(curves) % Curves Loop
@@ -300,10 +327,12 @@ end
          fprintf(fileoutID,'%s\n',tipstr);
          
          % Legend entry
-         
-         
-         
-         legstr=['\addlegendentry[align=center]{\varch' char(c+64) ' @ ' upper(curves{c}) '\\ \SI{' chscale '}{\' chunit '}/div' addlegstr];
+         if options.SetVar
+             legstr=['\addlegendentry[align=center]{'  eval(['wstruct.' curves{c} '.varname']) ' @ ' upper(curves{c}) '\\ \SI{' chscale '}{\' chunit '}/div' addlegstr];             
+         else
+             legstr=['\addlegendentry[align=center]{\varch' char(c+64) ' @ ' upper(curves{c}) '\\ \SI{' chscale '}{\' chunit '}/div' addlegstr];
+         end
+                  
          fprintf(fileoutID,'%s\n',legstr);
      end
      
@@ -317,9 +346,19 @@ end
     fileoutID = fopen([SCOPEdata.blockName '.tex'],'w');
     fwrite(fileoutID,preamble);
     
-    fprintf(fileoutID,'\n%s\n',['xlabel=Tempo: \SI{' num2str(wstruct.horizontal.scale*1000,'%3.2f') '}{\milli\second}/div,']);
-    fprintf(fileoutID,'%s\n','] % End of axis configurations');
-    
+     if options.English
+         xlabelstr='Time';
+        siunitxstr= '\sisetup{scientific-notation = fixed, fixed-exponent = 0, round-mode = places,round-precision = 2,output-decimal-marker = {.}}';
+     else
+         xlabelstr='Tempo';
+        siunitxstr= '\sisetup{scientific-notation = fixed, fixed-exponent = 0, round-mode = places,round-precision = 2,output-decimal-marker = {,}}';
+     end
+         
+     fprintf(fileoutID,'\n%s\n',['xlabel=' xlabelstr ': \SI{' num2str(wstruct.horizontal.scale*1000,'%3.2f') '}{\milli\second}/div,']);
+     fprintf(fileoutID,'%s\n','] % End of axis configurations');     
+     
+     fprintf(fileoutID,'\n%s\n','% Settings for siunitx package');     
+     fprintf(fileoutID,'%s\n',siunitxstr);    
     
     for c=1:length(curves) % Curves Loop
         addlegstr='}';
@@ -355,8 +394,13 @@ end
         fprintf(fileoutID,'%s\n',refstr);
         fprintf(fileoutID,'%s\n',tipstr);
         
-        % Legend entry        
-        legstr=['\addlegendentry[align=center]{\varch' char(c+64) ' @ ' upper(curves{c}) '\\ \SI{' chscale '}{\' chunit '}/div' addlegstr];        
+        % Legend entry
+         if options.SetVar
+             legstr=['\addlegendentry[align=center]{'  eval(['wstruct.' curves{c} '.varname']) ' @ ' upper(curves{c}) '\\ \SI{' chscale '}{\' chunit '}/div' addlegstr];             
+         else
+             legstr=['\addlegendentry[align=center]{\varch' char(c+64) ' @ ' upper(curves{c}) '\\ \SI{' chscale '}{\' chunit '}/div' addlegstr];
+         end
+        
         fprintf(fileoutID,'%s\n',legstr);
     end
     

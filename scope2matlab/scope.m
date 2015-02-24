@@ -58,8 +58,9 @@ SCOPEdata = set2struct([pathstr '\' name '.set']);
     options.FullData=0; % Generates figure with full data set
     options.DSPlot=1; % downsampled plot
     options.ManualTips=1; % Select manually tips positions
+    options.SetVar=1; % Set channels associated variables
     options.DSpoints=5000; % Data length for downsampled version
-    
+    options.English=1; % Output in English?
 
 scope2tikz(SCOPEdata,options)
 
