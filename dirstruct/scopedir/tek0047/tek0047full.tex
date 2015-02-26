@@ -106,27 +106,27 @@ xlabel=Time: \SI{4.00}{\milli\second}/div,
 \sisetup{scientific-notation = fixed, fixed-exponent = 0, round-mode = places,round-precision = 2,output-decimal-marker = {.}}
 
 % Arrows and labels for channel ch1
-\addplot[solid,ch1color]table[x=time,y=ch1,col sep=comma]{tek0047ch1.csv};
+\addplot[solid,ch1color]table[x=time,y=ch1,col sep=comma]{tek0047.csv}; % Add plot data
 \node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,ch1color}]0:{}}] at (axis cs:-5,-3.68){}; % Print ref arrow
-\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]0:{CH1}}] at (axis cs:-1.947,-4.0816){}; % Print curve tip
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]-5:{CH1}}] at (axis cs:-1.924,-4.1108){}; % Print curve tip
 \addlegendentry[align=center]{$v_{c1}$ @ CH1\\ \SI{500}{\V}/div\\RMS: \SI{277.1089}{\V}}
 
 % Arrows and labels for channel ch2
-\addplot[solid,ch2color]table[x=time,y=ch2,col sep=comma]{tek0047ch2.csv};
+\addplot[solid,ch2color]table[x=time,y=ch2,col sep=comma]{tek0047.csv}; % Add plot data
 \node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,ch2color}]0:{}}] at (axis cs:-5,-0.22){}; % Print ref arrow
-\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]0:{CH2}}] at (axis cs:-1.9931,-0.61224){}; % Print curve tip
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]-10:{CH2}}] at (axis cs:-1.947,-0.58309){}; % Print curve tip
 \addlegendentry[align=center]{$v_{c2}$ @ CH2\\ \SI{500}{\V}/div\\RMS: \SI{271.1974}{\V}}
 
 % Arrows and labels for channel ch3
-\addplot[solid,ch3color]table[x=time,y=ch3,col sep=comma]{tek0047ch3.csv};
+\addplot[solid,ch3color]table[x=time,y=ch3,col sep=comma]{tek0047.csv}; % Add plot data
 \node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,ch3color}]0:{}}] at (axis cs:-5,-2.02){}; % Print ref arrow
-\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]-14:{CH3}}] at (axis cs:-1.97,-2.3032){}; % Print curve tip
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]-4:{CH3}}] at (axis cs:-1.97,-2.3615){}; % Print curve tip
 \addlegendentry[align=center]{$v_{c3}$ @ CH3\\ \SI{500}{\V}/div\\RMS: \SI{272.9279}{\V}}
 
 % Arrows and labels for channel math
-\addplot[solid,mathcolor]table[x=time,y=math,col sep=comma]{tek0047math.csv};
+\addplot[solid,mathcolor]table[x=time,y=math,col sep=comma]{tek0047.csv}; % Add plot data
 \node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,mathcolor}]0:{}}] at (axis cs:-5,2.58){}; % Print ref arrow
-\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]136:{MATH}}] at (axis cs:-1.97,2.828){}; % Print curve tip
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]128:{MATH}}] at (axis cs:-1.97,2.9155){}; % Print curve tip
 \addlegendentry[align=center]{$\frac{v_{c1}+v_{c2}+v_{c3}}{3}$ @ MATH\\ \SI{200}{\V}/div}
       \end{axis}   
    

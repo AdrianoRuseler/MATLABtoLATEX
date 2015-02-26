@@ -1,7 +1,6 @@
 % =========================================================================
 %  SCOPE Plot function
 %   
-%   
 % =========================================================================
 % 
 %  The MIT License (MIT)
@@ -150,6 +149,7 @@ if options.FullData
     % write data
     dlmwrite (screenfile, SCREENdata, '-append','newline','pc');
     
+%     savecsvfile(SCREENdata, csvheader, screenfile);
     
     if options.ManualTips % Gets tips points from plot
         for p=1:length(curves)
@@ -421,7 +421,33 @@ end
      toc
      
  end
- % Open output directory
+ 
+ %% Convert pdf to png
+%  tic
+%  [status,cmdout] = system('convert "tek0047full.pdf" "tek0047full.png"','-echo');
+%  toc
+%  
+%  tic
+%  command='convert -density 300 -depth 8 -quality 85 "tek0047full.pdf" "tek0047full.png"';
+%  [status,cmdout] = system(command,'-echo');
+%  toc % Elapsed time is 5364.397533 seconds.
+%  
+%  tic
+%  command='convert -density 300  "tek0047full.pdf" "tek0047full.eps"';
+%  [status,cmdout] = system(command,'-echo');
+%  toc % Elapsed time is 5507.070117 seconds.
+%  
+%  
+% [status,cmdout] = system('gswin64c -version','-echo'); % Verifies gs version
+% 
+% tic
+%  command='gswin64c -q -dNOPAUSE -dBATCH -sDEVICE=pngalpha -r300 -dEPSCrop -sOutputFile=tek0047full.png tek0047full.pdf';
+%  [status,cmdout] = system(command,'-echo');
+%  toc % Elapsed time is 5951.422537 seconds.
+%  
+%  
+ 
+ %% Open output directory
  winopen(dirstruct.scopestorage)
  
 

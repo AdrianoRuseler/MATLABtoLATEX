@@ -133,7 +133,7 @@ disp('Done!')
 
  PSIMdata.time=single(M(:,1));
 
- PSIMdata.PSIMheader=header; % For non valid variables
+ 
  % Verifies header name
  for i=2:length(header)
      if verLessThan('matlab', '8.2.0')
@@ -153,7 +153,9 @@ disp('Done!')
  end
   
  PSIMdata.blockName=name;
+
  
+ PSIMdata.PSIMheader=header; % For non valid variables
 disp('Done!!!!')
 toc
 

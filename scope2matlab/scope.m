@@ -55,7 +55,7 @@ SCOPEdata = csv2struct([pathstr '\' name '.csv']);
 SCOPEdata = set2struct([pathstr '\' name '.set']);
 
     options.Compile=1;  % Compiles the latex code
-    options.FullData=0; % Generates figure with full data set
+    options.FullData=1; % Generates figure with full data set
     options.DSPlot=1; % downsampled plot
     options.ManualTips=1; % Select manually tips positions
     options.SetVar=1; % Set channels associated variables

@@ -1,6 +1,5 @@
 % =========================================================================
-% *** PSIM INDEX file
-% ***  
+% *** savecsvfile
 % ***  
 % =========================================================================
 % ***
@@ -28,26 +27,24 @@
 % ***
 % =========================================================================
 
+function status=savecsvfile(csvdata, csvheader, csvfilename)
 
-% Test enviroment
+[pathstr, csvname, ext] = fileparts(csvfilename);
 
-%% Test some examples
-% Example 01 
-% [folder, name, ext] = fileparts(which('psim')); 
+wdir=pwd;
 
-%% Read simulated data
-PSIMdata = psim2matlab();
+cd(pathstr)
+% Save csv file
+filemane = [csvname '.csv'];
+fileID = fopen(filemane,'w','n','UTF-8');
+fprintf(fileID,'%s\r\n',csvheader); % Begin axis
+fclose(fileID); % Close it.
 
-% Can be used with
-power_fftscope
+% write data
+dlmwrite (filemane, csvdata, '-append','newline','pc');
 
-FFTSCOPEdata=power_fftscope
+cd(wdir)
 
-%% Read simview settings (*.ini) and add to PSIMdata
-PSIMdata = psimini2struct();
 
-%% Now we are ready to plot from PSIM data;
-
-psim2tikz(PSIMdata) 
-
+status=0; % if everything its ok
 

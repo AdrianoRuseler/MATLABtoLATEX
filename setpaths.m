@@ -49,7 +49,8 @@ addfolder{3}=[folder '\matlab2tikz\test'];
 addfolder{4}=[folder '\psim2matlab'];
 addfolder{5}=[folder '\scope2matlab'];
 addfolder{6}=[folder '\misc'];
-
+addfolder{7}=[folder '\fftsope2tikz'];
+addfolder{7}=[folder '\bode2tikz'];
 
 for f=1:length(addfolder)
     if isequal(exist(addfolder{f},'dir'),7) % verifies if folder exist
@@ -96,7 +97,7 @@ for f=1:length(mfiles)
                 if exist(fList{f}{m}{e},'file')
                     disp([fList{f}{m}{e} ' Found!!' ])
                 else
-                    disp([fList{f}{m}{e} 'NOT Found!!' ])
+                    warning([fList{f}{m}{e} 'NOT Found!!' ])
                     notfound{nf+1}=fList{f}{m}{e};
                     nf=nf+1;
                 end
@@ -112,6 +113,7 @@ if ~nf
 end
     
 status = nf;
+
 
 
 

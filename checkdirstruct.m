@@ -63,6 +63,8 @@ dirstruct.defaultdir=[dirstruct.root '\defaultdir'];
 dirstruct.psimdir=[dirstruct.root '\psimdir'];
 dirstruct.scopedir=[dirstruct.root '\scopedir'];
 dirstruct.tikzdir=[dirstruct.root '\tikzdir'];
+dirstruct.fftscopedir=[dirstruct.root '\fftscopedir'];
+dirstruct.bodedir=[dirstruct.root '\bodedir'];
 
 disp(' ')
 disp('******************* Directory structure ***************************')

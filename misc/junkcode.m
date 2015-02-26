@@ -58,6 +58,23 @@ end
 
 
 
+% FFTSCOPEdata= power_fftscope
+if isfield(dirstruct,'fftscopestorage')
+    if isequal(exist(dirstruct.fftscopestorage,'dir'),7)
+        cd(dirstruct.fftscopestorage)
+    end
+else
+    fftscopestorage = uigetdir(pwd,'Folder to store fftscope tikz file');
+    if isequal(fftscopestorage,0)
+        return
+    end
+    dirstruct.fftscopestorage=fftscopestorage;
+    assignin('base','dirstruct',dirstruct);
+    cd(dirstruct.root)
+    save('dirstruct.mat','dirstruct')
+    cd(dirstruct.fftscopestorage)
+end
+
 %%
 
 h5create	Create HDF5 data set

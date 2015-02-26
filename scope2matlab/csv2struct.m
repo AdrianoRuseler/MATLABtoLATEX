@@ -80,6 +80,7 @@ dirstruct.aquisitiondir=pathstr;
 
 %  Create folder under psimdir to store mat file
 [s,mess,messid] = mkdir(dirstruct.scopedir, name); % Check here
+
 dirstruct.scopestorage = [dirstruct.scopedir '\' name]; % Not sure
 
 tic
@@ -87,7 +88,6 @@ DELIMITER = ',';
 HEADERLINES = 21;
 
 csvdata = importdata(SCOPEcsv, DELIMITER, HEADERLINES);
-
 
 
 for i=1:HEADERLINES-1
@@ -109,6 +109,8 @@ SCOPEdata.scopedata.yscale=str2double(sheader{15}{2});
 SCOPEdata.scopedata.yposition=str2double(sheader{16}{2});
 
 SCOPEdata.time=single(csvdata.data(:,1));
+
+
 header=csvdata.colheaders;
 
 i=2;
