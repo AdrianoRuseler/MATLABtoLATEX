@@ -62,12 +62,6 @@
 \definecolor{c8gray}{HTML}{474747}
 \definecolor{c9gray}{HTML}{a3a3a3}
 
-\pgfplotsset{%
-	x tick label style={/pgf/number format/1000 sep=\,},
-	log base 10 number format code/.code={%
-		$\pgfmathparse{10^(#1)}\pgfmathprintnumber{\pgfmathresult}$%
-	}%
-}  
 
 \begin{document}
   \begin{tikzpicture}

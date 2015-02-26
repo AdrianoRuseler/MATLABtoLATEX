@@ -62,36 +62,40 @@
 \definecolor{c8gray}{HTML}{474747}
 \definecolor{c9gray}{HTML}{a3a3a3}
 
-\pgfplotsset{%
-	x tick label style={/pgf/number format/1000 sep=\,},
-	log base 10 number format code/.code={%
-		$\pgfmathparse{10^(#1)}\pgfmathprintnumber{\pgfmathresult}$%
-	}%
-}  
 
 \begin{document}
   \begin{tikzpicture}
   
   \begin{groupplot}[group style={group size= 1 by 2, vertical sep=0.2cm,  horizontal sep=1cm},ylabel absolute]
 \nextgroupplot[xmode=log,ymode=normal,height=\axisheight,width=\axiswidth,grid=major,
-minor tick num=5,xtickten = {0,...,10},xminorgrids=true,xticklabels=\empty,xlabel=\empty,
-xmin=1,xmax=10,ymin=-40,ymax=0,ylabel=Magnitude (dB),
+minor tick num=5,xtickten = {-10,...,10},xminorgrids=true,xticklabels=\empty,xlabel=\empty,
+yticklabel style={/pgf/number format/fixed},ytick={-100, -50,   0,  50, 100},yticklabels={$-100$, $-50$, $0$, $50$, $100$},
+xmin=0.01,xmax=10,ymin=-100,ymax=100,ylabel=Magnitude (dB),
 ] % End of axis configurations
 
 % Settings for siunitx package
 \sisetup{scientific-notation = fixed, fixed-exponent = 0, round-mode = places,round-precision = 2,output-decimal-marker = {,}}
-\addplot[solid,line width=1pt,c0color]table[x=freq,y=mag,col sep=comma]{bode.csv}; % Add plot data
-\addlegendentry{Mag};
+\addplot[solid,thick,c1color]table[x=freq,y=mag,col sep=comma]{bodeH.csv}; % Add plot data
+\addlegendentry{H};
+\draw[thick] (6.2832,-100) -- (6.2832,100); % draw end of data line
+\addplot[solid,thick,c2color]table[x=freq,y=mag,col sep=comma]{bodeHd.csv}; % Add plot data
+\addlegendentry{Hd};
+\draw[thick] (1e+20,-100) -- (1e+20,100); % draw end of data line
 
 \nextgroupplot[xmode=log,ymode=normal,height=\axisheight,width=\axiswidth,grid=major,
-minor tick num=5,xtickten = {0,...,10},xminorgrids=true,xlabel=Frequ\^encia (rad/s),
-xmin=1,xmax=10,ymin=-181.35,ymax=-43.65,ylabel=Fase (deg),
+minor tick num=5,xtickten = {-10,...,10},xminorgrids=true,xlabel=Frequ\^encia (rad/s),
+yticklabel style={/pgf/number format/fixed},ytick={-270,-180, -90,   0},yticklabels={$-270$, $-180$, $-90$, $0$},
+xmin=0.01,xmax=10,ymin=-272.7,ymax=2.7,ylabel=Fase (deg),
 ] % End of axis configurations
 
 % Settings for siunitx package
 \sisetup{scientific-notation = fixed, fixed-exponent = 0, round-mode = places,round-precision = 2,output-decimal-marker = {,}}
-\addplot[solid,line width=1pt,c0color]table[x=freq,y=phase,col sep=comma]{bode.csv}; % Add plot data
-\addlegendentry{Phase};
+\addplot[solid,thick,c1color]table[x=freq,y=phase,col sep=comma]{bodeH.csv}; % Add plot data
+\addlegendentry{H};
+\draw[thick] (6.2832,-272.7) -- (6.2832,2.7); % draw end of data line
+\addplot[solid,thick,c2color]table[x=freq,y=phase,col sep=comma]{bodeHd.csv}; % Add plot data
+\addlegendentry{Hd};
+\draw[thick] (1e+20,-272.7) -- (1e+20,2.7); % draw end of data line
     \end{groupplot}
   \end{tikzpicture}
 \end{document} % End of file
