@@ -43,11 +43,15 @@ power_fftscope
 
 FFTSCOPEdata=power_fftscope
 
+fftscope2tikz(FFTSCOPEdata)
+
 %% Read simview settings (*.ini) and add to PSIMdata
 PSIMdata = psimini2struct();
 
 %% Now we are ready to plot from PSIM data;
 
 psim2tikz(PSIMdata) 
+
+
 
 

@@ -31,15 +31,24 @@
 		rounded corners,
 		draw=black,
 		at={(0.993,0.98)}
-	}
+	},	
+	every node near coord/.append style={/pgf/number format/fixed,/pgf/number format/precision=2,  /pgf/number format/fixed zerofill,/pgf/number format/use comma,/pgf/number format/1000 sep={},rotate=90, anchor=west,
+		check for zero/.code={
+			\pgfkeys{/pgf/fpu=true}
+			\pgfmathparse{\pgfplotspointmeta-1}
+			\pgfmathfloatifflags{\pgfmathresult}{-}{
+				\pgfkeys{/tikz/coordinate}
+			}{}
+			\pgfkeys{/pgf/fpu=false}
+		}, check for zero, xshift=3, font=\scriptsize}	
 }
 
 \def \axiswidth {\linewidth} % Defines axis width value
-\def \axisheight {0.5\linewidth} % Defines axis height value
+\def \axisheight {0.8\linewidth} % Defines axis height value
 
 % Defines color spec 
 % http://www.color-hex.com for color details
-\definecolor{c0color}{HTML}{00FF00} 
+\definecolor{c0color}{HTML}{002d3d} 
 \definecolor{c1color}{HTML}{00FFFF}
 \definecolor{c2color}{HTML}{0080FF}
 \definecolor{c3color}{HTML}{0000FF}
@@ -66,30 +75,18 @@
 \begin{document}
   \begin{tikzpicture}
   
-  \begin{groupplot}[group style={group size= 1 by 2, vertical sep=0.2cm,  horizontal sep=1cm},ylabel absolute]
-\nextgroupplot[xmode=log,ymode=normal,height=\axisheight,width=\axiswidth,grid=major,
-minor tick num=5,xtickten = {-10,...,10},xminorgrids=true,xticklabels=\empty,xlabel=\empty,
-yticklabel style={/pgf/number format/fixed},ytick={-40,-30,-20,-10,  0},yticklabels={$-40$, $-30$, $-20$, $-10$, $0$},
-xmin=1,xmax=10,ymin=-40,ymax=0,ylabel=Magnitude (dB),
-] % End of axis configurations
 
 % Settings for siunitx package
 \sisetup{scientific-notation = fixed, fixed-exponent = 0, round-mode = places,round-precision = 2,output-decimal-marker = {,}}
-\addplot[solid,thick,c1color]table[x=freq,y=mag,col sep=comma]{bodeH.csv}; % Add plot data
-\addlegendentry{H};
-\draw[thick] (1e+20,-40) -- (1e+20,0); % draw end of data line
 
-\nextgroupplot[xmode=log,ymode=normal,height=\axisheight,width=\axiswidth,grid=major,
-minor tick num=5,xtickten = {-10,...,10},xminorgrids=true,xlabel=Frequ\^encia (rad/s),
-yticklabel style={/pgf/number format/fixed},ytick={-180,-135, -90, -45},yticklabels={$-180$, $-135$, $-90$, $-45$},
-xmin=1,xmax=10,ymin=-181.35,ymax=-43.65,ylabel=Fase (deg),
+\begin{groupplot}[group style={group size= 1 by 1, vertical sep=0.2cm,  horizontal sep=1cm},ylabel absolute,ybar,x tick label style={ /pgf/number format/1000 sep=}] 
+\nextgroupplot[height=\axisheight,width=\axiswidth,grid=major, enlarge y limits={upper,value=0.2},xticklabel style= {rotate=90,anchor=near xticklabel},
+xtick = {0,60,180,...,1000},xmin=-60,ymin=0,ymax=8,
+title={Fundamental (\SI{60}{\hertz}) = \SI{310.2402}{};  THD: \SI{7.6619}{};},
+xlabel=Frequ\^encia (Hz),ylabel=Magnitude (\% da Fundamental),
 ] % End of axis configurations
-
-% Settings for siunitx package
-\sisetup{scientific-notation = fixed, fixed-exponent = 0, round-mode = places,round-precision = 2,output-decimal-marker = {,}}
-\addplot[solid,thick,c1color]table[x=freq,y=phase,col sep=comma]{bodeH.csv}; % Add plot data
-\addlegendentry{H};
-\draw[thick] (1e+20,-181.35) -- (1e+20,-43.65); % draw end of data line
+\addplot[nodes near coords,fill,c0color]table[x=freq,y=magperfund,col sep=comma]{PSIMdataex01Va.csv}; % Add plot data
+\addlegendentry{Va};
     \end{groupplot}
   \end{tikzpicture}
 \end{document} % End of file
