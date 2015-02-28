@@ -74,8 +74,8 @@
 \nextgroupplot[height=\axisheight,width=\axiswidth,grid=major,
 xmin=0, xmax=0.0167,
 ymin=-480, ymax=480,
-xticklabels=\empty,xlabel=\empty,ylabel={$Screen_0$}, % No xticks here
-y tick label style={/pgf/number format/.cd,	scaled y ticks = false,	set decimal separator={{.}},fixed},
+xticklabels=\empty,xlabel=\empty,ylabel=\empty, % No xticks here
+x tick label style={/pgf/number format/.cd,	scaled x ticks = false,	set decimal separator={{.}},fixed},
 ] % End of setings for nextgroupplot
 
 
@@ -84,25 +84,25 @@ y tick label style={/pgf/number format/.cd,	scaled y ticks = false,	set decimal 
 
 \definecolor{s0c0}{HTML}{4DB352}
 \addplot[solid,line width=1pt,s0c0]table[x=xdata,y=curve0,col sep=comma]{ex01screen0.csv};
-\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]147:{$Va$}}] at (axis cs:0.0048363,321.8659){}; % Print curve tip
-\addlegendentry{$Va$};
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]146:{$V_a$}}] at (axis cs:0.0040671,299.4752){}; % Print curve tip
+\addlegendentry{$V_a$};
 
 \definecolor{s0c1}{HTML}{FF0000}
 \addplot[solid,line width=1pt,s0c1]table[x=xdata,y=curve1,col sep=comma]{ex01screen0.csv};
-\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]149:{$Vb$}}] at (axis cs:0.008605,316.2682){}; % Print curve tip
-\addlegendentry{$Vb$};
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]150:{$V_b$}}] at (axis cs:0.0085281,307.8717){}; % Print curve tip
+\addlegendentry{$V_b$};
 
 \definecolor{s0c2}{HTML}{00FF00}
 \addplot[solid,line width=1pt,s0c2]table[x=xdata,y=curve2,col sep=comma]{ex01screen0.csv};
-\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]149:{$Vc$}}] at (axis cs:0.014181,293.8776){}; % Print curve tip
-\addlegendentry{$Vc$};
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]137:{$V_c$}}] at (axis cs:0.014143,302.2741){}; % Print curve tip
+\addlegendentry{$V_c$};
 
 
 \nextgroupplot[height=\axisheight,width=\axiswidth,grid=major,
 xmin=0, xmax=0.0167,
 ymin=-480, ymax=480,
-xticklabels=\empty,xlabel=\empty,ylabel={$Screen_1$}, % No xticks here
-y tick label style={/pgf/number format/.cd,	scaled y ticks = false,	set decimal separator={{.}},fixed},
+xticklabels=\empty,xlabel=\empty,ylabel=\empty, % No xticks here
+x tick label style={/pgf/number format/.cd,	scaled x ticks = false,	set decimal separator={{.}},fixed},
 ] % End of setings for nextgroupplot
 
 
@@ -111,15 +111,15 @@ y tick label style={/pgf/number format/.cd,	scaled y ticks = false,	set decimal 
 
 \definecolor{s1c0}{HTML}{0000FF}
 \addplot[solid,line width=1pt,s1c0]table[x=xdata,y=curve0,col sep=comma]{ex01screen1.csv};
-\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]142:{$Va$}}] at (axis cs:0.0034134,277.0845){}; % Print curve tip
-\addlegendentry{$Va$};
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]136:{$V_a$}}] at (axis cs:0.0040287,299.4752){}; % Print curve tip
+\addlegendentry{$V_a$};
 
 
 \nextgroupplot[height=\axisheight,width=\axiswidth,grid=major,
 xmin=0, xmax=0.0167,
 ymin=-480, ymax=480,
-xticklabels=\empty,xlabel=\empty,ylabel={$Screen_2$}, % No xticks here
-y tick label style={/pgf/number format/.cd,	scaled y ticks = false,	set decimal separator={{.}},fixed},
+xticklabels=\empty,xlabel=\empty,ylabel=\empty, % No xticks here
+x tick label style={/pgf/number format/.cd,	scaled x ticks = false,	set decimal separator={{.}},fixed},
 ] % End of setings for nextgroupplot
 
 
@@ -128,15 +128,15 @@ y tick label style={/pgf/number format/.cd,	scaled y ticks = false,	set decimal 
 
 \definecolor{s2c0}{HTML}{0000FF}
 \addplot[solid,line width=1pt,s2c0]table[x=xdata,y=curve0,col sep=comma]{ex01screen2.csv};
-\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]117:{$Vb$}}] at (axis cs:0.0055285,-25.1895){}; % Print curve tip
-\addlegendentry{$Vb$};
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]147:{$V_b$}}] at (axis cs:0.0084896,299.4752){}; % Print curve tip
+\addlegendentry{$V_b$};
 
 
 \nextgroupplot[height=\axisheight,width=\axiswidth,grid=major,
 xmin=0, xmax=0.0167,
 ymin=-480, ymax=480,
-y tick label style={/pgf/number format/.cd,	scaled y ticks = false,	set decimal separator={{.}},fixed},
-xlabel={Time ($\SI{}{\milli\second}$)},ylabel={$Screen_3$},scaled x ticks=base 10:3,xtick scale label code/.code={}
+x tick label style={/pgf/number format/.cd,	scaled x ticks = false,	set decimal separator={{.}},fixed},
+xlabel=Time,scaled x ticks=base 10:3,xtick scale label code/.code={$\cdot \SI{}{\milli\second}$},
 ] % End of setings for nextgroupplot
 
 
@@ -145,8 +145,8 @@ xlabel={Time ($\SI{}{\milli\second}$)},ylabel={$Screen_3$},scaled x ticks=base 1
 
 \definecolor{s3c0}{HTML}{0000FF}
 \addplot[solid,line width=1pt,s3c0]table[x=xdata,y=curve0,col sep=comma]{ex01screen3.csv};
-\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]-36:{$Vc$}}] at (axis cs:0.008105,-293.8776){}; % Print curve tip
-\addlegendentry{$Vc$};
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]152:{$V_c$}}] at (axis cs:0.014181,296.6764){}; % Print curve tip
+\addlegendentry{$V_c$};
 
 \end{groupplot} % End of group
 \end{tikzpicture}

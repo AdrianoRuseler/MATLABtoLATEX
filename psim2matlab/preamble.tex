@@ -1,14 +1,27 @@
 %
-\documentclass[9.5pt,varwidth=307pt]{standalone}
-\usepackage{tikz}
-\usepackage{pgfplots}
+\documentclass{standalone}
+% \usepackage{tikz}
+\usepackage{pgfplots} % loads also tikz
 \usepackage{grffile}
+\pgfplotsset{compat=newest} % This will configure the compatibility layer
 \usetikzlibrary{plotmarks}
-\usetikzlibrary{pgfplots.groupplots}
 \usepackage{amsmath}
 \usepackage{color} % Using this package, you can set the font color, text background, or page background
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{pgfplots.groupplots}
+\usepackage{anyfontsize}
+\usepackage{siunitx}
 
-\pgfplotsset{compat=newest}
+\tikzset{ % Set line width
+	ultra thin/.style= {line width=0.1pt},
+	very thin/.style=  {line width=0.2pt},
+	thin/.style=       {line width=0.4pt},% thin is the default
+	semithick/.style=  {line width=0.6pt},
+	thick/.style=      {line width=0.8pt},
+	very thick/.style= {line width=1.2pt},
+	ultra thick/.style={line width=1.6pt}
+}
+
 \pgfplotsset{every axis legend/.style={
 	cells={anchor=center},% Centered entries
 	inner xsep=3pt,inner ysep=2pt,nodes={inner sep=2pt,text depth=0.15em},
@@ -20,6 +33,11 @@
 	at={(0.993,0.98)}
 	}
 }
+
+\def\tipdist{5mm} % Tip arrow legth
+% Defines axis aspect ratio
+\def \axiswidth {\linewidth} % Defines axis width value
+\def \axisheight {0.5\linewidth} % Defines axis height value
 
 
 % Defines color spec 
