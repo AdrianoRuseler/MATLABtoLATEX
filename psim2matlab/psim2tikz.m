@@ -49,11 +49,12 @@ if nargin <2 % Look for options entry
     options.ManualTips=1; % Select manually tips positions
     options.SetVar=1; % Set plot associated variables
     options.English=1; % Output in English?
-    options.simviewcolor=1; % Plot with simview color settings
+    options.simviewcolor=0; % Plot with simview color settings
     options.shadesgray=0; % Plot with shades of gray
     options.PutTips=1;
-    options.PutLegend=1;
+    options.PutLegend=0;
     options.PutYLabel=1;
+    options.PutAxisLabel=1; % Puts (a), (b), ... in rigth side of each axis
 end
     
 
@@ -164,7 +165,7 @@ for p = 1:length(plots)
                         tip.string=clabel; % enters string value
                     end
                     eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.tip=tip;']);
-                    eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.tip'])
+%                     eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.tip'])
                     close(get(get(hfig,'Parent'),'Parent'))% Closes the figure
                 end
             end
@@ -211,7 +212,7 @@ for p = 1:length(plots)
         ytickstyle='y tick label style={/pgf/number format/.cd,	scaled y ticks = false,	set decimal separator={{,}},fixed},';
      end
     
-    groupplotsrt=['\begin{groupplot}[group style={group size= 1 by ' num2str(wstruct.main.numscreen) ', vertical sep=0.1cm,  horizontal sep=1cm}]'];
+    groupplotsrt=['\begin{groupplot}[group style={group name=simviewplots, group size= 1 by ' num2str(wstruct.main.numscreen) ', vertical sep=0.1cm,  horizontal sep=1cm}]'];
     fprintf(fileoutID,'\n%s\n',groupplotsrt);
     
     for s=0:wstruct.main.numscreen-1 % Screens Loop
@@ -227,7 +228,7 @@ for p = 1:length(plots)
         
         
         if s<(wstruct.main.numscreen-1)
-            fprintf(fileoutID,'%s\n',['xticklabels=\empty,xlabel=\empty,ylabel=' yLabelstr ', % No xticks here']); % No xticks here
+            fprintf(fileoutID,'%s\n',['xticklabels=\empty,xlabel=\empty,ylabel=' yLabelstr ', xtick scale label code/.code={},% No xticks here']); % No xticks here
             fprintf(fileoutID,'%s\n',ytickstyle);
         else
 %             fprintf(fileoutID,'%s\n','xticklabel style={/pgf/number format/.cd,use comma,fixed,precision=3},'); % Last one
@@ -271,13 +272,21 @@ for p = 1:length(plots)
               
               if options.PutLegend
                   fprintf(fileoutID,'%s\n\n',legendstr);
-              end
-              
+              end              
           end
     end
         
-    fprintf(fileoutID,'%s\n','\end{groupplot} % End of group');
-    fprintf(fileoutID,'%s\n','\end{tikzpicture}');
+    fprintf(fileoutID,'%s\n\n','\end{groupplot} % End of group');
+    
+    
+    if options.PutAxisLabel
+        % \node[right = 0.1cm of simviewplots c1r1.east] {(a)};
+        for s=1:wstruct.main.numscreen
+            fprintf(fileoutID,'%s\n',['\node[right = 0.1cm of simviewplots c1r' num2str(s) '.east] {(' char(s+96) ')};']);
+        end
+    end
+        
+    fprintf(fileoutID,'\n%s\n','\end{tikzpicture}');
     fprintf(fileoutID,'%s\n','\end{document}');    
     fclose(fileoutID);
     

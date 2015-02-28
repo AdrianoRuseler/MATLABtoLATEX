@@ -83,15 +83,15 @@ y tick label style={/pgf/number format/.cd,	scaled y ticks = false,	set decimal 
 \sisetup{scientific-notation = fixed, fixed-exponent = 0, round-mode = places,round-precision = 2,output-decimal-marker = {.}}
 
 \addplot[solid,line width=1pt,c0color]table[x=xdata,y=curve0,col sep=comma]{ex01screen0.csv};
-\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]139:{$V_a$}}] at (axis cs:0.0041056,302.2741){}; % Print curve tip
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]31:{$V_a$}}] at (axis cs:0.0050285,316.2682){}; % Print curve tip
 \addplot[solid,line width=1pt,c1color]table[x=xdata,y=curve1,col sep=comma]{ex01screen0.csv};
-
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]134:{$V_b$}}] at (axis cs:0.008605,313.4694){}; % Print curve tip
 \addplot[solid,line width=1pt,c2color]table[x=xdata,y=curve2,col sep=comma]{ex01screen0.csv};
-\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]-30:{$V_c$}}] at (axis cs:0.0083358,-282.6822){}; % Print curve tip
-\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]141:{$V_b$}}] at (axis cs:0.004221,-159.5335){}; % Print curve tip
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]148:{$V_c$}}] at (axis cs:0.014027,285.481){}; % Print curve tip
 
 \nextgroupplot[height=\axisheight,width=\axiswidth,grid=major,
-xmin=0, xmax=0.0167, ymin=-480, ymax=480,
+xmin=0, xmax=0.0167,
+ymin=-480, ymax=480,
 xticklabels=\empty,xlabel=\empty,ylabel={$Screen_1$}, xtick scale label code/.code={},% No xticks here
 y tick label style={/pgf/number format/.cd,	scaled y ticks = false,	set decimal separator={{.}},fixed},
 ] % End of setings for nextgroupplot
@@ -101,7 +101,7 @@ y tick label style={/pgf/number format/.cd,	scaled y ticks = false,	set decimal 
 \sisetup{scientific-notation = fixed, fixed-exponent = 0, round-mode = places,round-precision = 2,output-decimal-marker = {.}}
 
 \addplot[solid,line width=1pt,c0color]table[x=xdata,y=curve0,col sep=comma]{ex01screen1.csv};
-\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]-40:{$V_a$}}] at (axis cs:0.013604,-305.0729){}; % Print curve tip
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]136:{$V_a$}}] at (axis cs:0.0047209,313.4694){}; % Print curve tip
 
 \nextgroupplot[height=\axisheight,width=\axiswidth,grid=major,
 xmin=0, xmax=0.0167,
@@ -115,7 +115,7 @@ y tick label style={/pgf/number format/.cd,	scaled y ticks = false,	set decimal 
 \sisetup{scientific-notation = fixed, fixed-exponent = 0, round-mode = places,round-precision = 2,output-decimal-marker = {.}}
 
 \addplot[solid,line width=1pt,c0color]table[x=xdata,y=curve0,col sep=comma]{ex01screen2.csv};
-\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]-34:{$V_b$}}] at (axis cs:0.0049901,-89.5627){}; % Print curve tip
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]139:{$V_b$}}] at (axis cs:0.0086819,310.6706){}; % Print curve tip
 
 \nextgroupplot[height=\axisheight,width=\axiswidth,grid=major,
 xmin=0, xmax=0.0167,
@@ -129,13 +129,7 @@ xlabel={Time ($\SI{}{\milli\second}$)},ylabel={$Screen_3$},scaled x ticks=base 1
 \sisetup{scientific-notation = fixed, fixed-exponent = 0, round-mode = places,round-precision = 2,output-decimal-marker = {.}}
 
 \addplot[solid,line width=1pt,c0color]table[x=xdata,y=curve0,col sep=comma]{ex01screen3.csv};
-\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]-48:{$V_c$}}] at (axis cs:0.0099509,-100.758){}; % Print curve tip
+\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]142:{$V_c$}}] at (axis cs:0.014143,293.8776){}; % Print curve tip
 \end{groupplot} % End of group
-
-\node[right = 0.1cm of simviewplots c1r1.east] {(a)};
-\node[right = 0.1cm of simviewplots c1r2.east] {(b)};
-\node[right = 0.1cm of simviewplots c1r3.east] {(c)};
-\node[right = 0.1cm of simviewplots c1r4.east] {(d)};
-
 \end{tikzpicture}
 \end{document}
