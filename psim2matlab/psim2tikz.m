@@ -46,14 +46,14 @@ end
 if nargin <2 % Look for options entry
     % Options not supplied - use default
     options.Compile=1;  % Compiles the latex code
-    options.ManualTips=0; % Select manually tips positions
+    options.ManualTips=1; % Select manually tips positions
     options.SetVar=1; % Set plot associated variables
     options.English=1; % Output in English?
     options.simviewcolor=0; % Plot with simview color settings
     options.shadesgray=0; % Plot with shades of gray
-    options.PutTips=1;
-    options.PutLegend=0;
-    options.PutYLabel=0;
+    options.PutTips=1; % Put arrow
+    options.PutLegend=1;
+    options.PutYLabel=1;
     options.PutAxisLabel=1; % Puts (a), (b), ... in rigth side of each axis
     options.DisplayTitle=1; % Show title
     options.DSPlot=0;
@@ -263,15 +263,6 @@ fclose(fileID); % Close it.
 fileoutID = fopen([plots{1} '.tex'],'w');
 fwrite(fileoutID,preamble);
 
-
-%     fprintf(fileoutID,'%s\n','\def \axiswidth {\linewidth} % Defines axis width value');
-
-%     if wstruct{p}.main.numscreen==1
-%        fprintf(fileoutID,'%s\n','\def \axisheight {0.8\linewidth} % Defines axis height value');
-%     else
-%        fprintf(fileoutID,'%s\n','\def \axisheight {0.4\linewidth} % Defines axis height value');
-%     end
-
 if options.English
     xlabelstr='{Time ($\SI{}{\milli\second}$)}';
     siunitxstr= '\sisetup{scientific-notation = fixed, fixed-exponent = 0, round-mode = places,round-precision = 2,output-decimal-marker = {.}}';
@@ -287,8 +278,19 @@ fprintf(fileoutID,'\n%s\n',groupplotsrt);
 
 
 for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
-    for p = 1:length(plots)        
-        fprintf(fileoutID,'\n%s\n','\nextgroupplot[height=\axisheight,width=\axiswidth,grid=major,'); % Begin axis
+    for p = 1:length(plots)   
+        if wstruct{p}.main.numscreen==1 % If is single plot
+            fprintf(fileoutID,'\n%s\n','\nextgroupplot[height=\singleaxisheight,width=\axiswidth,grid=major,'); % Begin axis
+        else
+            fprintf(fileoutID,'\n%s\n','\nextgroupplot[height=\axisheight,width=\axiswidth,grid=major,'); % Begin axis
+        end
+        
+        if options.DisplayTitle && isequal(s,0) % Display Title for first screen  
+            prompt = {['Enter TITLE for Screen: ' num2str(s) ' at ' plots{p}]};
+            answer = inputdlg(prompt,'TITLE Input',1,{plots{p}});            
+            fprintf(fileoutID,'%s\n',['title={' answer{1} '},']); % Write title            
+        end
+        
         fprintf(fileoutID,'%s\n',['xmin=' num2str(wstruct{p}.main.xfrom) ', xmax=' num2str(wstruct{p}.main.xto) ',']); % Write x limits
         fprintf(fileoutID,'%s\n',['ymin=' num2str(eval(['wstruct{p}.screen' num2str(s) '.yfrom'])) ', ymax=' num2str(eval(['wstruct{p}.screen' num2str(s) '.yto'])) ',']); % Write y limits
         
@@ -334,7 +336,7 @@ for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
             if options.DSPlot
                 addplotstr=['\addplot[smooth,' addplotset ']table[x=xdata,y=curve' num2str(c) ',col sep=comma]{' plots{p} 'DSscreen' num2str(s) 'curve' num2str(c) '.csv};'];   % Downsampled Version
             else
-                addplotstr=['\addplot[' addplotset ']table[x=xdata,y=curve' num2str(c) ',col sep=comma]{' plots{p} 'screen' num2str(s) '.csv};'];                
+                addplotstr=['\addplot[smooth,' addplotset ']table[x=xdata,y=curve' num2str(c) ',col sep=comma]{' plots{p} 'screen' num2str(s) '.csv};'];                
             end
             fprintf(fileoutID,'%s\n',addplotstr);
             

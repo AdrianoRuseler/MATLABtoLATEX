@@ -37,11 +37,19 @@
 
 % Read simulated data
 PSIMdata = psim2matlab();
+
+PSIMdata = rmfield(PSIMdata,'simview'); % Remove field 
 % Read simview settings (*.ini) and add to PSIMdata
 PSIMdata = psimini2struct();
 
+disp(PSIMdata.simview)
 
-% Can be used with
+% Now we are ready to plot from PSIM data;
+
+psim2tikz(PSIMdata) 
+
+
+%% Can be used with
 power_fftscope
 
 FFTSCOPEdata=power_fftscope

@@ -204,9 +204,7 @@ end
 
 save([PSIMdata.blockName '_data.mat'], 'PSIMdata') 
 
-assignin('base','PSIMdata',PSIMdata); % Updates base PSIMdata
-assignin('base','dirstruct',dirstruct);% Updates dirstruct PSIMdata
-
+assignin('base','dirstruct',dirstruct);
 cd(dirstruct.root)
 save('dirstruct.mat','dirstruct')
 cd(dirstruct.wdir)
