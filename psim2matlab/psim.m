@@ -35,8 +35,11 @@
 % Example 01 
 % [folder, name, ext] = fileparts(which('psim')); 
 
-%% Read simulated data
+% Read simulated data
 PSIMdata = psim2matlab();
+% Read simview settings (*.ini) and add to PSIMdata
+PSIMdata = psimini2struct();
+
 
 % Can be used with
 power_fftscope
@@ -45,8 +48,7 @@ FFTSCOPEdata=power_fftscope
 
 fftscope2tikz(FFTSCOPEdata)
 
-%% Read simview settings (*.ini) and add to PSIMdata
-PSIMdata = psimini2struct();
+
 
 %% Now we are ready to plot from PSIM data;
 
