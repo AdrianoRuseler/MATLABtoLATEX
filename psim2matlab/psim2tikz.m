@@ -99,6 +99,9 @@ end
 
 plots=fieldnames(PSIMdata.simview); % Find plots in PSIMdata
 
+
+
+
 for p = 1:length(plots)
     wstruct{p}=eval(['PSIMdata.simview.' plots{p}]); % set struct to work
     %     disp(wstruct)
@@ -124,6 +127,11 @@ for p = 1:length(plots)
                 DSydata = eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data']);
 
                 hfig=dsplot(DSxdata, DSydata, options.DSpoints);
+                x=get(hfig,'XData');
+                y=get(hfig,'YData');
+                x=x(:); % force vector to be vertical
+                y=y(:);
+                
                 disp('Plot dowsampled points!!')
                 if options.ManualTips % Gets tips points from plot
                     if eval(['isfield(wstruct{p}.screen' num2str(s) '.curve' num2str(c) ',''tip'')'])
@@ -135,10 +143,15 @@ for p = 1:length(plots)
                         yto = eval(['wstruct{p}.screen' num2str(s) '.yto']);
                         ylim([yfrom yto])
                         clabel = eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.label']);
-                        legend(clabel)
+                        legend(clabel)                        
+                        xlabel(wstruct{p}.main.xaxis)                        
                         title(['Get tip location for curve ' clabel])
-                        [xtip,ytip] = ginput(2); % Get two points for putting tips
-                        tip.theta = round(angle((xtip(2)-xtip(1))/wstruct{p}.main.xdata(1)+1i*(ytip(2)-ytip(1)))*180/pi);
+                        
+                        [xtip,ytip] = ginput(2); % Get two points for putting tips                        
+                        Dxtip=xtip/(xto-xfrom); % Scales to get angle
+                        Dytip=ytip/(yto-yfrom);                       
+                        
+                        tip.theta = round(angle((Dxtip(2)-Dxtip(1))+1i*(Dytip(2)-Dytip(1)))*180/pi);
                         tip.x=xtip(1); % Tip x position
                         tip.y=ytip(1); % Tip y position
                         if options.SetVar
@@ -156,17 +169,15 @@ for p = 1:length(plots)
                             tip.string=clabel; % enters string value
                         end
                         eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.tip=tip;']);
-                        %                     eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.tip'])
-                        close(get(get(hfig,'Parent'),'Parent'))% Closes the figure
+                        eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.tip'])
+%                         close(get(get(hfig,'Parent'),'Parent'))% Closes the figure
                     end
                 end % end of manual tips
                 
                 
-                x=get(hfig,'XData');
-                y=get(hfig,'YData');
+
                 close(get(get(hfig,'Parent'),'Parent'))% Closes the figure
-                x=x(:); % force vector to be vertical
-                y=y(:);
+
                 
                 %   datatofit{p}=y; % Get this data for future use in labels
                 csvheader=['xdata, curve' num2str(c) ];
@@ -214,7 +225,11 @@ for p = 1:length(plots)
                     legend(clabel)
                     title(['Get tip location for curve ' clabel])
                     [xtip,ytip] = ginput(2); % Get two points for putting tips
-                    tip.theta = round(angle((xtip(2)-xtip(1))/wstruct{p}.main.xdata(1)+1i*(ytip(2)-ytip(1)))*180/pi);
+                    Dxtip=xtip/(xto-xfrom); % Scales to get angle
+                    Dytip=ytip/(yto-yfrom);
+                    
+                    tip.theta = round(angle((Dxtip(2)-Dxtip(1))+1i*(Dytip(2)-Dytip(1)))*180/pi);
+                    
                     tip.x=xtip(1); % Tip x position
                     tip.y=ytip(1); % Tip y position
                     if options.SetVar
@@ -273,7 +288,7 @@ else
     ytickstyle='y tick label style={/pgf/number format/.cd,	scaled y ticks = false,	set decimal separator={{,}},fixed},';
 end
 
-groupplotsrt=['\begin{groupplot}[group style={group name=simviewplots, group size= ' num2str(length(plots)) ' by ' num2str(wstruct{p}.main.numscreen) ', vertical sep=0.1cm,  horizontal sep=0.1cm}]'];
+groupplotsrt=['\begin{groupplot}[group style={group name=simviewplots, group size= ' num2str(length(plots)) ' by ' num2str(wstruct{p}.main.numscreen) ', vertical sep=0.25cm,  horizontal sep=0.25cm}]'];
 fprintf(fileoutID,'\n%s\n',groupplotsrt);
 
 
@@ -287,7 +302,10 @@ for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
         
         if options.DisplayTitle && isequal(s,0) % Display Title for first screen  
             prompt = {['Enter TITLE for Screen: ' num2str(s) ' at ' plots{p}]};
-            answer = inputdlg(prompt,'TITLE Input',1,{plots{p}});            
+            answer = inputdlg(prompt,'TITLE Input',1,{plots{p}});  
+            if isempty(answer)
+                answer{1} ='';
+            end
             fprintf(fileoutID,'%s\n',['title={' answer{1} '},']); % Write title            
         end
         
@@ -305,12 +323,12 @@ for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
         end
         
         if s<(wstruct{p}.main.numscreen-1)
-            fprintf(fileoutID,'%s\n',['xticklabels=\empty,xlabel=\empty,ylabel=' yLabelstr ', xtick scale label code/.code={},% No xticks here']); % No xticks here
+            fprintf(fileoutID,'%s\n',['xticklabels=\empty,xlabel=\empty,ylabel=' yLabelstr ', xtick scale label code/.code={},ylabel absolute,% No xticks here']); % No xticks here
             fprintf(fileoutID,'%s\n',ytickstyle);
         else
             %             fprintf(fileoutID,'%s\n','xticklabel style={/pgf/number format/.cd,use comma,fixed,precision=3},'); % Last one
             fprintf(fileoutID,'%s\n',ytickstyle);
-            fprintf(fileoutID,'%s\n',['xlabel=' xlabelstr ',ylabel=' yLabelstr  ',scaled x ticks=base 10:3,xtick scale label code/.code={}']);
+            fprintf(fileoutID,'%s\n',['xlabel=' xlabelstr ',ylabel=' yLabelstr  ',scaled x ticks=base 10:3,xtick scale label code/.code={},ylabel absolute,']);
         end
         %     cycle list name=linestyles*
         fprintf(fileoutID,'%s\n\n','] % End of setings for nextgroupplot'); % End of nextgroupplot configurations

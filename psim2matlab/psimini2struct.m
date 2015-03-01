@@ -113,6 +113,10 @@ end
 
 % Make name valid in MATLAB
 name = matlab.lang.makeValidName(name);
+name = strrep(name, '_', ''); % Removes umderscore
+
+
+
 
 
 %% Read ini file
@@ -163,16 +167,25 @@ end
 
 
 %% Verifies PSIM variables to be compatible with MATLAB
+xfrom = simview.main.xfrom;
+xto = simview.main.xto;
+
+xdata=PSIMdata.time(PSIMdata.time>=xfrom&PSIMdata.time<=xto);
+
+
 for i=1:length(PSIMdata.signals)
-    assignin('base',PSIMdata.signals(i).label,PSIMdata.signals(:,i).values); % Not sure if this is the best way to do so;
+   ydata = PSIMdata.signals(:,i).values(PSIMdata.time>=xfrom&PSIMdata.time<=xto);    
+    assignin('base',PSIMdata.signals(i).label,ydata); % Not sure if this is the best way to do so;
 end
-    
+
+% plot(xdata,ydata)
 % Evaluate screen formula
 for s=0:simview.main.numscreen-1 % Screens Loop
     for c=0:eval(['simview.screen' num2str(s) '.curvecount'])-1 % Curves Loop
         formula{s+1,c+1}= eval(['simview.screen' num2str(s) '.curve' num2str(c) '.formula']);
         [form, modified] = matlab.lang.makeValidName(formula{s+1,c+1}); % Problem here for minus signal
         formuladata=evalin('base',form);
+        
         eval(['simview.screen' num2str(s) '.curve' num2str(c) '.data=formuladata;'])
     end
 end
@@ -184,7 +197,7 @@ for i=1:length(PSIMdata.signals)
 %      disp([var{i} ' Clear!!'])
 end
 
-simview.main.xdata=PSIMdata.time; % save time data (x axis data)
+simview.main.xdata=xdata; % save time data (x axis data)
 
 %% Save data struct
 eval(['PSIMdata.simview.' name '=simview'])

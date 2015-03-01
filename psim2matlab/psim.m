@@ -44,9 +44,23 @@ PSIMdata = psimini2struct();
 
 disp(PSIMdata.simview)
 
-% Now we are ready to plot from PSIM data;
+%% Now we are ready to plot from PSIM data;
 
-psim2tikz(PSIMdata) 
+    options.Compile=1;  % Compiles the latex code
+    options.ManualTips=1; % Select manually tips positions
+    options.SetVar=1; % Set plot associated variables
+    options.English=1; % Output in English?
+    options.simviewcolor=0; % Plot with simview color settings
+    options.shadesgray=0; % Plot with shades of gray
+    options.PutTips=1; % Put arrow
+    options.PutLegend=1;
+    options.PutYLabel=1;
+    options.PutAxisLabel=1; % Puts (a), (b), ... in rigth side of each axis
+    options.DisplayTitle=1; % Show title
+    options.DSPlot=1;
+    options.DSpoints=500; % Number of points
+    
+psim2tikz(PSIMdata,options) 
 
 
 %% Can be used with
