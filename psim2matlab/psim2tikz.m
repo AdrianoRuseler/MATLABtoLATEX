@@ -29,7 +29,7 @@
 % http://pgfplots.sourceforge.net/gallery.html
 % =========================================================================
 
-function [status, wstruct]=psim2tikz(PSIMdata,options)
+function [status]=psim2tikz(PSIMdata,options)
 
 status=0; % We have to return something
 
@@ -46,15 +46,16 @@ end
 if nargin <2 % Look for options entry
     % Options not supplied - use default  
     options.Compile=1;  % Compiles the latex code
-    options.ManualTips=1; % Select manually tips positions
+    options.ManualTips=0; % Select manually tips positions
     options.SetVar=1; % Set plot associated variables
     options.English=1; % Output in English?
     options.simviewcolor=0; % Plot with simview color settings
     options.shadesgray=0; % Plot with shades of gray
     options.PutTips=1;
     options.PutLegend=0;
-    options.PutYLabel=1;
+    options.PutYLabel=0;
     options.PutAxisLabel=1; % Puts (a), (b), ... in rigth side of each axis
+    options.DisplayTitle=1; % Show title
 end
     
 
@@ -97,10 +98,10 @@ end
 plots=fieldnames(PSIMdata.simview); % Find plots in PSIMdata
 
 for p = 1:length(plots)
-    wstruct=eval(['PSIMdata.simview.' plots{p}]); % set struct to work
+    wstruct{p}=eval(['PSIMdata.simview.' plots{p}]); % set struct to work
 %     disp(wstruct)
     
-    if(wstruct.main.fft) % Not implemented yet
+    if(wstruct{p}.main.fft) % Not implemented yet
         status=1;
         return
     end
@@ -110,9 +111,13 @@ for p = 1:length(plots)
         cd(dirstruct.psimstorage)
     end
     
-    for s=0:wstruct.main.numscreen-1 % Screens Loop
+    xfrom = wstruct{p}.main.xfrom;
+    xto = wstruct{p}.main.xto;
+%   (((wstruct.main.xdata>=xfrom)&(wstruct.main.xdata<=xto)))
+      
+    for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
         csvheader='xdata';
-        SCREENdata=wstruct.main.xdata; %
+        SCREENdata=wstruct{p}.main.xdata; %
         
         if options.PutYLabel
             prompt = {['Enter YLabel String for Screen: ' num2str(s)]};
@@ -125,29 +130,29 @@ for p = 1:length(plots)
             else
                 YLabelstring=answer{1};
             end
-           eval(['wstruct.screen' num2str(s) '.YLabel=''' YLabelstring ''';' ]);
+           eval(['wstruct{p}.screen' num2str(s) '.YLabel=''' YLabelstring ''';' ]);
         end
         
-        for c=0:eval(['wstruct.screen' num2str(s) '.curvecount'])-1 % Curves Loop
-            ydata = eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.data']);
+        for c=0:eval(['wstruct{p}.screen' num2str(s) '.curvecount'])-1 % Curves Loop
+            ydata = eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data']);
             SCREENdata=horzcat(SCREENdata,ydata);
             csvheader=[csvheader [', curve' num2str(c)]];
             
             if options.ManualTips % Gets tips points from plot
-                if eval(['isfield(wstruct.screen' num2str(s) '.curve' num2str(c) ',''tip'')'])
+                if eval(['isfield(wstruct{p}.screen' num2str(s) '.curve' num2str(c) ',''tip'')'])
                       % Well, something can be done.                  
                 else
-                    hfig=plot(wstruct.main.xdata,ydata);
-                    grid on
-                    xlim([wstruct.main.xdata(1) wstruct.main.xdata(end)])
-                    yfrom = eval(['wstruct.screen' num2str(s) '.yfrom']);
-                    yto = eval(['wstruct.screen' num2str(s) '.yto']);
+                    hfig=plot(wstruct{p}.main.xdata,ydata);
+                    grid on                                    
+                    xlim([xfrom  xto])                    
+                    yfrom = eval(['wstruct{p}.screen' num2str(s) '.yfrom']);
+                    yto = eval(['wstruct{p}.screen' num2str(s) '.yto']);
                     ylim([yfrom yto])
-                    clabel = eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.label']);
+                    clabel = eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.label']);
                     legend(clabel)
                     title(['Get tip location for curve ' clabel])
                     [xtip,ytip] = ginput(2); % Get two points for putting tips
-                    tip.theta = round(angle((xtip(2)-xtip(1))/wstruct.main.xdata(1)+1i*(ytip(2)-ytip(1)))*180/pi);
+                    tip.theta = round(angle((xtip(2)-xtip(1))/wstruct{p}.main.xdata(1)+1i*(ytip(2)-ytip(1)))*180/pi);
                     tip.x=xtip(1); % Tip x position
                     tip.y=ytip(1); % Tip y position
                     if options.SetVar
@@ -164,11 +169,12 @@ for p = 1:length(plots)
                     else
                         tip.string=clabel; % enters string value
                     end
-                    eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.tip=tip;']);
-%                     eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.tip'])
+                    eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.tip=tip;']);
+%                     eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.tip'])
                     close(get(get(hfig,'Parent'),'Parent'))% Closes the figure
                 end
-            end
+            end % end of manual tips
+            
         end
         csvfilename = [dirstruct.psimstorage '\' plots{p} 'screen' num2str(s) '.csv'];
         savecsvfile(SCREENdata, csvheader, csvfilename);
@@ -178,9 +184,11 @@ for p = 1:length(plots)
 
 %% Update structure
 
- eval(['PSIMdata.simview.' plots{p} '=wstruct;']); % set struct to work 
+ eval(['PSIMdata.simview.' plots{p} '=wstruct{p};']); % set struct to work 
  assignin('base', 'PSIMdata', PSIMdata);         
      
+ 
+end
     
     %% Load pre defined tex files
     %  Create folder under tikzdir to store mat file
@@ -190,13 +198,13 @@ for p = 1:length(plots)
     fclose(fileID); % Close it.
     
     %% Save tex file    
-    fileoutID = fopen([plots{p} '.tex'],'w');
+    fileoutID = fopen([plots{1} '.tex'],'w');
     fwrite(fileoutID,preamble);   
     
-
+ 
 %     fprintf(fileoutID,'%s\n','\def \axiswidth {\linewidth} % Defines axis width value');    
         
-%     if wstruct.main.numscreen==1
+%     if wstruct{p}.main.numscreen==1
 %        fprintf(fileoutID,'%s\n','\def \axisheight {0.8\linewidth} % Defines axis height value'); 
 %     else
 %        fprintf(fileoutID,'%s\n','\def \axisheight {0.4\linewidth} % Defines axis height value');   
@@ -212,86 +220,97 @@ for p = 1:length(plots)
         ytickstyle='y tick label style={/pgf/number format/.cd,	scaled y ticks = false,	set decimal separator={{,}},fixed},';
      end
     
-    groupplotsrt=['\begin{groupplot}[group style={group name=simviewplots, group size= 1 by ' num2str(wstruct.main.numscreen) ', vertical sep=0.1cm,  horizontal sep=1cm}]'];
+     
+    groupplotsrt=['\begin{groupplot}[group style={group name=simviewplots, group size= ' num2str(length(plots)) ' by ' num2str(wstruct{p}.main.numscreen) ', vertical sep=0.1cm,  horizontal sep=0.1cm}]'];
     fprintf(fileoutID,'\n%s\n',groupplotsrt);
     
-    for s=0:wstruct.main.numscreen-1 % Screens Loop
-        fprintf(fileoutID,'\n%s\n','\nextgroupplot[height=\axisheight,width=\axiswidth,grid=major,'); % Begin axis
-        fprintf(fileoutID,'%s\n',['xmin=' num2str(wstruct.main.xfrom) ', xmax=' num2str(wstruct.main.xto) ',']); % Write x limits
-        fprintf(fileoutID,'%s\n',['ymin=' num2str(eval(['wstruct.screen' num2str(s) '.yfrom'])) ', ymax=' num2str(eval(['wstruct.screen' num2str(s) '.yto'])) ',']); % Write y limits
-        
-        if options.PutYLabel % Put y labels            
-            yLabelstr = ['{' eval(['wstruct.screen' num2str(s) '.YLabel']) '}'];
-        else
-            yLabelstr='\empty';
-        end
-        
-        
-        if s<(wstruct.main.numscreen-1)
-            fprintf(fileoutID,'%s\n',['xticklabels=\empty,xlabel=\empty,ylabel=' yLabelstr ', xtick scale label code/.code={},% No xticks here']); % No xticks here
-            fprintf(fileoutID,'%s\n',ytickstyle);
-        else
-%             fprintf(fileoutID,'%s\n','xticklabel style={/pgf/number format/.cd,use comma,fixed,precision=3},'); % Last one
-            fprintf(fileoutID,'%s\n',ytickstyle);
-            fprintf(fileoutID,'%s\n',['xlabel=' xlabelstr ',ylabel=' yLabelstr  ',scaled x ticks=base 10:3,xtick scale label code/.code={}']);
-        end
+    
+    
+    
+    for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
+        for p = 1:length(plots)
+            
+            fprintf(fileoutID,'\n%s\n','\nextgroupplot[height=\axisheight,width=\axiswidth,grid=major,'); % Begin axis
+            fprintf(fileoutID,'%s\n',['xmin=' num2str(wstruct{p}.main.xfrom) ', xmax=' num2str(wstruct{p}.main.xto) ',']); % Write x limits
+            fprintf(fileoutID,'%s\n',['ymin=' num2str(eval(['wstruct{p}.screen' num2str(s) '.yfrom'])) ', ymax=' num2str(eval(['wstruct{p}.screen' num2str(s) '.yto'])) ',']); % Write y limits
+            
+            if options.PutYLabel % Put y labels
+                yLabelstr = ['{' eval(['wstruct{p}.screen' num2str(s) '.YLabel']) '}'];
+            else
+                yLabelstr='\empty';
+            end
+            
+            if p>1
+                fprintf(fileoutID,'%s\n','yticklabels=\empty,');
+            end
+            
+            if s<(wstruct{p}.main.numscreen-1)
+                fprintf(fileoutID,'%s\n',['xticklabels=\empty,xlabel=\empty,ylabel=' yLabelstr ', xtick scale label code/.code={},% No xticks here']); % No xticks here
+                fprintf(fileoutID,'%s\n',ytickstyle);
+            else
+                %             fprintf(fileoutID,'%s\n','xticklabel style={/pgf/number format/.cd,use comma,fixed,precision=3},'); % Last one
+                fprintf(fileoutID,'%s\n',ytickstyle);
+                fprintf(fileoutID,'%s\n',['xlabel=' xlabelstr ',ylabel=' yLabelstr  ',scaled x ticks=base 10:3,xtick scale label code/.code={}']);
+            end
             %     cycle list name=linestyles*
-        fprintf(fileoutID,'%s\n\n','] % End of setings for nextgroupplot'); % End of nextgroupplot configurations
-        
-          fprintf(fileoutID,'\n%s\n','% Settings for siunitx package');     
-          fprintf(fileoutID,'%s\n\n',siunitxstr);   
-     
-          for c=0:eval(['wstruct.screen' num2str(s) '.curvecount'])-1 % Curves Loop
-              linewidth = num2str(eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.thickness']));
-              if options.simviewcolor % Use simwiew colors
-                  ccolor = eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.color']); %www.color-hex.com
-                  strcolor=['\definecolor{s' num2str(s) 'c' num2str(c) '}{HTML}{' dec2hex(ccolor,6) '}']; %\definecolor{s0c0}{HTML}{DF7F50}
-                  addplotset=['solid,line width=' linewidth 'pt,s' num2str(s) 'c' num2str(c) ]; % Define settings for addplot
-                  fprintf(fileoutID,'%s\n',strcolor);
-              elseif options.shadesgray
-                  % Use shades of gray
-                  addplotset=['solid,line width=' linewidth 'pt,c' num2str(c) 'gray']; % Define settings for addplot
-              else
-                  % Use colors defined in preamble tex file
-                  addplotset=['solid,line width=' linewidth 'pt,c' num2str(c) 'color']; % Define settings for addplot
-              end
-              addplotstr=['\addplot[' addplotset ']table[x=xdata,y=curve' num2str(c) ',col sep=comma]{' plots{p} 'screen' num2str(s) '.csv};'];
-              fprintf(fileoutID,'%s\n',addplotstr);
-              
-              legendstr=['\addlegendentry{$' eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.label']) '$};'];
-              
-              if options.PutTips
-                  thetastr = num2str( eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.tip.theta;']));
-                  xtipstr = num2str( eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.tip.x;']));
-                  ytipstr = num2str( eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.tip.y;']));
-                  tipString =eval(['wstruct.screen' num2str(s) '.curve' num2str(c) '.tip.string;']);
-                  tipstr=['\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]' thetastr ':{' tipString '}}] at (axis cs:' xtipstr ',' ytipstr '){}; % Print curve tip'];
-                  legendstr=['\addlegendentry{' tipString '};'];
-                  fprintf(fileoutID,'%s\n',tipstr);
-              end
-              
-              if options.PutLegend
-                  fprintf(fileoutID,'%s\n\n',legendstr);
-              end              
-          end
-    end
-        
+            fprintf(fileoutID,'%s\n\n','] % End of setings for nextgroupplot'); % End of nextgroupplot configurations
+            
+            fprintf(fileoutID,'\n%s\n','% Settings for siunitx package');
+            fprintf(fileoutID,'%s\n\n',siunitxstr);
+            
+            for c=0:eval(['wstruct{p}.screen' num2str(s) '.curvecount'])-1 % Curves Loop
+                linewidth = num2str(eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.thickness']));
+                if options.simviewcolor % Use simwiew colors
+                    ccolor = eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.color']); %www.color-hex.com
+                    strcolor=['\definecolor{s' num2str(s) 'c' num2str(c) '}{HTML}{' dec2hex(ccolor,6) '}']; %\definecolor{s0c0}{HTML}{DF7F50}
+                    addplotset=['solid,line width=' linewidth 'pt,s' num2str(s) 'c' num2str(c) ]; % Define settings for addplot
+                    fprintf(fileoutID,'%s\n',strcolor);
+                elseif options.shadesgray
+                    % Use shades of gray
+                    addplotset=['solid,line width=' linewidth 'pt,c' num2str(c) 'gray']; % Define settings for addplot
+                else
+                    % Use colors defined in preamble tex file
+                    addplotset=['solid,line width=' linewidth 'pt,c' num2str(c) 'color']; % Define settings for addplot
+                end
+                addplotstr=['\addplot[' addplotset ']table[x=xdata,y=curve' num2str(c) ',col sep=comma]{' plots{p} 'screen' num2str(s) '.csv};'];
+                fprintf(fileoutID,'%s\n',addplotstr);
+                
+                legendstr=['\addlegendentry{$' eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.label']) '$};'];
+                
+                if options.PutTips
+                    if eval(['isfield(wstruct{p}.screen' num2str(s) '.curve' num2str(c) ',''tip'')'])
+                        thetastr = num2str( eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.tip.theta;']));
+                        xtipstr = num2str( eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.tip.x;']));
+                        ytipstr = num2str( eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.tip.y;']));
+                        tipString =eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.tip.string;']);
+                        tipstr=['\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]' thetastr ':{' tipString '}}] at (axis cs:' xtipstr ',' ytipstr '){}; % Print curve tip'];
+                        legendstr=['\addlegendentry{' tipString '};'];
+                        fprintf(fileoutID,'%s\n',tipstr);
+                    end
+                end
+                
+                if options.PutLegend
+                    fprintf(fileoutID,'%s\n\n',legendstr);
+                end
+            end
+        end
+    end % End of loop for plots
     fprintf(fileoutID,'%s\n\n','\end{groupplot} % End of group');
     
     
     if options.PutAxisLabel
         % \node[right = 0.1cm of simviewplots c1r1.east] {(a)};
-        for s=1:wstruct.main.numscreen
-            fprintf(fileoutID,'%s\n',['\node[right = 0.1cm of simviewplots c1r' num2str(s) '.east] {(' char(s+96) ')};']);
+        for s=1:wstruct{p}.main.numscreen
+            fprintf(fileoutID,'%s\n',['\node[right = 0.1cm of simviewplots c' num2str(length(plots)) 'r' num2str(s) '.east] {(' char(s+96) ')};']);
         end
     end
-        
+    
     fprintf(fileoutID,'\n%s\n','\end{tikzpicture}');
-    fprintf(fileoutID,'%s\n','\end{document}');    
+    fprintf(fileoutID,'%s\n','\end{document}');
     fclose(fileoutID);
     
     
-end
+
 %% Compile figure
 
 if isequal(exist(dirstruct.tikzdir,'dir'),7)

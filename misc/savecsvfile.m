@@ -33,10 +33,19 @@ function status=savecsvfile(csvdata, csvheader, csvfilename)
 
 wdir=pwd;
 
-cd(pathstr)
+if isequal(exist(pathstr,'dir'),7)
+    cd(pathstr)
+end
+
 % Save csv file
 filemane = [csvname '.csv'];
-fileID = fopen(filemane,'w','n','UTF-8');
+[fileID,errmsg]  = fopen(filemane,'w','n','UTF-8');
+
+if fileID<0
+    disp(errmsg)
+    resturn
+end
+
 fprintf(fileID,'%s\r\n',csvheader); % Begin axis
 fclose(fileID); % Close it.
 
