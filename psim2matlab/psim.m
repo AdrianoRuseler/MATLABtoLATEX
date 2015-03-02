@@ -56,9 +56,9 @@ disp(PSIMdata.simview)
     options.PutLegend=1;
     options.PutYLabel=1;
     options.PutAxisLabel=1; % Puts (a), (b), ... in rigth side of each axis
-    options.DisplayTitle=1; % Show title
-    options.DSPlot=1;
-    options.DSpoints=500; % Number of points
+    options.PutTitle=0; % Show title
+    options.DSPlot=0;
+    options.DSpoints=2500; % Number of points
     
 psim2tikz(PSIMdata,options) 
 

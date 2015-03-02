@@ -55,7 +55,7 @@ if nargin <2 % Look for options entry
     options.PutLegend=1;
     options.PutYLabel=1;
     options.PutAxisLabel=1; % Puts (a), (b), ... in rigth side of each axis
-    options.DisplayTitle=1; % Show title
+    options.PutTitle=1; % Show title
     options.DSPlot=0;
     options.DSpoints=500; % Number of points
 end
@@ -119,6 +119,7 @@ for p = 1:length(plots)
     xfrom = wstruct{p}.main.xfrom;
     xto = wstruct{p}.main.xto;
     
+    
     if options.DSPlot
         % Save downsample por curve
         for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
@@ -172,13 +173,9 @@ for p = 1:length(plots)
                         eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.tip'])
 %                         close(get(get(hfig,'Parent'),'Parent'))% Closes the figure
                     end
-                end % end of manual tips
-                
-                
+                end % end of manual tips              
 
-                close(get(get(hfig,'Parent'),'Parent'))% Closes the figure
-
-                
+                close(get(get(hfig,'Parent'),'Parent'))% Closes the figure                
                 %   datatofit{p}=y; % Get this data for future use in labels
                 csvheader=['xdata, curve' num2str(c) ];
                 SCREENdata=[x y];
@@ -220,6 +217,7 @@ for p = 1:length(plots)
                     xlim([xfrom  xto])
                     yfrom = eval(['wstruct{p}.screen' num2str(s) '.yfrom']);
                     yto = eval(['wstruct{p}.screen' num2str(s) '.yto']);
+%                     yinc = eval(['wstruct{p}.screen' num2str(s) '.yinc']);
                     ylim([yfrom yto])
                     clabel = eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.label']);
                     legend(clabel)
@@ -250,17 +248,16 @@ for p = 1:length(plots)
                     %                     eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.tip'])
                     close(get(get(hfig,'Parent'),'Parent'))% Closes the figure
                 end
-            end % end of manual tips
-            
+            end % end of manual tips            
         end
+        
         csvfilename = [dirstruct.psimstorage '\' plots{p} 'screen' num2str(s) '.csv'];
         savecsvfile(SCREENdata, csvheader, csvfilename);
     end
     %
     
     
-    %% Update structure
-    
+    %% Update structure    
     eval(['PSIMdata.simview.' plots{p} '=wstruct{p};']); % set struct to work
     assignin('base', 'PSIMdata', PSIMdata);
     
@@ -294,13 +291,15 @@ fprintf(fileoutID,'\n%s\n',groupplotsrt);
 
 for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
     for p = 1:length(plots)   
+       
+%         xinc = wstruct{p}.main.xinc;
         if wstruct{p}.main.numscreen==1 % If is single plot
             fprintf(fileoutID,'\n%s\n','\nextgroupplot[height=\singleaxisheight,width=\axiswidth,grid=major,'); % Begin axis
         else
             fprintf(fileoutID,'\n%s\n','\nextgroupplot[height=\axisheight,width=\axiswidth,grid=major,'); % Begin axis
         end
         
-        if options.DisplayTitle && isequal(s,0) % Display Title for first screen  
+        if options.PutTitle && isequal(s,0) % Display Title for first screen  
             prompt = {['Enter TITLE for Screen: ' num2str(s) ' at ' plots{p}]};
             answer = inputdlg(prompt,'TITLE Input',1,{plots{p}});  
             if isempty(answer)
@@ -309,8 +308,11 @@ for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
             fprintf(fileoutID,'%s\n',['title={' answer{1} '},']); % Write title            
         end
         
+        yfrom = eval(['wstruct{p}.screen' num2str(s) '.yfrom']);
+        yto = eval(['wstruct{p}.screen' num2str(s) '.yto']);
+        yinc = eval(['wstruct{p}.screen' num2str(s) '.yinc']);
         fprintf(fileoutID,'%s\n',['xmin=' num2str(wstruct{p}.main.xfrom) ', xmax=' num2str(wstruct{p}.main.xto) ',']); % Write x limits
-        fprintf(fileoutID,'%s\n',['ymin=' num2str(eval(['wstruct{p}.screen' num2str(s) '.yfrom'])) ', ymax=' num2str(eval(['wstruct{p}.screen' num2str(s) '.yto'])) ',']); % Write y limits
+        fprintf(fileoutID,'%s\n',['ymin=' num2str(yfrom) ', ymax=' num2str(yto) ',ytick={' num2str(yfrom) ',' num2str(yfrom+yinc) ',...,' num2str(yto) '},']); % Write y limits
         
         if options.PutYLabel % Put y labels
             yLabelstr = ['{' eval(['wstruct{p}.screen' num2str(s) '.YLabel']) '}'];
