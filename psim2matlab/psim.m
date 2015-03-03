@@ -77,5 +77,5 @@ fftscope2tikz(FFTSCOPEdata)
 psim2tikz(PSIMdata) 
 
 
-
-
+%% Read Fra from PSIM
+PSIMdata = rmfield(PSIMdata,'fra'); % Remove field 

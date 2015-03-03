@@ -74,14 +74,15 @@ switch ext % Make a simple check of file extensions
         PSIMdata =[];
         return
     case '.fra' % Waiting for code implementation
-        disp('Export PSIM data to a *.txt file.')
+        disp('fra analysis from PSIM.')        
+        PSIMdata = psimfra2matlab(PSIMtxt);
         cd(dirstruct.wdir)
-        PSIMdata =[];
         return
-            case '.fft' % Waiting for code implementation
-        disp('Export PSIM data to a *.txt file.')
+    case '.fft' % Waiting for code implementation
+        disp('fft analysis from PSIM. Really?')        
+        disp('Please try: power_fftscope')
+        PSIMdata = psimfft2matlab(PSIMtxt);
         cd(dirstruct.wdir)
-        PSIMdata =[];
         return
     case '.smv' % Waiting for code implementation
         disp('Wrong file extension. Convert the file to a *.txt file.')
@@ -155,7 +156,7 @@ disp('Done!')
  PSIMdata.blockName=name;
 
  
- PSIMdata.PSIMheader=header; % For non valid variables
+PSIMdata.PSIMheader=header; % For non valid variables
 disp('Done!!!!')
 toc
 
