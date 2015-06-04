@@ -31,11 +31,11 @@
 		rounded corners,
 		draw=black,
 		at={(0.993,0.98)}
-	},	
+	} ,	
 	every node near coord/.append style={/pgf/number format/fixed,/pgf/number format/precision=2,  /pgf/number format/fixed zerofill,/pgf/number format/use comma,/pgf/number format/1000 sep={},rotate=90, anchor=west,
 		check for zero/.code={
 			\pgfkeys{/pgf/fpu=true}
-			\pgfmathparse{\pgfplotspointmeta-1}
+			\pgfmathparse{\pgfplotspointmeta-50} % Limit to show tips.
 			\pgfmathfloatifflags{\pgfmathresult}{-}{
 				\pgfkeys{/tikz/coordinate}
 			}{}
@@ -48,16 +48,16 @@
 
 % Defines color spec 
 % http://www.color-hex.com for color details
-\definecolor{c0color}{HTML}{002d3d} 
-\definecolor{c1color}{HTML}{00FFFF}
-\definecolor{c2color}{HTML}{0080FF}
-\definecolor{c3color}{HTML}{0000FF}
-\definecolor{c4color}{HTML}{8000FF}
-\definecolor{c5color}{HTML}{FF00FF}
-\definecolor{c6color}{HTML}{FF0080}
-\definecolor{c7color}{HTML}{FF0000}
-\definecolor{c8color}{HTML}{800000}
-\definecolor{c9color}{HTML}{000000}
+\definecolor{c1color}{HTML}{0000D6}
+\definecolor{c2color}{HTML}{009D9A}
+\definecolor{c3color}{HTML}{E600E6}
+\definecolor{c4color}{HTML}{18A618}
+\definecolor{c5color}{HTML}{8000FF}
+\definecolor{c6color}{HTML}{FF00FF}
+\definecolor{c7color}{HTML}{FF0080}
+\definecolor{c8color}{HTML}{FF0000}
+\definecolor{c9color}{HTML}{800000}
+\definecolor{c0color}{HTML}{000000}
 
 % 10 Shades of gray
 \definecolor{c0gray}{HTML}{000000} 
@@ -70,6 +70,14 @@
 \definecolor{c7gray}{HTML}{666666}
 \definecolor{c8gray}{HTML}{474747}
 \definecolor{c9gray}{HTML}{a3a3a3}
+
+% For scopes
+\definecolor{ch1color}{HTML}{0000D6}
+\definecolor{ch2color}{HTML}{009D9A}
+\definecolor{ch3color}{HTML}{E600E6}
+\definecolor{ch4color}{HTML}{18A618}
+\definecolor{mathcolor}{HTML}{F70000}
+
 
 
 \begin{document}

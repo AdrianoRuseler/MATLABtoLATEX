@@ -56,6 +56,8 @@ if nargin <2 % input options not supplied
     options.vertsep='0.2cm'; % Vertical axis separation 
     options.horisep='1cm'; % Horizontal axis separation 
     options.enlargexlimits='abs=10';
+    options.xtickselements=5; % Numbers of elements in xticks
+    options.minvalue=1; % minimal value to consider in plot
 end
 
 
@@ -102,8 +104,11 @@ cd(dirstruct.fftscopestorage)
      fclose(fileID); % Close it.
   
       
+    
+  
+     
 
-
+%% Loop for plots
 
 for f=1:length(FFTdata) % Loop for plots
     
@@ -112,35 +117,7 @@ for f=1:length(FFTdata) % Loop for plots
         continue
     end
     
-%     disp(FFTdata(f))
-    
-    %% Polt data
-%     if options.PlotData
-%         figure
-%         subplot(3,1,1);
-%         plot(FFTdata(f).t,FFTdata(f).Y)
-%         title(['FFT window: ' num2str(FFTdata(f).cycles) ' cycle(s)'])
-%         ylabel('y')
-%         xlabel('Time')
-%         grid on
-%         axis tight
-%         
-%         subplot(3,1,2);
-%         bar(FFTdata(f).freq,FFTdata(f).mag)
-% %         title(['FFT window: ' num2str(FFTdata(f).cycles) ' cycle(s)'])
-%         ylabel('Mag')
-%         xlabel('Frequency')
-%         grid on
-%         axis tight
-%         
-%         subplot(3,1,3);
-%         bar(FFTdata(f).freq,FFTdata(f).phase)
-%         ylabel('Phase')
-%         xlabel('Frequency')
-%         grid on
-%         axis tight
-%     end   
-    
+      
     %% Find limits and extra data
     
     ind=find(FFTdata(f).freq==FFTdata(f).fundamental);
@@ -166,7 +143,18 @@ for f=1:length(FFTdata) % Loop for plots
     
     thd(f)=FFTdata(f).THD;
     
+    if ~isequal(options.minvalue,0)  %% Comform data        
+       indMin=find(FFTdata(f).magPerFund >=options.minvalue); % Find elements that are greater than
+       FFTdata(f).freq = FFTdata(f).freq(indMin);
+       FFTdata(f).mag = FFTdata(f).mag(indMin);
+       FFTdata(f).phase = FFTdata(f).phase(indMin);
+       FFTdata(f).magPerFund = FFTdata(f).magPerFund(indMin);        
+    end
+    
+    
     %% Write to folder
+    
+    
     
     filename{f}=[FFTSCOPEdata.blockName FFTSCOPEdata.signals(f).label];
     % Colect data
@@ -218,7 +206,7 @@ fprintf(fileoutID,'%s\n',siunitxstr);
 gsx = options.groupsize(1); % Gets plot group size
 gsy = options.groupsize(2);
 
-fprintf(fileoutID,'\n%s\n',['\begin{groupplot}[group style={group size= ' num2str(gsx) ' by ' num2str(gsy) ', vertical sep=' options.vertsep ',  horizontal sep=' options.horisep '},ylabel absolute, ylabel style={yshift=-0.5cm}, x tick label style={ /pgf/number format/1000 sep=}] ']);
+fprintf(fileoutID,'\n%s\n\n',['\begin{groupplot}[group style={group size= ' num2str(gsx) ' by ' num2str(gsy) ', vertical sep=' options.vertsep ',  horizontal sep=' options.horisep '},ylabel absolute, ylabel style={yshift=-0.5cm}, x tick label style={ /pgf/number format/1000 sep=}] ']);
 
 nplot=0;
 for i=1:gsx
@@ -234,7 +222,9 @@ for i=1:gsx
             FundamentalALL=mean(Fundamental(plotin));
         else
             FundamentalALL=Fundamental(plotin(1));
-        end
+        end        
+
+
         
         showflags=options.groupplotshowlabels{i,j}; % [ylabel xlabel yticklabel xticklabel]
         
@@ -256,10 +246,10 @@ for i=1:gsx
             ytickstr='yticklabel=\empty';
         end  
         
-        if showflags(4) % xticklabel
-            xtickstr=['xtick ={0,60,180,...,' num2str(MaxFrequencyAll) '}'];
+        if showflags(4) % xticklabel    options.xtickselements              
+            xtickstr=['xtick ={' options.xtickselements{i,j} '}']; % Must be manual because of number size limitations
         else
-            xtickstr=['xtick ={0,60,180,...,' num2str(MaxFrequencyAll) '},xticklabel=\empty'];
+            xtickstr=['xtick ={' options.xtickselements{i,j} '},xticklabel=\empty'];
         end
    
       
@@ -268,7 +258,7 @@ for i=1:gsx
         else
             nextgroupplotstr{2}=[ xtickstr ',ymin=0,ymax=' num2str(ymaxALL) ',' ytickstr ','];
         end        
-        fprintf(fileoutID,'%s\n\n\n',nextgroupplotstr{1});
+        fprintf(fileoutID,'%s\n',nextgroupplotstr{1});
         fprintf(fileoutID,'%s\n',nextgroupplotstr{2});        
         
         fprintf(fileoutID,'%s\n',xylabelstr);

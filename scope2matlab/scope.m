@@ -87,6 +87,7 @@ fftscope.time=SCOPEdata.time-SCOPEdata.time(1); % Time starts from zero
 fftscope.signals=SCOPEdata.signals; % Copy signals
 fftscope.blockName=SCOPEdata.blockName; % Copy Block name
 
+fftscope.signals(4).values=SCOPEdata.signals(4).values-mean(SCOPEdata.signals(4).values); % Remove DC offset
 
 
 % SCOPEdata.time=SCOPEdata.time-SCOPEdata.time(1); % correct time
@@ -95,6 +96,7 @@ power_fftscope % Call fftscope
 tmpfft=power_fftscope;
 fftscope.fft(tmpfft.input)=tmpfft;
 
+fftscopeV=fftscope;
 
 
 %%
@@ -105,7 +107,7 @@ fftscope.fft(tmpfft.input)=tmpfft;
     options.nplots=1; % Number of plots
     options.fullxtick=0; % Display all frequencies in xtick DESABLED
     options.numdisp=0; % Display numbers above relevant bars
-    options.barwidth={'2pt','5pt'};
+    options.barwidth={'0.1pt','0.1pt'};
     
     options.groupsize=[2 1]; % Defines the number of screens  
 
@@ -114,12 +116,46 @@ fftscope.fft(tmpfft.input)=tmpfft;
     options.groupplotshowlabels{1,1}=[1 1 1 1]; % [ylabel xlabel yticklabel xticklabel]
     options.groupplotshowlabels{2,1}=[0 1 1 1]; % [ylabel xlabel yticklabel xticklabel]
     options.vertsep='0.2cm'; % Vertical axis separation 
-    options.horisep='0.5cm'; % Horizontal axis separation
+    options.horisep='1cm'; % Horizontal axis separation
     options.enlargexlimits='abs=15';
+    
+    options.xtickselements{1,1}='60,20000, 40000, 60000, 80000, 100000'; % Numbers of elements in xticks
+    options.xtickselements{2,1}='60,20000, 40000, 60000, 80000, 100000'; % Numbers of elements in xticks
+    options.minvalue=0; % minimal value to consider in plot
+    
+fftscope2tikz(fftscope,options)
+
+
+%% Single
+    options.English=1;
+    options.Compile=1;
+    options.PlotData=0;
+    options.MagPerFund=1; % Plot relative to fundamental
+    options.nplots=1; % Number of plots
+    options.fullxtick=0; % Display all frequencies in xtick DESABLED
+    options.numdisp=0; % Display numbers above relevant bars
+    options.barwidth={'0.1pt','0.1pt'};
+    
+    options.groupsize=[2 1]; % Defines the number of screens  
+
+    options.groupplot{1,1}=[1 2 3]; % Associates inputs with plots
+    options.groupplot{2,1}=[4]; 
+    options.groupplotshowlabels{1,1}=[1 1 1 1]; % [ylabel xlabel yticklabel xticklabel]
+    options.groupplotshowlabels{2,1}=[0 1 1 1]; % [ylabel xlabel yticklabel xticklabel]
+    options.vertsep='0.2cm'; % Vertical axis separation 
+    options.horisep='1cm'; % Horizontal axis separation
+    options.enlargexlimits='abs=15';
+    
+    options.xtickselements{1,1}='60,20000, 40000, 60000, 80000, 100000'; % Numbers of elements in xticks
+    options.xtickselements{2,1}='60,20000, 40000, 60000, 80000, 100000'; % Numbers of elements in xticks
+    options.minvalue=0; % minimal value to consider in plot
     
 fftscope2tikz(fftscope,options)
 
 %%
+%         xticks = linspace(0,FundamentalALL*round(MaxFrequencyAll/FundamentalALL),options.xtickselements);        
+%         datastring = num2str(xticks,'%d,');
+%         datastring = datastring(1:end-1);% strip final comma
 
 FFTSCOPEdata=fftscope
 
