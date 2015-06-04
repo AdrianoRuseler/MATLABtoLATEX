@@ -36,7 +36,7 @@ status = 0; % Lets assume that we are good to go!
 
 %% Set all relevant folders in matlab serach path.
 disp(' ')
-disp('Setting all relevant folders in matlab serach path...')
+disp('Setting all relevant folders in matlab search path...')
 wdir=pwd; % gets actual working directory
 
 %  which('setpaths') 
@@ -50,7 +50,8 @@ addfolder{4}=[folder '\psim2matlab'];
 addfolder{5}=[folder '\scope2matlab'];
 addfolder{6}=[folder '\misc'];
 addfolder{7}=[folder '\fftsope2tikz'];
-addfolder{7}=[folder '\bode2tikz'];
+addfolder{8}=[folder '\bode2tikz'];
+
 
 for f=1:length(addfolder)
     if isequal(exist(addfolder{f},'dir'),7) % verifies if folder exist

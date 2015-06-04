@@ -38,93 +38,56 @@ catch
 end
 
 if nargin <2 % input options not supplied
-    options.English=0;
+    options.English=1;
     options.Compile=1;
     options.PlotData=0;
     options.MagPerFund=1; % Plot relative to fundamental
     options.nplots=1; % Number of plots
+    options.fullxtick=0; % Display all frequencies in xtick DESABLED
+    options.numdisp=0; % Display numbers above relevant bars
+    options.barwidth={'1pt','5pt'};
+    
+    options.groupsize=[1 2]; % Defines the number of screens
+    options.groupplot{1,1}=[1 2 3 ]; % Associates inputs with plots
+    options.groupplot{1,2}=[1 4]; 
+    options.groupplotshowlabels{1,1}=[1 1 1 1]; % [ylabel xlabel yticklabel xticklabel]
+    options.groupplotshowlabels{1,2}=[1 1 1 1]; % [ylabel xlabel yticklabel xticklabel]
+
+    options.vertsep='0.2cm'; % Vertical axis separation 
+    options.horisep='1cm'; % Horizontal axis separation 
+    options.enlargexlimits='abs=10';
 end
+
+
 
 if nargin <1 % input data not supplied
      power_fftscope
-     fftscope2tikz(power_fftscope)
+%      fftscope2tikz(power_fftscope)
      return
 end
 
-if ~isfield(FFTSCOPEdata,'freq')
+
+if ~isfield(FFTSCOPEdata,'fft')
     warning('Frequency analysis not found!')
     return
 end
 
-BASEdata = evalin('base', FFTSCOPEdata.structure); % Load analysed data from base workspace
 
+% BASEdata = evalin('base', FFTSCOPEdata.fft.structure); % Load analysed data from base workspace
 
+FFTdata = FFTSCOPEdata.fft; % Copy FFT data from struct
+todaynow = datestr(now,'-yyyy.mm.dd-HH.MM.SS'); % Generates date string
 
+dirname=[FFTSCOPEdata.blockName todaynow]; % Directory name where all files will be stored
 
-%% Display data
-
-disp(FFTSCOPEdata)
-
-disp(BASEdata)
-
-
-%% Polt data
-if options.PlotData
-    figure
-    subplot(3,1,1);
-    plot(FFTSCOPEdata.t,FFTSCOPEdata.Y)
-    grid on
-    axis tight
-    
-     subplot(3,1,2);
-    bar(FFTSCOPEdata.freq,FFTSCOPEdata.mag)
-    grid on
-    axis tight
-    
-    subplot(3,1,3);
-    bar(FFTSCOPEdata.freq,FFTSCOPEdata.phase)
-    grid on
-    axis tight
-end
-
-%% Find limits and extra data
-
-ind=find(FFTSCOPEdata.freq,FFTSCOPEdata.fundamental);
-indFund=ind(1);
-
-MagFund=FFTSCOPEdata.mag(indFund);
-PhaseFund=FFTSCOPEdata.phase(indFund);
-
-
-fakeMag=FFTSCOPEdata.mag;
-fakeMag(indFund)=0;
-
-% indexmax = find(max(fakeMag) == fakeMag);
-ymax=round(1.25*FFTSCOPEdata.mag((max(fakeMag) == fakeMag)));
-
-FFTSCOPEdata.magPerFund=100*FFTSCOPEdata.mag/MagFund;
-
-ymaxPer=round(125*FFTSCOPEdata.mag((max(fakeMag) == fakeMag))/MagFund);
-
-
-
-%% Write folder
-
-name=[FFTSCOPEdata.structure BASEdata.blockName BASEdata.signals(FFTSCOPEdata.input).label];
 %  Create folder under psimdir to store mat file
-[s,mess,messid] = mkdir(dirstruct.fftscopedir, name); % Check here
-dirstruct.fftscopestorage = [dirstruct.fftscopedir '\' name]; %
+[s,mess,messid] = mkdir(dirstruct.fftscopedir, dirname); % Check here
+dirstruct.fftscopestorage = [dirstruct.fftscopedir '\' dirname]; %
 
 assignin('base','dirstruct',dirstruct);
 cd(dirstruct.root)
 save('dirstruct.mat','dirstruct')
 cd(dirstruct.fftscopestorage)
-
-% Colect data
-csvdata=[FFTSCOPEdata.freq FFTSCOPEdata.mag FFTSCOPEdata.phase FFTSCOPEdata.magPerFund];
-csvheader='freq,mag,phase,magperfund';
-csvfilename=[dirstruct.fftscopestorage '\' name '.csv'];
-savecsvfile(csvdata, csvheader, csvfilename); % Save to folder
 
 
 
@@ -137,16 +100,96 @@ savecsvfile(csvdata, csvheader, csvfilename); % Save to folder
      fileID = fopen('fftend.tex','r'); % Opens ending tex file
      endtex = fread(fileID); % Copy content
      fclose(fileID); % Close it.
-         
+  
+      
 
-     %% Write tex file
-     if options.MagPerFund
-         fileoutID = fopen([name 'relative.tex'],'w');
-     else
-         fileoutID = fopen([name '.tex'],'w');
-     end
-     fwrite(fileoutID,preamble);
 
+
+for f=1:length(FFTdata) % Loop for plots
+    
+%     FFTSCOPEdata=FFTdata(f); % Must verify if is not empty
+    if ~isfield(FFTdata(f),'freq') % A simple way to check if data is present
+        continue
+    end
+    
+%     disp(FFTdata(f))
+    
+    %% Polt data
+%     if options.PlotData
+%         figure
+%         subplot(3,1,1);
+%         plot(FFTdata(f).t,FFTdata(f).Y)
+%         title(['FFT window: ' num2str(FFTdata(f).cycles) ' cycle(s)'])
+%         ylabel('y')
+%         xlabel('Time')
+%         grid on
+%         axis tight
+%         
+%         subplot(3,1,2);
+%         bar(FFTdata(f).freq,FFTdata(f).mag)
+% %         title(['FFT window: ' num2str(FFTdata(f).cycles) ' cycle(s)'])
+%         ylabel('Mag')
+%         xlabel('Frequency')
+%         grid on
+%         axis tight
+%         
+%         subplot(3,1,3);
+%         bar(FFTdata(f).freq,FFTdata(f).phase)
+%         ylabel('Phase')
+%         xlabel('Frequency')
+%         grid on
+%         axis tight
+%     end   
+    
+    %% Find limits and extra data
+    
+    ind=find(FFTdata(f).freq==FFTdata(f).fundamental);
+    indFund=ind(1);
+    
+    freqxtick{f}=strjoin(cellstr(num2str(FFTdata(f).freq)),',');
+    
+    MagFund(f)=FFTdata(f).mag(indFund);
+    PhaseFund(f)=FFTdata(f).phase(indFund);   
+    
+    fakeMag=FFTdata(f).mag;
+    fakeMag(indFund)=0;
+    
+    % indexmax = find(max(fakeMag) == fakeMag);
+    ymax(f)=round(1.25*FFTdata(f).mag((max(fakeMag) == fakeMag)));
+    
+    FFTdata(f).magPerFund=100*FFTdata(f).mag/MagFund(f);
+    
+    ymaxPer(f)=round(125*FFTdata(f).mag((max(fakeMag) == fakeMag))/MagFund(f));
+    
+    MaxFrequency(f)=FFTdata(f).MaxFrequency;
+    Fundamental(f)=FFTdata(f).fundamental;
+    
+    thd(f)=FFTdata(f).THD;
+    
+    %% Write to folder
+    
+    filename{f}=[FFTSCOPEdata.blockName FFTSCOPEdata.signals(f).label];
+    % Colect data
+    csvdata=[FFTdata(f).freq FFTdata(f).mag FFTdata(f).phase FFTdata(f).magPerFund];
+    csvheader='freq,mag,phase,magperfund';
+    csvfilename=[dirstruct.fftscopestorage '\' filename{f} '.csv'];
+    savecsvfile(csvdata, csvheader, csvfilename); % Save to folder
+    
+    
+end % End of 1st loop
+
+
+
+%% Write tex file
+if options.MagPerFund
+    fileoutID = fopen([dirname '_relative.tex'],'w'); % Creates file
+else
+    fileoutID = fopen([dirname '.tex'],'w'); % Creates file
+end
+
+fwrite(fileoutID,preamble); % Creates file
+ 
+    
 if options.English
     xlabelstr='Frequency (Hz)';
     yMaglabel='Magnitude';
@@ -164,31 +207,85 @@ end
 fprintf(fileoutID,'\n%s\n','% Settings for siunitx package');
 fprintf(fileoutID,'%s\n',siunitxstr);
 
-fprintf(fileoutID,'\n%s\n',['\begin{groupplot}[group style={group size= 1 by ' num2str(options.nplots) ', vertical sep=0.2cm,  horizontal sep=1cm},ylabel absolute,ybar,x tick label style={ /pgf/number format/1000 sep=}] ']);
-fprintf(fileoutID,'%s\n','\nextgroupplot[height=\axisheight,width=\axiswidth,grid=major, enlarge y limits={upper,value=0.2},xticklabel style= {rotate=90,anchor=near xticklabel},');
 
-if options.MagPerFund    
-    fprintf(fileoutID,'%s\n',['xtick = {0,60,180,...,' num2str(FFTSCOPEdata.MaxFrequency) '},xmin=-60,ymin=0,ymax=' num2str(ymaxPer) ',']);
-    fprintf(fileoutID,'%s\n',['title={Fundamental (\SI{' num2str(FFTSCOPEdata.fundamental) '}{\hertz}) = \SI{' num2str(MagFund) '}{};  THD: \SI{' num2str(FFTSCOPEdata.THD) '}{};},']);
-    fprintf(fileoutID,'%s\n',['xlabel=' xlabelstr ',ylabel=' yMagPerlabel ',']);
-    fprintf(fileoutID,'%s\n','] % End of axis configurations');
-    
-    addplotstr=['\addplot[nodes near coords,fill,c0color]table[x=freq,y=magperfund,col sep=comma]{' name '.csv}; % Add plot data'];
-    fprintf(fileoutID,'%s\n',addplotstr);  
-    
-else
-    fprintf(fileoutID,'%s\n',['xtick = {60,180,...,' num2str(FFTSCOPEdata.MaxFrequency) '},xmin=-60,ymin=0,ymax=' num2str(ymax) ',ytick = {0,5,...,' num2str(round(FFTSCOPEdata.fundamental)) '},']);
-    fprintf(fileoutID,'%s\n',['title={Fundamental (\SI{' num2str(FFTSCOPEdata.fundamental) '}{\hertz}) = \SI{' num2str(MagFund) '}{};  THD: \SI{' num2str(FFTSCOPEdata.THD) '}{};},']);
-    fprintf(fileoutID,'%s\n',['xlabel=' xlabelstr ',ylabel=' yMaglabel ',']);
-    fprintf(fileoutID,'%s\n','] % End of axis configurations');
-    
-    addplotstr=['\addplot[nodes near coords,fill,c0color]table[x=freq,y=mag,col sep=comma]{' name '.csv}; % Add plot data'];
-    fprintf(fileoutID,'%s\n',addplotstr);
+%% Select data plot mode
+
+% All in one
+
+% group size x - gsx
+% group size y - gsy
+
+gsx = options.groupsize(1); % Gets plot group size
+gsy = options.groupsize(2);
+
+fprintf(fileoutID,'\n%s\n',['\begin{groupplot}[group style={group size= ' num2str(gsx) ' by ' num2str(gsy) ', vertical sep=' options.vertsep ',  horizontal sep=' options.horisep '},ylabel absolute, ylabel style={yshift=-0.5cm}, x tick label style={ /pgf/number format/1000 sep=}] ']);
+
+nplot=0;
+for i=1:gsx
+    for j=1:gsy 
+        nplot=nplot+1;        
+        nextgroupplotstr{1}=['\nextgroupplot[height=\axisheight,width=\axiswidth,grid=major, enlarge x limits={' options.enlargexlimits '}, enlarge y limits={upper,value=0.2}, ybar=0pt,bar width=' options.barwidth{nplot} ','];
+        plotin=options.groupplot{i,j}; % Plots inputs for actual screen
+        ymaxALL = max(ymax(plotin)); %Finds max from axis Y
+        ymaxPerALL = max(ymaxPer(plotin)); %Finds max from axis Y
+        MaxFrequencyAll=max(MaxFrequency(plotin));
+        
+        if all(Fundamental(plotin)==mean(Fundamental(plotin)))
+            FundamentalALL=mean(Fundamental(plotin));
+        else
+            FundamentalALL=Fundamental(plotin(1));
+        end
+        
+        showflags=options.groupplotshowlabels{i,j}; % [ylabel xlabel yticklabel xticklabel]
+        
+        if showflags(1) % ylabel
+           xylabelstr = ['ylabel=' yMagPerlabel ','];           
+        else
+            xylabelstr='ylabel=\empty, ';
+        end       
+        
+        if showflags(2) % xlabel
+           xylabelstr = [xylabelstr 'xlabel=' xlabelstr ','];
+        else
+            xylabelstr = [xylabelstr 'xlabel=\empty, '];
+        end        
+
+        if showflags(3) % yticklabel
+            ytickstr= ' '; % Not implemented yet
+        else
+            ytickstr='yticklabel=\empty';
+        end  
+        
+        if showflags(4) % xticklabel
+            xtickstr=['xtick ={0,60,180,...,' num2str(MaxFrequencyAll) '}'];
+        else
+            xtickstr=['xtick ={0,60,180,...,' num2str(MaxFrequencyAll) '},xticklabel=\empty'];
+        end
+   
+      
+        if options.MagPerFund
+            nextgroupplotstr{2}=['xticklabel style= {rotate=0,anchor=near xticklabel}, ' xtickstr ',ymin=0,ymax=' num2str(ymaxPerALL) ',' ytickstr ','];
+        else
+            nextgroupplotstr{2}=[ xtickstr ',ymin=0,ymax=' num2str(ymaxALL) ',' ytickstr ','];
+        end        
+        fprintf(fileoutID,'%s\n\n\n',nextgroupplotstr{1});
+        fprintf(fileoutID,'%s\n',nextgroupplotstr{2});        
+        
+        fprintf(fileoutID,'%s\n',xylabelstr);
+        fprintf(fileoutID,'%s\n\n','] % End of axis configurations');      
+      
+        for ind=1:length(plotin)
+            titlestr=['Fundamental (\SI{' num2str(Fundamental(plotin(ind))) '}{\hertz}) = \SI{' num2str(MagFund(plotin(ind))) '}{};  THD: \SI{' num2str(thd(plotin(ind))) '}{} \%;'];
+            addplotstr=['\addplot[nodes near coords,fill,c' num2str(plotin(ind)) 'color]table[x=freq,y=magperfund,col sep=comma]{' filename{plotin(ind)} '.csv}; % Add plot data'];
+            fprintf(fileoutID,'%s\n',addplotstr);  
+            fprintf(fileoutID,'%s\n',['\addlegendentry{' FFTSCOPEdata.signals(plotin(ind)).label ' - ' titlestr '};']);
+        end    
+    end
 end
-    fprintf(fileoutID,'%s\n',['\addlegendentry{' BASEdata.signals(FFTSCOPEdata.input).label '};']);
     
      fwrite(fileoutID,endtex);    
      fclose(fileoutID);
+
      
        %% Compile figure
  if options.Compile

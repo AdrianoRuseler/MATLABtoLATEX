@@ -47,18 +47,19 @@ disp(PSIMdata.simview)
 %% Now we are ready to plot from PSIM data;
 
     options.Compile=1;  % Compiles the latex code
-    options.ManualTips=1; % Select manually tips positions
+    options.ManualTips=0; % Select manually tips positions
     options.SetVar=1; % Set plot associated variables
-    options.English=1; % Output in English?
+    options.English=0; % Output in English?
     options.simviewcolor=0; % Plot with simview color settings
     options.shadesgray=0; % Plot with shades of gray
-    options.PutTips=1; % Put arrow
-    options.PutLegend=1;
-    options.PutYLabel=1;
+    options.PutTips=0; % Put arrow
+    options.PutLegend=0;
+    options.PutYLabel=0;
     options.PutAxisLabel=1; % Puts (a), (b), ... in rigth side of each axis
     options.PutTitle=0; % Show title
     options.DSPlot=0;
-    options.DSpoints=2500; % Number of points
+    options.DSpoints=1000; % Number of points
+    options.AxisType=1; % tipo de eixo utilizado
     
 psim2tikz(PSIMdata,options) 
 
@@ -66,7 +67,8 @@ psim2tikz(PSIMdata,options)
 %% Can be used with
 power_fftscope
 
-FFTSCOPEdata=power_fftscope
+FFTSCOPEdata=power_fftscope;
+SCOPEdata.time(1)
 
 fftscope2tikz(FFTSCOPEdata)
 

@@ -32,7 +32,9 @@
 
 function [SCOPEdata] = set2struct(SCOPEset)
 
-SCOPEdata=[]; % We have to return something
+% We have to return something
+SCOPEdata = evalin('base', 'SCOPEdata'); % Load SCOPEdata from base workspace
+
 % Loads directory structure
 try
     dirstruct = evalin('base', 'dirstruct'); % Load dirstruct from base workspace
@@ -53,6 +55,7 @@ if nargin <1 % input file not supplied
     [SCOPEsetFile,SCOPEsetPath] = uigetfile('*.set','Select the scope setup file');
     if isequal(SCOPEsetFile,0)
         disp('User selected Cancel')
+        SCOPEdata.setstruct=[];
           return
     end    
      SCOPEset=[SCOPEsetPath SCOPEsetFile]; % Provide SCOPEset file 

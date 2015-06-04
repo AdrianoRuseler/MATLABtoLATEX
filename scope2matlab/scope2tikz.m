@@ -46,12 +46,12 @@ end
 if nargin <2 % Look for options entry
     % Options not supplied - use default  
     options.Compile=1;  % Compiles the latex code
-    options.FullData=0; % Generates figure with full data set
-    options.DSPlot=1; % downsampled plot
+    options.FullData=1; % Generates figure with full data set
+    options.DSPlot=0; % downsampled plot
     options.ManualTips=1; % Select manually tips positions
     options.SetVar=1; % Set channels associated variables
     options.DSpoints=5000; % Data length for downsampled version
-    options.English=1; % Output in English?
+    options.English=0; % Output in English?
 end
     
 
@@ -110,7 +110,10 @@ selectnames=fieldnames(wstruct.select); % what channels are selected?
 csvheader='time'; % Initialize header
 c=1; % Number of curves to plot
 
+timepos = wstruct.horizontal.position;
 SCREENdata=(SCOPEdata.time-wstruct.horizontal.delay.time)/wstruct.horizontal.scale;
+
+SCREENdata=SCREENdata+(timepos-50)/10; % Correct time possition 
 
 
 for s=1:length(selectnames) % Get with flag set to 1
@@ -231,6 +234,9 @@ for m=1:length(measurements)
             case 'RMS'
 %                 disp('RMS')
                 chindex = find(not(cellfun('isempty', strfind(labels,lower(mfield.source1))))); %
+                if isempty(chindex)
+                    continue
+                end                
                 ydata=SCOPEdata.signals(chindex).values;
                 mfield.value = rms(ydata);
                 units=eval(['wstruct.' lower(mfield.source1) '.yunits']);
@@ -244,6 +250,9 @@ for m=1:length(measurements)
             case 'MEAN'
 %                 disp('MEAN')
                 chindex = find(not(cellfun('isempty', strfind(labels,lower(mfield.source1))))); %
+                if isempty(chindex)
+                    continue
+                end
                 ydata=SCOPEdata.signals(chindex).values;
                 mfield.value = mean(ydata);
                 
@@ -255,8 +264,30 @@ for m=1:length(measurements)
                 end
                 measstr=[ measstr '\\' mfield.type ': \SI{' num2str(mfield.value) '}{\' units '}' ];
                 eval(['wstruct.' lower(mfield.source1) '.legendmeas=measstr;']);
-            otherwise
-                disp('otherwise')
+            otherwise % Add manually
+                disp(['Please, add ' mfield.type ' measurement manually'])
+                
+                prompt = {[mfield.source1 ' ' mfield.type ' name:'],[mfield.source1 ' ' mfield.type ' value:'],[mfield.source1 ' ' mfield.type ' unit (siunitx):']};
+                dlg_title = ['Add ' mfield.source1 ' ' mfield.type ' measurement'];
+                num_lines = 1;
+                def = {mfield.type,'',''};
+                answer = inputdlg(prompt,dlg_title,num_lines,def);
+                
+                if isempty(answer)
+                    continue
+                elseif isempty(answer{2})
+                    continue
+                elseif isempty(answer{3})
+                    continue
+                end
+                
+                if eval(['isfield(wstruct.' lower(mfield.source1) ',''legendmeas'')'])
+                    measstr=eval(['wstruct.' lower(mfield.source1) '.legendmeas;']);
+                else
+                    measstr='';
+                end
+                measstr=[ measstr '\\' answer{1} ': \SI{' answer{2} '}{\' answer{3} '}' ];
+                eval(['wstruct.' lower(mfield.source1) '.legendmeas=measstr;']);
         end
     end
 end
@@ -297,7 +328,8 @@ end
      screenfile = [SCOPEdata.blockName '.csv'];
      for c=1:length(curves) % Curves Loop
          addlegstr='}';
-         fprintf(fileoutID,'\n%s\n',['% Arrows and labels for channel ' curves{c}]);
+
+         fprintf(fileoutID,'%s\n',['% Arrows and labels for channel ' curves{c}]);
          addplotstr=['\addplot[solid,' curves{c} 'color]table[x=time,y=' curves{c} ',col sep=comma]{' screenfile '}; % Add plot data'];
          if strcmp(curves{c},'math') % If its a math channel
              chpos = num2str(wstruct.math.vertical.position);
@@ -311,6 +343,7 @@ end
                  addlegstr=[ eval(['wstruct.' curves{c} '.legendmeas']) '}'];
              end
          end
+
          refstr=['\node[coordinate,pin={[pin distance=\refdist,pin edge={stealth-,semithick,' curves{c} 'color}]0:{}}] at (axis cs:-5,' chpos '){}; % Print ref arrow'];
          if options.ManualTips
              thetastr = num2str( eval(['wstruct.' curves{c} '.tipfull.theta;']));
@@ -322,7 +355,9 @@ end
              tipstr=['\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]\tipangle' char(c+64) ':{' upper(curves{c}) '}}] at (axis cs:' num2str(xtip) ',' num2str(ytip) '){}; % Print curve tip'];
          end
          % write string on file
+         fprintf(fileoutID,'\n%s\n','\begin{scope}');
          fprintf(fileoutID,'%s\n',addplotstr);
+         fprintf(fileoutID,'\n%s\n','\end{scope}');
          fprintf(fileoutID,'%s\n',refstr);
          fprintf(fileoutID,'%s\n',tipstr);
          
@@ -390,8 +425,10 @@ end
             tipstr=['\node[coordinate,pin={[pin distance=\tipdist,pin edge={stealth-,semithick,black}]\tipangle' char(c+64) ':{' upper(curves{c}) '}}] at (axis cs:' num2str(xtip) ',' num2str(ytip) '){}; % Print curve tip'];
         end
         % write string on file
-        fprintf(fileoutID,'%s\n',addplotstr);
-        fprintf(fileoutID,'%s\n',refstr);
+         fprintf(fileoutID,'\n%s\n','\begin{scope}');
+         fprintf(fileoutID,'%s\n',addplotstr);
+         fprintf(fileoutID,'\n%s\n','\end{scope}');
+         fprintf(fileoutID,'%s\n',refstr);
         fprintf(fileoutID,'%s\n',tipstr);
         
         % Legend entry
@@ -440,10 +477,10 @@ end
 %  
 % [status,cmdout] = system('gswin64c -version','-echo'); % Verifies gs version
 % 
-% tic
-%  command='gswin64c -q -dNOPAUSE -dBATCH -sDEVICE=pngalpha -r300 -dEPSCrop -sOutputFile=tek0047full.png tek0047full.pdf';
-%  [status,cmdout] = system(command,'-echo');
-%  toc % Elapsed time is 5951.422537 seconds.
+%  tic
+%   command='gswin64c -q -dNOPAUSE -dBATCH -sDEVICE=pngalpha -r300 -dEPSCrop -sOutputFile=tek0035full.png tek0035full.pdf';
+%   [status,cmdout] = system(command,'-echo');
+%   toc % Elapsed time is 5951.422537 seconds.
 %  
 %  
  

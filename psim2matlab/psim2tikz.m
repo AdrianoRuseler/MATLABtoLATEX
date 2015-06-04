@@ -58,6 +58,7 @@ if nargin <2 % Look for options entry
     options.PutTitle=1; % Show title
     options.DSPlot=0;
     options.DSpoints=500; % Number of points
+    options.AxisType=1; % tipo de eixo utilizado
 end
 
 
@@ -290,7 +291,7 @@ fprintf(fileoutID,'\n%s\n',groupplotsrt);
 
 
 for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
-    for p = 1:length(plots)   
+    for p = 1:length(plots)  
        
 %         xinc = wstruct{p}.main.xinc;
         if wstruct{p}.main.numscreen==1 % If is single plot
