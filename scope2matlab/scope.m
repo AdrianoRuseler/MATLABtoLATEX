@@ -87,7 +87,7 @@ fftscope.time=SCOPEdata.time-SCOPEdata.time(1); % Time starts from zero
 fftscope.signals=SCOPEdata.signals; % Copy signals
 fftscope.blockName=SCOPEdata.blockName; % Copy Block name
 
-fftscope.signals(4).values=SCOPEdata.signals(4).values-mean(SCOPEdata.signals(4).values); % Remove DC offset
+% fftscope.signals(4).values=SCOPEdata.signals(4).values-mean(SCOPEdata.signals(4).values); % Remove DC offset
 
 
 % SCOPEdata.time=SCOPEdata.time-SCOPEdata.time(1); % correct time
@@ -96,7 +96,38 @@ power_fftscope % Call fftscope
 tmpfft=power_fftscope;
 fftscope.fft(tmpfft.input)=tmpfft;
 
-fftscopeV=fftscope;
+% 
+% scope2tikz(fftscope)
+% 
+% 
+% fftscopeV=fftscope;
+
+%% Espectro das correntes
+
+    options.English=0;
+    options.Compile=1;
+    options.PlotData=0;
+    options.MagPerFund=1; % Plot relative to fundamental
+    options.nplots=1; % Number of plots
+    options.fullxtick=0; % Display all frequencies in xtick DESABLED
+    options.numdisp=0; % Display numbers above relevant bars
+    options.barwidth={'0.5pt','0.5pt'};
+    
+    options.groupsize=[1 1]; % Defines the number of screens  
+
+    options.groupplot{1,1}=[1 2 3]; % Associates inputs with plots
+    options.groupplot{2,1}=[4]; 
+    options.groupplotshowlabels{1,1}=[1 1 1 1]; % [ylabel xlabel yticklabel xticklabel]
+    options.groupplotshowlabels{2,1}=[0 1 1 1]; % [ylabel xlabel yticklabel xticklabel]
+    options.vertsep='0.2cm'; % Vertical axis separation 
+    options.horisep='1cm'; % Horizontal axis separation
+    options.enlargexlimits='abs=15';
+    
+    options.xtickselements{1,1}='60,180, 300, 420, 540, 660, 780, 900'; % Numbers of elements in xticks
+    options.xtickselements{2,1}='60,20000, 40000, 60000, 80000, 100000'; % Numbers of elements in xticks
+    options.minvalue=0; % minimal value to consider in plot
+    
+fftscope2tikz(fftscope,options)
 
 
 %%
@@ -124,6 +155,13 @@ fftscopeV=fftscope;
     options.minvalue=0; % minimal value to consider in plot
     
 fftscope2tikz(fftscope,options)
+
+
+
+
+
+
+
 
 
 %% Single
@@ -177,40 +215,12 @@ fftscope2tikz(FFTSCOPEdataCH4)
 
 
 
-%% Set options
+%% Load digital signals
 
 
 
-
-
-    % Options not supplied - use default
-    options.Title.String='';
-    options.Title.FontSize=9.5;
-    options.Title.FontType='';
-    options.Title.Color='';
-    
-    options.XLabel.String='';
-    options.XLabel.FontSize=9.5;
-    options.XLabel.FontType='';
-    options.XLabel.Color='';
-
-    options.YLabel.String='';
-    options.YLabel.FontSize=9.5;
-    options.YLabel.FontType='';
-    options.YLabel.Color='';
-    
-    options.XLabel=1;
-    
-    options.Compile=1;  % Compiles the latex code
-    options.FullData=1; % Generates figure with full data set
-    options.DSPlot=1; % downsampled plot
-    options.English=0; % Output in English?
-    options.ManualTips=0; % 
-    options.DSpoints=5000;
-
-    scope2tikz(SCOPEdata,options)
-
-
-    
-    
+  
+ for d=length(SCOPEdata.signals):-1:1    
+     assignin('base', SCOPEdata.signals(d).label,SCOPEdata.signals(d).values)
+ end
 
