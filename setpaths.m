@@ -51,7 +51,7 @@ addfolder{5}=[folder '\scope2matlab'];
 addfolder{6}=[folder '\misc'];
 addfolder{7}=[folder '\fftsope2tikz'];
 addfolder{8}=[folder '\bode2tikz'];
-
+addfolder{9}=[folder '\maxwell2matlab'];
 
 for f=1:length(addfolder)
     if isequal(exist(addfolder{f},'dir'),7) % verifies if folder exist

@@ -1,7 +1,8 @@
 # ./Makefile
 
 ECHOCMD:=/bin/echo -e
-LATEX:=lualatex --shell-escape
+#LATEX:=lualatex --shell-escape
+LATEX:=pdflatex --shell-escape
 TARGET:=acid
 
 main:

@@ -260,6 +260,8 @@ function matlab2tikz_acidtest(varargin)
   fprintf(stdout, 'overall time: %4.2fs\n\n', elapsedTimeOverall);
 
 end
+
+
 % =========================================================================
 function cleanFiles(cleanBefore)
 % clean output files in ./tex using make

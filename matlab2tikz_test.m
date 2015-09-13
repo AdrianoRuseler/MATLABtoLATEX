@@ -55,5 +55,31 @@ for t=1:96
 end
 cd(wdir)
 
-%% 
+%% Build reference
 
+
+% Loads directory structure
+try
+    dirstruct = evalin('base', 'dirstruct'); % Load dirstruct from base workspace
+catch
+    [status, dirstruct]= checkdirstruct(); % Well, check this out
+end
+
+if isequal(exist(dirstruct.tikzdir,'dir'),7)
+    cd(dirstruct.tikzdir)
+end
+
+matlab2tikz('myfile.tex','standalone',true);
+
+% copyfile('Makefile',dirstruct.wdir)
+
+tic
+[status,cmdout] = system('make','-echo');
+toc
+
+cd(dirstruct.wdir)
+winopen(dirstruct.tikzdir)
+
+
+
+ 

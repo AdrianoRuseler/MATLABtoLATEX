@@ -1,5 +1,6 @@
+
 % =========================================================================
-% *** PSIM INDEX file
+% *** compile2tikz
 % ***  
 % ***  
 % =========================================================================
@@ -28,56 +29,51 @@
 % ***
 % =========================================================================
 
-% Test enviroment
 
-%% Test some examples
-% Example 01 
-% [folder, name, ext] = fileparts(which('psim')); 
+function compile2tikz(filename)
 
-% Read simulated data
-PSIMdata = psim2matlab();
+% Loads directory structure
+try
+    dirstruct = evalin('base', 'dirstruct'); % Load dirstruct from base workspace
+catch
+    [status, dirstruct]= checkdirstruct(); % Well, check this out
+end
 
-PSIMdata = rmfield(PSIMdata,'simview'); % Remove field 
+if isequal(exist(dirstruct.tikzdir,'dir'),7)
+    cd(dirstruct.tikzdir)
+end
 
-% Read simview settings (*.ini) and add to PSIMdata
-PSIMdata = psimini2struct();
-
-disp(PSIMdata.simview)
-
-%% Now we are ready to plot from PSIM data;
-
-    options.Compile=1;  % Compiles the latex code
-    options.ManualTips=0; % Select manually tips positions
-    options.SetVar=1; % Set plot associated variables
-    options.English=0; % Output in English?
-    options.simviewcolor=0; % Plot with simview color settings
-    options.shadesgray=0; % Plot with shades of gray
-    options.PutTips=0; % Put arrow
-    options.PutLegend=0;
-    options.PutYLabel=0;
-    options.PutAxisLabel=1; % Puts (a), (b), ... in rigth side of each axis
-    options.PutTitle=0; % Show title
-    options.DSPlot=0;
-    options.DSpoints=1000; % Number of points
-    options.AxisType=1; % tipo de eixo utilizado
-    
-psim2tikz(PSIMdata,options) 
+if nargin <1  %
+    [texfilename, texpathname] = uiputfile('*.tex', 'Save tex file as');
+    if isequal(txtfilename,0)
+        disp('User selected Cancel')
+        return
+    end
+    filename=[texpathname texfilename];
+end
 
 
-%% Can be used with
-power_fftscope
-
-FFTSCOPEdata=power_fftscope;
-SCOPEdata.time(1)
-
-fftscope2tikz(FFTSCOPEdata)
-
-
-
-%% Now we are ready to plot from PSIM data;
-
-psim2tikz(PSIMdata) 
+[pathstr, name, ext] = fileparts(filename);
+switch ext % Make a simple check of file extensions
+    case '.tex'
+        % Good to go!!
+    otherwise
+        disp('We expect an *.tex file.')
+        cd(dirstruct.wdir)
+        return
+end
 
 
-%% Read Fra from PSIM
-PSIMdata = rmfield(PSIMdata,'fra'); % Remove field 
+matlab2tikz([name ext],'standalone',true,'showInfo', false);
+
+% copyfile('Makefile',dirstruct.wdir)
+
+tic
+[status,cmdout] = system('make','-echo');
+toc
+
+cd(dirstruct.wdir)
+
+winopen(dirstruct.tikzdir)
+
+

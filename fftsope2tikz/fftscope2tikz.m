@@ -102,11 +102,7 @@ cd(dirstruct.fftscopestorage)
      fileID = fopen('fftend.tex','r'); % Opens ending tex file
      endtex = fread(fileID); % Copy content
      fclose(fileID); % Close it.
-  
-      
-    
-  
-     
+
 
 %% Loop for plots
 
@@ -116,10 +112,8 @@ for f=1:length(FFTdata) % Loop for plots
     if ~isfield(FFTdata(f),'freq') % A simple way to check if data is present
         continue
     end
-    
       
-    %% Find limits and extra data
-    
+    %% Find limits and extra data    
     ind=find(FFTdata(f).freq==FFTdata(f).fundamental);
     indFund=ind(1);
     
@@ -152,19 +146,18 @@ for f=1:length(FFTdata) % Loop for plots
     end
     
     
-    %% Write to folder
-    
-    
+    %% Write to folder    
     
     filename{f}=[FFTSCOPEdata.blockName FFTSCOPEdata.signals(f).label];
     % Colect data
     csvdata=[FFTdata(f).freq FFTdata(f).mag FFTdata(f).phase FFTdata(f).magPerFund];
     csvheader='freq,mag,phase,magperfund';
     csvfilename=[dirstruct.fftscopestorage '\' filename{f} '.csv'];
-    savecsvfile(csvdata, csvheader, csvfilename); % Save to folder
-    
+    savecsvfile(csvdata, csvheader, csvfilename); % Save to folder  
     
 end % End of 1st loop
+
+
 
 
 
@@ -176,7 +169,6 @@ else
 end
 
 fwrite(fileoutID,preamble); % Creates file
- 
     
 if options.English
     xlabelstr='Frequency (Hz)';
@@ -223,9 +215,7 @@ for i=1:gsx
         else
             FundamentalALL=Fundamental(plotin(1));
         end        
-
-
-        
+      
         showflags=options.groupplotshowlabels{i,j}; % [ylabel xlabel yticklabel xticklabel]
         
         if showflags(1) % ylabel
