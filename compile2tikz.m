@@ -30,8 +30,10 @@
 % =========================================================================
 
 
-function compile2tikz(filename)
+function compile2tikz(filename,papertype,FIGUREHANDLE)
 
+% figurescale
+% usesiunitx? true false
 % Loads directory structure
 try
     dirstruct = evalin('base', 'dirstruct'); % Load dirstruct from base workspace
@@ -43,6 +45,16 @@ if isequal(exist(dirstruct.tikzdir,'dir'),7)
     cd(dirstruct.tikzdir)
 end
 
+if nargin <3  %
+    FIGUREHANDLE=gcf;
+end
+
+if nargin <2  %
+%         papertype 
+    papertype='A5';   
+end
+
+
 if nargin <1  %
     [texfilename, texpathname] = uiputfile('*.tex', 'Save tex file as');
     if isequal(txtfilename,0)
@@ -52,6 +64,76 @@ if nargin <1  %
     filename=[texpathname texfilename];
 end
 
+switch papertype
+    case 'A4'
+        widthCHAR='512pt';
+        %             heightCHAR='3.566in'; % Is defined by matlab2tikz
+        extraCodestr=sprintf([  '\\usepackage{siunitx}\n',...
+            '\\usepackage{anyfontsize}\n',...
+            '\\renewcommand{\\normalsize}{\\fontsize{9pt}{11pt}}\n',...
+            '\\renewcommand{\\familydefault}{ptm} \n',...
+            '\\renewcommand{\\sfdefault}{cmss} \n',...
+            '\\renewcommand{\\rmdefault}{cmr} \n',...
+            '\\renewcommand{\\ttdefault}{cmtt} \n']);
+    case 'A4d'
+        widthCHAR='248pt';
+        %             heightCHAR='3.566in';
+        extraCodestr=sprintf([  '\\usepackage{siunitx}\n',...
+            '\\usepackage{anyfontsize}\n',...
+            '\\renewcommand{\\normalsize}{\\fontsize{9pt}{11pt}}\n',...
+            '\\renewcommand{\\familydefault}{ptm} \n',...
+            '\\renewcommand{\\sfdefault}{cmss} \n',...
+            '\\renewcommand{\\rmdefault}{cmr} \n',...
+            '\\renewcommand{\\ttdefault}{cmtt} \n']);
+    case 'A5'
+        widthCHAR='307pt';
+        %             heightCHAR='3.566in';
+        extraCodestr=sprintf([  '\\usepackage{siunitx}\n',...
+            '\\usepackage{anyfontsize}\n',...
+            '\\renewcommand{\\normalsize}{\\fontsize{9.5pt}{10.5pt}}\n',...
+            '\\renewcommand{\\familydefault}{cmr} \n',...
+            '\\renewcommand{\\sfdefault}{cmss} \n',...
+            '\\renewcommand{\\rmdefault}{cmr} \n',...
+            '\\renewcommand{\\ttdefault}{cmtt} \n']);
+    case 'A5d'
+        widthCHAR='148pt';
+        %             heightCHAR='3.566in';
+        extraCodestr=sprintf([  '\\usepackage{siunitx}\n',...
+            '\\usepackage{anyfontsize}\n',...
+            '\\renewcommand{\\normalsize}{\\fontsize{9.5pt}{10.5pt}}\n',...
+            '\\renewcommand{\\familydefault}{cmr} \n',...
+            '\\renewcommand{\\sfdefault}{cmss} \n',...
+            '\\renewcommand{\\rmdefault}{cmr} \n',...
+            '\\renewcommand{\\ttdefault}{cmtt} \n']);
+        
+    otherwise
+        widthCHAR='307pt';
+        extraCodestr=sprintf([  '\\usepackage{siunitx}\n',...
+            '\\usepackage{anyfontsize}\n',...
+            '\\renewcommand{\\normalsize}{\\fontsize{9.5pt}{10.5pt}}\n',...
+            '\\renewcommand{\\familydefault}{cmr} \n',...
+            '\\renewcommand{\\sfdefault}{cmss} \n',...
+            '\\renewcommand{\\rmdefault}{cmr} \n',...
+            '\\renewcommand{\\ttdefault}{cmtt} \n']);
+end
+
+%  \renewcommand{\normalsize}{\fontsize{15pt}{18pt}}
+% \renewcommand{\defaultfont}{\usefont{T1}{cmr}{bx}{n}}
+% \renewcommand{\normalsize}{\fontsize{10.5pt}{12pt}}
+
+
+                    
+  
+                    
+%  encoding: T1, family:cmr, series: m, shape: n, size: 9.5, baseline: 10.5pt
+
+% tikzoptionsstr=sprintf('\\tikzstyle{every node}=[font=\\fontsize{9.5}{10.5}, text=\\usefont{T1}{cmr}{bx}{n}\n');   
+
+
+% ipp = ipp.addParamValue(ipp, 'extraCode', {}, @isCellOrChar);
+% ipp = ipp.addParamValue(ipp, 'extraCodeAtEnd', {}, @isCellOrChar);
+% ipp = ipp.addParamValue(ipp, 'extraAxisOptions', {}, @isCellOrChar);
+% ipp = ipp.addParamValue(ipp, 'extraTikzpictureOptions', {}, @isCellOrChar);
 
 [pathstr, name, ext] = fileparts(filename);
 switch ext % Make a simple check of file extensions
@@ -63,13 +145,34 @@ switch ext % Make a simple check of file extensions
         return
 end
 
+% matlab2tikz([name ext],'standalone',true,'width','showInfo',false,'figurehandle',FIGUREHANDLE);
 
-matlab2tikz([name ext],'standalone',true,'showInfo', false);
+% matlab2tikz([name ext],'standalone',true,'width',widthCHAR,'showInfo', false,'figurehandle',FIGUREHANDLE,...
+%     'extraCode',extraCodestr,'extraTikzpictureOptions',tikzoptionsstr);
 
+matlab2tikz([name ext],'standalone',true,'width',widthCHAR,'showInfo', false,'figurehandle',FIGUREHANDLE,...
+    'extraCode',extraCodestr);
+
+% 
+% matlab2tikz('filehandle',FILEHANDLE,...) stores the LaTeX code in the file
+%     referenced by FILEHANDLE. (default: [])
+%  
+%     matlab2tikz('figurehandle',FIGUREHANDLE,...) explicitly specifies the
+%     handle of the figure that is to be stored. (default: gcf)
+
+%     matlab2tikz('strict',BOOL,...) tells matlab2tikz to adhere to MATLAB(R)
+%     conventions wherever there is room for relaxation. (default: false)
+%  
+%     matlab2tikz('strictFontSize',BOOL,...) retains the exact font sizes
+%     specified in MATLAB for the TikZ code. This goes against normal LaTeX
+%     practice. (default: false)
+    
+    
+    
 % copyfile('Makefile',dirstruct.wdir)
 
 tic
-[status,cmdout] = system('make','-echo');
+    [status,cmdout] = system('make','-echo');
 toc
 
 cd(dirstruct.wdir)

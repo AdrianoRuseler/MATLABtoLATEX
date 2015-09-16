@@ -1,8 +1,8 @@
 # ./Makefile
 
 ECHOCMD:=/bin/echo -e
-#LATEX:=lualatex --shell-escape -interaction=batchmode
-LATEX:=pdflatex --shell-escape -interaction=batchmode
+#LATEX:=lualatex --shell-escape --time-statistics -interaction=batchmode
+LATEX:=pdflatex --shell-escape --time-statistics -interaction=batchmode
 
 TEST_SRCS:=$(wildcard *.tex)
 TEST_PDFS:=$(TEST_SRCS:.tex=.pdf)

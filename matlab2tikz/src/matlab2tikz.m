@@ -191,8 +191,10 @@ m2t.preamble = sprintf(['\\usepackage[T1]{fontenc}\n', ...
                         '\\pgfplotsset{compat=newest}\n', ...
                         '\\usetikzlibrary{plotmarks}\n', ...
                         '\\usepgfplotslibrary{patchplots}\n', ...
-                        '\\usepackage{amsmath}\n']);
-
+                        '\\usepackage{amsmath}\n']);        
+                    
+                    
+                    
 %% scan the options
 ipp = m2tInputParser;
 
@@ -351,6 +353,10 @@ userInfo(m2t, versionInfo, m2t.website, m2t.name);
 %% Save the figure as TikZ to file
 saveToFile(m2t, fid, fileWasOpen);
 end
+
+
+
+
 % ==============================================================================
 function [m2t, fid, fileWasOpen] = openFileForOutput(m2t)
 % opens the output file and/or show a dialog to select one
@@ -5928,11 +5934,13 @@ function dims = pos2dims(pos)
         dims.top    = dims.bottom + dims.height;
     end
 end
+
 % OPTION ARRAYS ================================================================
 function opts = opts_new()
 % create a new options array
     opts = cell(0,2);
 end
+
 function opts = opts_add(opts, key, value)
 % add a key-value pair to an options array (with duplication check)
     if ~exist('value','var')
@@ -5954,6 +5962,7 @@ function opts = opts_add(opts, key, value)
     end
     opts = opts_append(opts, key, value);
 end
+
 function bool = opts_has(opts, key)
 % returns true if the options array contains the key
     bool = ~isempty(opts) && ismember(key, opts(:,1));
