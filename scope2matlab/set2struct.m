@@ -148,9 +148,9 @@ while ~feof(fileID)                          % and read until it ends
         for f=2:length(ssplit)-1
             CurrMainField = getname(ssplit{f});
             if f>2
-                structfiled =[structfiled '.' CurrMainField];
+                structfiled = [structfiled '.' CurrMainField];
             else
-                structfiled =CurrMainField;
+                structfiled = CurrMainField;
             end
         end        
         
@@ -162,10 +162,21 @@ while ~feof(fileID)                          % and read until it ends
             FieldValue = strtok(strvalue{2},'"'); % Leave it as it was if is not a number;
         end
    
+           
+        try       
         % Applies to the structure
-        eval(['setstruct.' structfiled '.' CurrMainField ' = FieldValue;'])
+        eval(['setstruct.' structfiled '.' CurrMainField ' = FieldValue;'])        
+        catch   
+        token = strsplit(['setstruct.' structfiled] , '.'); % Gets struct names
+        strtoken = strjoin({token{1:end-1}},'.');                
+          eval(['tmpfield=setstruct.' structfiled ';']) % Gets field value; 
+          eval([strtoken '=rmfield(' strtoken ',''' token{end} ''');']) % Removes field;                 
+          eval(['setstruct.' structfiled '.value=tmpfield;'])
+          eval(['setstruct.' structfiled '.' CurrMainField ' = FieldValue;']) 
+        end
     end
 end
+
 
 fclose(fileID);
 

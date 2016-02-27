@@ -179,4 +179,12 @@ cd(dirstruct.wdir)
 
 winopen(dirstruct.tikzdir)
 
+%% 
+
+
+
+
+% [status,cmdout] = system('latexindent -o CH00.tex CH00_2.tex','-echo')
+
+
 

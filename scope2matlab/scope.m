@@ -110,12 +110,12 @@ fftscope.fft(tmpfft.input)=tmpfft;
     options.MagPerFund=1; % Plot relative to fundamental
     options.nplots=1; % Number of plots
     options.fullxtick=0; % Display all frequencies in xtick DESABLED
-    options.numdisp=0; % Display numbers above relevant bars
+    options.numdisp=1; % Display numbers above relevant bars
     options.barwidth={'0.5pt','0.5pt'};
     
     options.groupsize=[1 1]; % Defines the number of screens  
 
-    options.groupplot{1,1}=[1 2 3]; % Associates inputs with plots
+    options.groupplot{1,1}=[2]; % Associates inputs with plots
     options.groupplot{2,1}=[4]; 
     options.groupplotshowlabels{1,1}=[1 1 1 1]; % [ylabel xlabel yticklabel xticklabel]
     options.groupplotshowlabels{2,1}=[0 1 1 1]; % [ylabel xlabel yticklabel xticklabel]
@@ -123,7 +123,7 @@ fftscope.fft(tmpfft.input)=tmpfft;
     options.horisep='1cm'; % Horizontal axis separation
     options.enlargexlimits='abs=15';
     
-    options.xtickselements{1,1}='60,180, 300, 420, 540, 660, 780, 900'; % Numbers of elements in xticks
+    options.xtickselements{1,1}='0,60,120, 180, 420, 540, 660, 780, 900'; % Numbers of elements in xticks
     options.xtickselements{2,1}='60,20000, 40000, 60000, 80000, 100000'; % Numbers of elements in xticks
     options.minvalue=0; % minimal value to consider in plot
     
@@ -131,7 +131,7 @@ fftscope2tikz(fftscope,options)
 
 
 %%
-    options.English=1;
+    options.English=0;
     options.Compile=1;
     options.PlotData=0;
     options.MagPerFund=1; % Plot relative to fundamental
