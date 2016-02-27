@@ -40,6 +40,9 @@ SCOPEdata = csv2struct();
 SCOPEdata = set2struct();
 
 
+
+
+
 %% Load all at once
  clear all
  [status, dirstruct]= checkdirstruct(); % Well, check this out
@@ -102,6 +105,9 @@ fftscope.fft(tmpfft.input)=tmpfft;
 % 
 % fftscopeV=fftscope;
 
+
+
+
 %% Espectro das correntes
 
     options.English=0;
@@ -111,24 +117,33 @@ fftscope.fft(tmpfft.input)=tmpfft;
     options.nplots=1; % Number of plots
     options.fullxtick=0; % Display all frequencies in xtick DESABLED
     options.numdisp=1; % Display numbers above relevant bars
-    options.barwidth={'0.5pt','0.5pt'};
-    
-    options.groupsize=[1 1]; % Defines the number of screens  
+    options.SaveData=1; % Save data points in *.mat file
 
-    options.groupplot{1,1}=[2]; % Associates inputs with plots
-    options.groupplot{2,1}=[4]; 
-    options.groupplotshowlabels{1,1}=[1 1 1 1]; % [ylabel xlabel yticklabel xticklabel]
-    options.groupplotshowlabels{2,1}=[0 1 1 1]; % [ylabel xlabel yticklabel xticklabel]
-    options.vertsep='0.2cm'; % Vertical axis separation 
-    options.horisep='1cm'; % Horizontal axis separation
+    options.vertsep='0.3cm'; % Vertical axis separation 
+    options.horisep='0.65cm'; % Horizontal axis separation
+    options.yshiftstr='-0.3cm'; % Vertical legend spacing
     options.enlargexlimits='abs=15';
     
-    options.xtickselements{1,1}='0,60,120, 180, 420, 540, 660, 780, 900'; % Numbers of elements in xticks
-    options.xtickselements{2,1}='60,20000, 40000, 60000, 80000, 100000'; % Numbers of elements in xticks
+    options.barwidth={'2pt','2pt','2pt'};
+    
+    options.groupsize=[1 3]; % Defines the number of screens  
+
+    options.groupplot{1,1}=[2]; % Associates inputs with plots
+    options.groupplot{1,2}=[3]; 
+    options.groupplot{1,3}=[4]; 
+    
+    options.groupplotshowlabels{1,1}=[1 0 1 0]; % [ylabel xlabel yticklabel xticklabel]
+    options.groupplotshowlabels{1,2}=[1 0 1 0]; % [ylabel xlabel yticklabel xticklabel]
+    options.groupplotshowlabels{1,3}=[1 1 1 1]; % [ylabel xlabel yticklabel xticklabel]
+       
+    options.xtickselements{1,1}='0,120, 240, 360, 480, 600, 720, 840, 960, 1080'; % Numbers of elements in xticks
+    options.xtickselements{1,2}='0,120, 240, 360, 480, 600, 720, 840, 960, 1080'; % Numbers of elements in xticks
+    options.xtickselements{1,3}='0,120, 240, 360, 480, 600, 720, 840, 960, 1080'; % Numbers of elements in xticks
+    
     options.minvalue=0; % minimal value to consider in plot
     
 fftscope2tikz(fftscope,options)
-
+% fftscope2tikz(FFTSCOPEdata,options)
 
 %%
     options.English=0;

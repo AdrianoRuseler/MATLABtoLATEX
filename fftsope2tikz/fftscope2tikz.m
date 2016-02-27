@@ -42,12 +42,13 @@ if nargin <2 % input options not supplied
     options.Compile=1;
     options.PlotData=0;
     options.MagPerFund=1; % Plot relative to fundamental
+    options.SaveData=1; % Save data points in *.mat file
     options.nplots=1; % Number of plots
     options.fullxtick=0; % Display all frequencies in xtick DESABLED
     options.numdisp=0; % Display numbers above relevant bars
     options.barwidth={'1pt','5pt'};
     
-    options.groupsize=[1 2]; % Defines the number of screens
+    options.groupsize=[1 2]; % Defines the number of screens line x column
     options.groupplot{1,1}=[1 2 3 ]; % Associates inputs with plots
     options.groupplot{1,2}=[1 4]; 
     options.groupplotshowlabels{1,1}=[1 1 1 1]; % [ylabel xlabel yticklabel xticklabel]
@@ -55,6 +56,7 @@ if nargin <2 % input options not supplied
 
     options.vertsep='0.2cm'; % Vertical axis separation 
     options.horisep='1cm'; % Horizontal axis separation 
+    options.yshiftstr='-0.3cm'; % Vertical legend spacing
     options.enlargexlimits='abs=10';
     options.xtickselements=5; % Numbers of elements in xticks
     options.minvalue=1; % minimal value to consider in plot
@@ -198,7 +200,7 @@ fprintf(fileoutID,'%s\n',siunitxstr);
 gsx = options.groupsize(1); % Gets plot group size
 gsy = options.groupsize(2);
 
-fprintf(fileoutID,'\n%s\n\n',['\begin{groupplot}[group style={group size= ' num2str(gsx) ' by ' num2str(gsy) ', vertical sep=' options.vertsep ',  horizontal sep=' options.horisep '},ylabel absolute, ylabel style={yshift=-0.5cm}, x tick label style={ /pgf/number format/1000 sep=}] ']);
+fprintf(fileoutID,'\n%s\n\n',['\begin{groupplot}[group style={group size= ' num2str(gsx) ' by ' num2str(gsy) ', vertical sep=' options.vertsep ',  horizontal sep=' options.horisep '},ylabel absolute, ylabel style={yshift=' options.yshiftstr '}, x tick label style={ /pgf/number format/1000 sep=}] ']);
 
 nplot=0;
 for i=1:gsx
@@ -278,6 +280,13 @@ end
      [status,cmdout] = system('make','-echo');
      toc
      
+ end
+ 
+ %% Save mat data file
+ 
+ if options.SaveData % Save data points in *.mat file
+    cd(dirstruct.fftscopestorage)
+    save([ FFTSCOPEdata.blockName '.mat'],'FFTSCOPEdata'); 
  end
  
      

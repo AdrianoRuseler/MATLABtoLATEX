@@ -35,7 +35,7 @@
 	every node near coord/.append style={/pgf/number format/fixed,/pgf/number format/precision=2,  /pgf/number format/fixed zerofill,/pgf/number format/use comma,/pgf/number format/1000 sep={},rotate=90, anchor=west,
 		check for zero/.code={
 			\pgfkeys{/pgf/fpu=true}
-			\pgfmathparse{\pgfplotspointmeta-50} % Limit to show tips.
+			\pgfmathparse{\pgfplotspointmeta-10} % Limit to show tips.
 			\pgfmathfloatifflags{\pgfmathresult}{-}{
 				\pgfkeys{/tikz/coordinate}
 			}{}
