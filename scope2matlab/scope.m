@@ -28,10 +28,11 @@
 % 
 % =========================================================================
 
-clear all
+
 
 %% Load scope data points
 
+clear all
 SCOPEdata = csv2struct();
 
 
@@ -40,7 +41,7 @@ SCOPEdata = csv2struct();
 SCOPEdata = set2struct();
 
 
-
+scope2plot(SCOPEdata);
 
 
 %% Load all at once
@@ -80,6 +81,8 @@ scope2tikz(SCOPEdata)
 
 %% Plot scope data to tikz
 
+
+
 scope2tikz(SCOPEdata)
 
 scope2tikz()
@@ -105,7 +108,43 @@ fftscope.fft(tmpfft.input)=tmpfft;
 % 
 % fftscopeV=fftscope;
 
+FFTdata = fftscope.fft;
 
+%% Espectro das correntes
+
+    options.English=0;
+    options.Compile=1;
+    options.PlotData=0;
+    options.MagPerFund=1; % Plot relative to fundamental
+    options.nplots=1; % Number of plots
+    options.fullxtick=0; % Display all frequencies in xtick DESABLED
+    options.numdisp=1; % Display numbers above relevant bars
+    options.SaveData=1; % Save data points in *.mat file
+
+    options.vertsep='0.3cm'; % Vertical axis separation 
+    options.horisep='0.65cm'; % Horizontal axis separation
+    options.yshiftstr='-0.3cm'; % Vertical legend spacing
+    options.enlargexlimits='abs=15';
+    
+    options.barwidth={'1pt','2pt','2pt'};
+    
+    options.groupsize=[1 2]; % Defines the number of screens  
+
+    options.groupplot{1,1}=[1 2 3]; % Associates inputs with plots
+    options.groupplot{1,2}=[4]; 
+    options.groupplot{1,3}=[1]; 
+    
+    options.groupplotshowlabels{1,1}=[1 0 1 0]; % [ylabel xlabel yticklabel xticklabel]
+    options.groupplotshowlabels{1,2}=[1 1 1 1]; % [ylabel xlabel yticklabel xticklabel]
+    options.groupplotshowlabels{1,3}=[1 1 1 1]; % [ylabel xlabel yticklabel xticklabel]
+       
+    options.xtickselements{1,1}='0,60, 120, 180, 240, 300, 360, 420, 480, 540'; % Numbers of elements in xticks
+    options.xtickselements{1,2}='0,60, 120, 180, 240, 300, 360, 420, 480, 540'; % Numbers of elements in xticks
+    options.xtickselements{1,3}='0,60, 120, 180, 240, 300, 360, 420, 480, 540'; % Numbers of elements in xticks
+    
+    options.minvalue=0; % minimal value to consider in plot
+    
+fftscope2tikz(fftscope,options)
 
 
 %% Espectro das correntes
@@ -155,7 +194,7 @@ fftscope2tikz(fftscope,options)
     options.numdisp=0; % Display numbers above relevant bars
     options.barwidth={'0.1pt','0.1pt'};
     
-    options.groupsize=[2 1]; % Defines the number of screens  
+    options.groupsize=[1 1]; % Defines the number of screens  
 
     options.groupplot{1,1}=[1 2 3]; % Associates inputs with plots
     options.groupplot{2,1}=[4]; 
@@ -165,17 +204,11 @@ fftscope2tikz(fftscope,options)
     options.horisep='1cm'; % Horizontal axis separation
     options.enlargexlimits='abs=15';
     
-    options.xtickselements{1,1}='60,20000, 40000, 60000, 80000, 100000'; % Numbers of elements in xticks
+    options.xtickselements{1,1}='60,39960, 79920, 119880'; % Numbers of elements in xticks
     options.xtickselements{2,1}='60,20000, 40000, 60000, 80000, 100000'; % Numbers of elements in xticks
     options.minvalue=0; % minimal value to consider in plot
     
 fftscope2tikz(fftscope,options)
-
-
-
-
-
-
 
 
 

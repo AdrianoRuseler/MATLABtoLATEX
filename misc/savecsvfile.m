@@ -50,7 +50,10 @@ fprintf(fileID,'%s\r\n',csvheader); % Begin axis
 fclose(fileID); % Close it.
 
 % write data
-dlmwrite (filemane, csvdata, '-append','newline','pc');
+% disp('Data size to record:')
+% size(csvdata)
+
+dlmwrite(filemane, csvdata, '-append','newline','pc');
 
 cd(wdir)
 

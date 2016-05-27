@@ -1,9 +1,10 @@
 % =========================================================================
-% *** psim2matlab
+% *** csv2matlab
 % ***  
-% *** This function converts PSIM simulated data to MATLAB data in struct
-% *** format.
-% *** Convert PSIM txt data to simulink struct data
+% *** This function converts PSIM or PLECS simulated data to MATLAB data 
+% *** in struct format.
+% *** 
+% *** Convert PSIM or PLECS csv data to simulink struct data
 % =========================================================================
 % ***
 % *** The MIT License (MIT)
@@ -30,7 +31,7 @@
 % ***
 % =========================================================================
 
-function PSIMdata = psim2matlab(PSIMtxt)
+function PSIMdata = csv2matlab(csvFileLocation)
 
 % Loads directory structure
 try
@@ -45,52 +46,36 @@ if nargin <1  % PSIMtxt not supplied
             cd(dirstruct.simulatedir) % Change to directory with simutalad data
         end
     end
-    [PSIMtxtFile, PSIMtxtPath] = uigetfile({'*.txt;*.fft;*.fra;*.csv;*.smv','PSIM Files (*.txt,*.fft,*.fra,*.csv,*.smv)'; ...
+    [csvFile, csvPath] = uigetfile({'*.txt;*.fft;*.fra;*.csv;*.smv','PSIM Files (*.txt,*.fft,*.fra,*.csv,*.smv)'; ...
         '*.txt','PSIM - txt (*.txt)';'*.fft','FFT Data (*.fft)';'*.fra','AC-Sweed (*.fra)';'*.csv','PSIM Excel (*.csv)';...
         '*.*','All files'}, 'Pick an PSIM-file');
-    if isequal(PSIMtxtFile,0)
+    if isequal(csvFile,0)
         disp('User selected Cancel')
         PSIMdata =[]; % Return empty data
         return
     end
-    PSIMtxt=[PSIMtxtPath PSIMtxtFile]; % Provide
+    csvFileLocation=[csvPath csvFile]; % Provide
 else
-    if ~isequal(exist(PSIMtxt,'file'),2) % If file NOT exists
-        disp([PSIMtxt ' Not found!'])
+    if ~isequal(exist(csvFileLocation,'file'),2) % If file NOT exists
+        disp([csvFileLocation ' Not found!'])
         PSIMdata = psim2matlab(); % Load again
         return
     end
 end
 
 % PSIMtxt
-[pathstr, name, ext] = fileparts(PSIMtxt);
+[pathstr, name, ext] = fileparts(csvFileLocation);
 
 switch ext % Make a simple check of file extensions
-    case '.txt'
+    case '.csv'
          % Good to go!!
-    case '.csv' % Waiting for code implementation
-        disp('Export PSIM data to a *.txt file.')
-        cd(dirstruct.wdir)
-        PSIMdata =[];
-        return
-    case '.fra' % Waiting for code implementation
-        disp('fra analysis from PSIM.')        
-        PSIMdata = psimfra2matlab(PSIMtxt);
-        cd(dirstruct.wdir)
-        return
-    case '.fft' % Waiting for code implementation
-        disp('fft analysis from PSIM. Really?')        
-        disp('Please try: power_fftscope')
-        PSIMdata = psimfft2matlab(PSIMtxt);
-        cd(dirstruct.wdir)
-        return
-    case '.smv' % Waiting for code implementation
-        disp('Wrong file extension. Convert the file to a *.txt file.')
+    case '.txt' % Waiting for code implementation
+        disp('Export PSIM data to a *.csv file.')
         cd(dirstruct.wdir)
         PSIMdata =[];
         return
     otherwise
-        disp('Save simview data as *.txt file.')
+        disp('Save simulates data as *.csv file.')
         cd(dirstruct.wdir)
         PSIMdata =[];
         return
@@ -103,11 +88,11 @@ dirstruct.simulatedir=pathstr; % Update simulations dir
 dirstruct.psimstorage = [dirstruct.psimdir '\' name]; % Not sure
 
 
-%%  Load file .txt
-disp('Reading txt file....     Wait!')
+%%  Load file .csv
+disp('Reading csv file....     Wait!')
 tic
 cd(dirstruct.simulatedir)
-[fileID,errmsg] = fopen(PSIMtxt);
+[fileID,errmsg] = fopen(csvFileLocation);
 % [filename,permission,machinefmt,encodingOut] = fopen(fileID); 
 if fileID==-1
     disp('File error!!')
@@ -116,7 +101,7 @@ end
 
 % BufSize -> Maximum string length in bytes -> 4095
 tline = fgetl(fileID);
-[header] = strread(tline,'%s','delimiter',' ');
+[header] = strread(tline,'%s','delimiter',',');
 
 fstr='%f';
  for tt=2:length(header)

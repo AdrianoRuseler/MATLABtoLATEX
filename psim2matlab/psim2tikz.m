@@ -6,7 +6,7 @@
 %
 %  The MIT License (MIT)
 %
-%  Copyright (c) 2015 AdrianoRuseler
+%  Copyright (c) 2016 AdrianoRuseler
 %
 %  Permission is hereby granted, free of charge, to any person obtaining a copy
 %  of this software and associated documentation files (the Software), to deal
@@ -84,6 +84,7 @@ if nargin <1 % input file not supplied
         load([PSIMdataPath PSIMdataFile]); % Load mat file
         % Ask for SCOPEdata file
         if isempty(PSIMdata) % If there is no data, just return
+            disp('If there is no data, just return')
             status=1;
             return
         end
@@ -94,6 +95,7 @@ end
 %% All data must be available here:
 
 if ~isfield(PSIMdata,'simview')
+    disp('If there is no simview data, return with 1!')
     status=1;
     return
 end
@@ -101,6 +103,17 @@ end
 plots=fieldnames(PSIMdata.simview); % Find plots in PSIMdata
 
 
+todaynow = datestr(now,'-yyyy.mm.dd-HH.MM.SS'); % Generates date string
+dirname=[PSIMdata.blockName todaynow]; % Directory name where all files will be stored
+
+%  Create folder under psimdir to store mat file
+[s,mess,messid] = mkdir(dirstruct.psimdir, dirname); % Check here
+dirstruct.psimstorage = [dirstruct.psimdir '\' dirname]; %
+
+assignin('base','dirstruct',dirstruct);
+cd(dirstruct.root)
+save('dirstruct.mat','dirstruct')
+cd(dirstruct.psimstorage)
 
 
 for p = 1:length(plots)
@@ -108,83 +121,82 @@ for p = 1:length(plots)
     %     disp(wstruct)
     
     if(wstruct{p}.main.fft) % Not implemented yet
+        disp('fft -> Not implemented yet!')
         status=1;
         return
     end
     
     %% Get csv data
-    if isequal(exist(dirstruct.psimstorage,'dir'),7)
-        cd(dirstruct.psimstorage)
-    end
+ 
     
-    xfrom = wstruct{p}.main.xfrom;
-    xto = wstruct{p}.main.xto;
+    xfrom = wstruct{p}.main.xfrom; % x lower limit
+    xto = wstruct{p}.main.xto; % x upper limit
     
     
-    if options.DSPlot
-        % Save downsample por curve
-        for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
-            DSxdata=wstruct{p}.main.xdata; %
-            for c=0:eval(['wstruct{p}.screen' num2str(s) '.curvecount'])-1 % Curves Loop
-                DSydata = eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data']);
-
-                hfig=dsplot(DSxdata, DSydata, options.DSpoints);
-                x=get(hfig,'XData');
-                y=get(hfig,'YData');
-                x=x(:); % force vector to be vertical
-                y=y(:);
-                
-                disp('Plot dowsampled points!!')
-                if options.ManualTips % Gets tips points from plot
-                    if eval(['isfield(wstruct{p}.screen' num2str(s) '.curve' num2str(c) ',''tip'')'])
-                        % Well, we found some tips, move on;
-                    else
-                        grid on
-                        xlim([xfrom  xto])
-                        yfrom = eval(['wstruct{p}.screen' num2str(s) '.yfrom']);
-                        yto = eval(['wstruct{p}.screen' num2str(s) '.yto']);
-                        ylim([yfrom yto])
-                        clabel = eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.label']);
-                        legend(clabel)                        
-                        xlabel(wstruct{p}.main.xaxis)                        
-                        title(['Get tip location for curve ' clabel])
-                        
-                        [xtip,ytip] = ginput(2); % Get two points for putting tips                        
-                        Dxtip=xtip/(xto-xfrom); % Scales to get angle
-                        Dytip=ytip/(yto-yfrom);                       
-                        
-                        tip.theta = round(angle((Dxtip(2)-Dxtip(1))+1i*(Dytip(2)-Dytip(1)))*180/pi);
-                        tip.x=xtip(1); % Tip x position
-                        tip.y=ytip(1); % Tip y position
-                        if options.SetVar
-                            prompt = {['Enter tip String for ' clabel]};
-                            dlg_title = 'Input';
-                            num_lines = 1;
-                            def = {['$' clabel '$']};
-                            answer = inputdlg(prompt,dlg_title,num_lines,def);
-                            if isempty(answer)
-                                tip.string=['$' clabel '$']; % enters string value
-                            else
-                                tip.string=answer{1};
-                            end
-                        else
-                            tip.string=clabel; % enters string value
-                        end
-                        eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.tip=tip;']);
-                        eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.tip'])
+%     if options.DSPlot
+%         Save downsample por curve
+%         for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
+%             DSxdata=wstruct{p}.main.xdata; %
+%             for c=0:eval(['wstruct{p}.screen' num2str(s) '.curvecount'])-1 % Curves Loop
+%                 DSydata = eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data']);
+% 
+%                 hfig=dsplot(DSxdata, DSydata, options.DSpoints);
+%                 x=get(hfig,'XData');
+%                 y=get(hfig,'YData');
+%                 x=x(:); % force vector to be vertical
+%                 y=y(:);
+%                 
+%                 disp('Plot dowsampled points!!')
+%                 if options.ManualTips % Gets tips points from plot
+%                     if eval(['isfield(wstruct{p}.screen' num2str(s) '.curve' num2str(c) ',''tip'')'])
+%                         Well, we found some tips, move on;
+%                     else
+%                         grid on
+%                         xlim([xfrom  xto])
+%                         yfrom = eval(['wstruct{p}.screen' num2str(s) '.yfrom']);
+%                         yto = eval(['wstruct{p}.screen' num2str(s) '.yto']);
+%                         ylim([yfrom yto])
+%                         clabel = eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.label']);
+%                         legend(clabel)                        
+%                         xlabel(wstruct{p}.main.xaxis)                        
+%                         title(['Get tip location for curve ' clabel])
+%                         
+%                         [xtip,ytip] = ginput(2); % Get two points for putting tips                        
+%                         Dxtip=xtip/(xto-xfrom); % Scales to get angle
+%                         Dytip=ytip/(yto-yfrom);                       
+%                         
+%                         tip.theta = round(angle((Dxtip(2)-Dxtip(1))+1i*(Dytip(2)-Dytip(1)))*180/pi);
+%                         tip.x=xtip(1); % Tip x position
+%                         tip.y=ytip(1); % Tip y position
+%                         if options.SetVar
+%                             prompt = {['Enter tip String for ' clabel]};
+%                             dlg_title = 'Input';
+%                             num_lines = 1;
+%                             def = {['$' clabel '$']};
+%                             answer = inputdlg(prompt,dlg_title,num_lines,def);
+%                             if isempty(answer)
+%                                 tip.string=['$' clabel '$']; % enters string value
+%                             else
+%                                 tip.string=answer{1};
+%                             end
+%                         else
+%                             tip.string=clabel; % enters string value
+%                         end
+%                         eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.tip=tip;']);
+%                         eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.tip'])
 %                         close(get(get(hfig,'Parent'),'Parent'))% Closes the figure
-                    end
-                end % end of manual tips              
-
-                close(get(get(hfig,'Parent'),'Parent'))% Closes the figure                
-                %   datatofit{p}=y; % Get this data for future use in labels
-                csvheader=['xdata, curve' num2str(c) ];
-                SCREENdata=[x y];
-                csvfilename = [dirstruct.psimstorage '\' plots{p} 'DSscreen' num2str(s) 'curve' num2str(c) '.csv'];
-                savecsvfile(SCREENdata, csvheader, csvfilename);
-            end
-        end
-    end % end of DSplot
+%                     end
+%                 end % end of manual tips              
+% 
+%                 close(get(get(hfig,'Parent'),'Parent'))% Closes the figure                
+%                   datatofit{p}=y; % Get this data for future use in labels
+%                 csvheader=['xdata, curve' num2str(c) ];
+%                 SCREENdata=[x y];
+%                 csvfilename = [dirstruct.psimstorage '\' plots{p} 'DSscreen' num2str(s) 'curve' num2str(c) '.csv'];
+%                 savecsvfile(SCREENdata, csvheader, csvfilename);
+%             end
+%         end
+%     end % end of DSplot
     
     for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
         csvheader='xdata';
@@ -258,9 +270,9 @@ for p = 1:length(plots)
     %
     
     
-    %% Update structure    
-    eval(['PSIMdata.simview.' plots{p} '=wstruct{p};']); % set struct to work
-    assignin('base', 'PSIMdata', PSIMdata);
+    %% Update structure     Why?????
+%     eval(['PSIMdata.simview.' plots{p} '=wstruct{p};']); % set struct to work
+%     assignin('base', 'PSIMdata', PSIMdata);
     
     
 end
@@ -282,12 +294,14 @@ fwrite(fileoutID,preamble);
 
 if options.English
     xlabelstr='{Time ($\SI{}{\milli\second}$)}';
+    xtickstyle='x tick label style={/pgf/number format/.cd,	scaled x ticks = false,	set decimal separator={{.}},set thousands separator={},fixed},';
     siunitxstr= '\sisetup{scientific-notation = fixed, fixed-exponent = 0, round-mode = places,round-precision = 2,output-decimal-marker = {.}}';
-    ytickstyle='y tick label style={/pgf/number format/.cd,	scaled y ticks = false,	set decimal separator={{.}},fixed},';
+    ytickstyle='y tick label style={/pgf/number format/.cd,	scaled y ticks = false,	set decimal separator={{.}},set thousands separator={},fixed},';
 else
     xlabelstr='{Tempo ($\SI{}{\milli\second}$)}';
+    xtickstyle='x tick label style={/pgf/number format/.cd,	scaled x ticks = false,	set decimal separator={{,}},set thousands separator={},fixed},';
     siunitxstr= '\sisetup{scientific-notation = fixed, fixed-exponent = 0, round-mode = places,round-precision = 2,output-decimal-marker = {,}}';
-    ytickstyle='y tick label style={/pgf/number format/.cd,	scaled y ticks = false,	set decimal separator={{,}},fixed},';
+    ytickstyle='y tick label style={/pgf/number format/.cd,	scaled y ticks = false,	set decimal separator={{,}},set thousands separator={},fixed},';
 end
 
 groupplotsrt=['\begin{groupplot}[group style={group name=simviewplots, group size= ' num2str(length(plots)) ' by ' num2str(wstruct{p}.main.numscreen) ', vertical sep=0.25cm,  horizontal sep=0.25cm}]'];
@@ -335,7 +349,8 @@ for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
         else
             %             fprintf(fileoutID,'%s\n','xticklabel style={/pgf/number format/.cd,use comma,fixed,precision=3},'); % Last one
             fprintf(fileoutID,'%s\n',ytickstyle);
-            fprintf(fileoutID,'%s\n',['xlabel=' xlabelstr ',ylabel=' yLabelstr  ',scaled x ticks=base 10:3,xtick scale label code/.code={},ylabel absolute,']);
+            fprintf(fileoutID,'%s\n',['xlabel=' xlabelstr ',ylabel=' yLabelstr  ',scaled x ticks=base 10:3,xtick scale label code/.code={},ylabel absolute,']); % Set 
+            fprintf(fileoutID,'%s\n',xtickstyle);
         end
         %     cycle list name=linestyles*
         fprintf(fileoutID,'%s\n\n','] % End of setings for nextgroupplot'); % End of nextgroupplot configurations
@@ -407,6 +422,7 @@ if options.Compile
         cd(dirstruct.tikzdir)
     end
     copyfile('Makefile',dirstruct.psimstorage)
+    copyfile('MeCompile.cmd',dirstruct.psimstorage)
     cd(dirstruct.psimstorage)
     [status,cmdout] = system('make','-echo');
     if status
@@ -418,6 +434,12 @@ if options.Compile
 end
 % Open output directory
 winopen(dirstruct.psimstorage)
+
+
+
+
+
+
 
 
 

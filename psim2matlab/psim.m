@@ -37,12 +37,22 @@
 % Read simulated data
 PSIMdata = psim2matlab();
 
-PSIMdata = rmfield(PSIMdata,'simview'); % Remove field 
+% PSIMdata = rmfield(PSIMdata,'simview'); % Remove field 
 
-% Read simview settings (*.ini) and add to PSIMdata
+% Read simview settings (*.ini) and add to PSIMdata   Time,Iabc,Ibc,Ic
 PSIMdata = psimini2struct();
 
 disp(PSIMdata.simview)
+%% Downsample
+
+% [PSIMdataDown]=psim2down(PSIMdata,3);
+options.DSn=1000;
+[PSIMdataDown]=psim2down(PSIMdata,options);
+
+% TeX capacity exceeded, sorry [main memory size=3000000] - como calcular
+% isso????
+
+
 
 %% Now we are ready to plot from PSIM data;
 
@@ -54,15 +64,16 @@ disp(PSIMdata.simview)
     options.shadesgray=0; % Plot with shades of gray
     options.PutTips=0; % Put arrow
     options.PutLegend=0;
-    options.PutYLabel=0;
+    options.PutYLabel=1;
     options.PutAxisLabel=1; % Puts (a), (b), ... in rigth side of each axis
     options.PutTitle=0; % Show title
     options.DSPlot=0;
     options.DSpoints=1000; % Number of points
     options.AxisType=1; % tipo de eixo utilizado
     
-psim2tikz(PSIMdata,options) 
+% psim2tikz(PSIMdata,options) 
 
+psim2tikz(PSIMdataDown,options) 
 
 %% Can be used with
 power_fftscope
@@ -81,3 +92,21 @@ psim2tikz(PSIMdata)
 
 %% Read Fra from PSIM
 PSIMdata = rmfield(PSIMdata,'fra'); % Remove field 
+
+
+%% initexmf --edit-config-file=pdflatex
+[status,cmdout] = system('initexmf --edit-config-file=pdflatex','-echo');
+
+% This opens an editor where you can put the new values. E.g.
+% 
+% main_memory=50000000 
+% extra_mem_bot=50000000 
+
+
+[status,cmdout] = system('initexmf --dump=pdflatex','-echo');
+
+[status,cmdout] = system('make','-echo');
+
+
+
+

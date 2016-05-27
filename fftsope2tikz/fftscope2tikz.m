@@ -80,6 +80,7 @@ end
 % BASEdata = evalin('base', FFTSCOPEdata.fft.structure); % Load analysed data from base workspace
 
 FFTdata = FFTSCOPEdata.fft; % Copy FFT data from struct
+
 todaynow = datestr(now,'-yyyy.mm.dd-HH.MM.SS'); % Generates date string
 
 dirname=[FFTSCOPEdata.blockName todaynow]; % Directory name where all files will be stored
@@ -116,8 +117,14 @@ for f=1:length(FFTdata) % Loop for plots
     end
       
     %% Find limits and extra data    
+    
     ind=find(FFTdata(f).freq==FFTdata(f).fundamental);
+    if ind
     indFund=ind(1);
+    else
+        continue
+    end
+    
     
     freqxtick{f}=strjoin(cellstr(num2str(FFTdata(f).freq)),',');
     
