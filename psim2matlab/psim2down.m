@@ -56,6 +56,9 @@ PSIMdataDown=PSIMdata; % Just copy
 t=double(PSIMdataDown.time);
 PSIMdataDown.time = single(decimate(t,options.DSn));
 
+% length(y) = ceil(length(x)/r)
+
+
 % t=double(PSIMdata.time);
 % PSIMdataDown.time=single(t(1:options.DSn:length(t)));
 

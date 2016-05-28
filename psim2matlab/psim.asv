@@ -47,9 +47,9 @@ disp(PSIMdata.simview)
 
 % [PSIMdataDown]=psim2down(PSIMdata,3);
 
-options.DSn=5;
+options.DSn=50;
 
-lengthY = ceil(length(PSIMdata.time)/options.DSn)
+lengthY = ceil(length(PSIMdata)/options.DSn)
 
 
 [PSIMdataDown]=psim2down(PSIMdata,options);
@@ -67,7 +67,7 @@ lengthY = ceil(length(PSIMdata.time)/options.DSn)
     options.English=0; % Output in English?
     options.simviewcolor=0; % Plot with simview color settings
     options.shadesgray=0; % Plot with shades of gray
-    options.PutTips=1; % Put arrow not working. why??
+    options.PutTips=0; % Put arrow
     options.PutLegend=1;
     options.PutYLabel=1;
     options.PutAxisLabel=1; % Puts (a), (b), ... in rigth side of each axis
@@ -76,9 +76,9 @@ lengthY = ceil(length(PSIMdata.time)/options.DSn)
     options.DSpoints=1000; % Number of points
     options.AxisType=1; % tipo de eixo utilizado
     
-% psim2tikz(PSIMdata,options) 
+psim2tikz(PSIMdata,options) 
 
-psim2tikz(PSIMdataDown,options) 
+% psim2tikz(PSIMdataDown,options) 
 
 %% Can be used with
 power_fftscope
