@@ -126,7 +126,7 @@ disp('Done!')
          U = genvarname(header{i});
          modified=1; % Just force update
      else
-         [U, modified] = matlab.lang.makeValidName(header{i});
+         [U, modified] = matlab.lang.makeValidName(header{i},'ReplacementStyle','delete');
      end
      if modified
          disp(['Name ' header{i} ' modified to ' U ' (MATLAB valid name for variables)!!'])

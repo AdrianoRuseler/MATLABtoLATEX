@@ -63,7 +63,7 @@ options.DSn=1000;
     options.simviewcolor=0; % Plot with simview color settings
     options.shadesgray=0; % Plot with shades of gray
     options.PutTips=0; % Put arrow
-    options.PutLegend=0;
+    options.PutLegend=1;
     options.PutYLabel=1;
     options.PutAxisLabel=1; % Puts (a), (b), ... in rigth side of each axis
     options.PutTitle=0; % Show title
@@ -105,7 +105,7 @@ PSIMdata = rmfield(PSIMdata,'fra'); % Remove field
 
 [status,cmdout] = system('initexmf --dump=pdflatex','-echo');
 
-[status,cmdout] = system('make','-echo');
+% [status,cmdout] = system('make','-echo');
 
 
 

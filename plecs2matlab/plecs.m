@@ -1,11 +1,12 @@
 % =========================================================================
-% *** savecsvfile
+% *** 
+% ***  
 % ***  
 % =========================================================================
 % ***
 % *** The MIT License (MIT)
 % *** 
-% *** Copyright (c) 2015 AdrianoRuseler
+% *** Copyright (c) 2016 Adriano Ruseler
 % *** 
 % *** Permission is hereby granted, free of charge, to any person obtaining a copy
 % *** of this software and associated documentation files (the "Software"), to deal
@@ -27,38 +28,13 @@
 % ***
 % =========================================================================
 
-function status=savecsvfile(csvdata, csvheader, csvfilename)
+% Load from PLECS
+checkdirstruct();
 
-[pathstr, csvname, ext] = fileparts(csvfilename);
+clear all 
+% Read simulated data
+PLECSdata = plecs2matlab();
 
-wdir=pwd;
+% PSIMdata = csv2matlab();
 
-if isequal(exist(pathstr,'dir'),7)
-    cd(pathstr)
-end
-
-% Save csv file
-filemane = [csvname '.csv'];
-[fileID,errmsg]  = fopen(filemane,'w','n','UTF-8');
-
-if fileID<0
-    disp(errmsg)
-    return;
-end
-
-fprintf(fileID,'%s\r\n',csvheader); % Begin axis
-fclose(fileID); % Close it.
-
-% write data
-% disp('Data size to record:')
-% size(csvdata)
-disp('Saving *.csv data file...')
-tic
-dlmwrite(filemane, csvdata, '-append','newline','pc');
-toc
-
-cd(wdir)
-
-
-status=0; % if everything its ok
-
+matlab2simview(MATLABdata);

@@ -1,11 +1,11 @@
 % =========================================================================
-% *** savecsvfile
+% *** savetxtfile - Save simview txt file
 % ***  
 % =========================================================================
 % ***
 % *** The MIT License (MIT)
 % *** 
-% *** Copyright (c) 2015 AdrianoRuseler
+% *** Copyright (c) 2015 Adriano Ruseler
 % *** 
 % *** Permission is hereby granted, free of charge, to any person obtaining a copy
 % *** of this software and associated documentation files (the "Software"), to deal
@@ -27,9 +27,9 @@
 % ***
 % =========================================================================
 
-function status=savecsvfile(csvdata, csvheader, csvfilename)
+function status=savetxtfile(txtdata, txtheader, txtfilename)
 
-[pathstr, csvname, ext] = fileparts(csvfilename);
+[pathstr, csvname, ext] = fileparts(txtfilename);
 
 wdir=pwd;
 
@@ -38,7 +38,7 @@ if isequal(exist(pathstr,'dir'),7)
 end
 
 % Save csv file
-filemane = [csvname '.csv'];
+filemane = [csvname '.txt'];
 [fileID,errmsg]  = fopen(filemane,'w','n','UTF-8');
 
 if fileID<0
@@ -46,17 +46,20 @@ if fileID<0
     return;
 end
 
-fprintf(fileID,'%s\r\n',csvheader); % Begin axis
+fprintf(fileID,'%s\r\n',txtheader); % Begin axis
 fclose(fileID); % Close it.
 
 % write data
 % disp('Data size to record:')
 % size(csvdata)
-disp('Saving *.csv data file...')
-tic
-dlmwrite(filemane, csvdata, '-append','newline','pc');
-toc
+% dlmwrite('myFile.txt',M,'delimiter','\t','precision',5)
 
+% 15.550297613166409  .15f
+
+disp('Saving *.txt data file...')
+tic
+dlmwrite(filemane, txtdata,'delimiter',' ','-append','newline','pc');
+toc
 cd(wdir)
 
 
