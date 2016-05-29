@@ -52,7 +52,7 @@ fclose(fileID); % Close it.
 % write data
 % disp('Data size to record:')
 % size(csvdata)
-disp('Saving *.csv data file...')
+disp(['Saving ' csvname '.csv data file...'])
 tic
 dlmwrite(filemane, csvdata, '-append','newline','pc');
 toc

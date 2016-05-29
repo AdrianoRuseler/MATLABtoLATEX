@@ -29,7 +29,7 @@
 
 function status=savetxtfile(txtdata, txtheader, txtfilename)
 
-[pathstr, csvname, ext] = fileparts(txtfilename);
+[pathstr, txtname, ext] = fileparts(txtfilename);
 
 wdir=pwd;
 
@@ -38,7 +38,7 @@ if isequal(exist(pathstr,'dir'),7)
 end
 
 % Save csv file
-filemane = [csvname '.txt'];
+filemane = [txtname '.txt'];
 [fileID,errmsg]  = fopen(filemane,'w','n','UTF-8');
 
 if fileID<0
@@ -56,7 +56,7 @@ fclose(fileID); % Close it.
 
 % 15.550297613166409  .15f
 
-disp('Saving *.txt data file...')
+disp(['Saving ' txtname '.txt data file...'])
 tic
 dlmwrite(filemane, txtdata,'delimiter',' ','-append','newline','pc');
 toc

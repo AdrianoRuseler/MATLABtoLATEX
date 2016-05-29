@@ -33,7 +33,8 @@
 %% Test some examples
 % Example 01 
 % [folder, name, ext] = fileparts(which('psim')); 
-
+clear all
+clc
 % Read simulated data
 PSIMdata = psim2matlab();
 
@@ -46,17 +47,21 @@ disp(PSIMdata.simview)
 %% Downsample
 
 % [PSIMdataDown]=psim2down(PSIMdata,3);
+options.DSmain=0; % Downsaple main data points
 
-options.DSn=5;
+% options.DSfunction='decimate';
+% options.DSn=100;
 
-lengthY = ceil(length(PSIMdata.time)/options.DSn)
 
+% lengthY = ceil(length(PSIMdata.time)/options.DSn)
+
+% options.DSfunction='matlab-plot-big'; % Problems here
+
+options.DSfunction='DSplot';
+options.DSpoints=5000; % number of points (roughly) to display on the screen. The default is
+%   50000 points (~390 kB doubles).
 
 [PSIMdataDown]=psim2down(PSIMdata,options);
-
-% TeX capacity exceeded, sorry [main memory size=3000000] - como calcular
-% isso????
-
 
 
 %% Now we are ready to plot from PSIM data;
@@ -67,7 +72,8 @@ lengthY = ceil(length(PSIMdata.time)/options.DSn)
     options.English=0; % Output in English?
     options.simviewcolor=0; % Plot with simview color settings
     options.shadesgray=0; % Plot with shades of gray
-    options.PutTips=1; % Put arrow not working. why??
+    options.ManualTips=0;
+    options.PutTips=1; % Put arrow not working. 
     options.PutLegend=1;
     options.PutYLabel=1;
     options.PutAxisLabel=1; % Puts (a), (b), ... in rigth side of each axis
@@ -78,7 +84,7 @@ lengthY = ceil(length(PSIMdata.time)/options.DSn)
     
 % psim2tikz(PSIMdata,options) 
 
-psim2tikz(PSIMdataDown,options) 
+ psim2tikz(PSIMdataDown,options) 
 
 %% Can be used with
 power_fftscope

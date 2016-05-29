@@ -51,23 +51,22 @@ PSIMdataDown=PSIMdata; % Just copy
 % example
 % y = decimate(x,r,n,'fir') uses an FIR filter of order n.
 
-
-% options.DSn=100;
-t=double(PSIMdataDown.time);
-PSIMdataDown.time = single(decimate(t,options.DSn));
-
-% length(y) = ceil(length(x)/r)
-
-
-% t=double(PSIMdata.time);
-% PSIMdataDown.time=single(t(1:options.DSn:length(t)));
-
-for s=1:nsignals
-    PSIMdataDown.signals(s).values = decimate(double(PSIMdataDown.signals(s).values),options.DSn);
-    PSIMdataDown.signals(s).values=single(PSIMdataDown.signals(s).values);
+if options.DSmain
+    % options.DSn=100;
+    t=double(PSIMdataDown.time);
+    PSIMdataDown.time = single(decimate(t,options.DSn));
+    
+    % length(y) = ceil(length(x)/r)
+    
+    
+    % t=double(PSIMdata.time);
+    % PSIMdataDown.time=single(t(1:options.DSn:length(t)));
+    
+    for s=1:nsignals
+        PSIMdataDown.signals(s).values = decimate(double(PSIMdataDown.signals(s).values),options.DSn);
+        PSIMdataDown.signals(s).values=single(PSIMdataDown.signals(s).values);
+    end    
 end
-
-
 %% Decimate simview data points.
 
 if ~isfield(PSIMdataDown,'simview')
@@ -81,20 +80,77 @@ plots=fieldnames(PSIMdataDown.simview); % Find plots in PSIMdata
 for p = 1:length(plots)
     wstruct{p}=eval(['PSIMdataDown.simview.' plots{p}]); % set struct to work
     
-    %     xfrom = wstruct{p}.main.xfrom; % x lower limit
+    %          xfrom = wstruct{p}.main.xfrom; % x lower limit
     %     xto = wstruct{p}.main.xto; % x upper limit
-    
-    wstruct{p}.main.xdata=single(decimate(double(wstruct{p}.main.xdata),options.DSn)); %    
-    
-    for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
-        for c=0:eval(['wstruct{p}.screen' num2str(s) '.curvecount'])-1 % Curves Loop
-            ydata = eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data']);   
-            ydata=single(decimate(double(ydata),options.DSn));
-            eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data=ydata;'])
-        end
-    end
-    
-    eval(['PSIMdataDown.simview.' plots{p} '=wstruct{p};']); % update struct    
+    switch options.DSfunction % Select function
+        case 'decimate' % Waiting for code implementation
+            wstruct{p}.main.xdata=single(decimate(double(wstruct{p}.main.xdata),options.DSn)); %
+            % Atualizar limites do eixo x
+            wstruct{p}.main.xfrom=wstruct{p}.main.xdata(1); % x lower limit
+            wstruct{p}.main.xto=wstruct{p}.main.xdata(end); % x upper limit
+            for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
+                for c=0:eval(['wstruct{p}.screen' num2str(s) '.curvecount'])-1 % Curves Loop
+                    ydata = eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data']);
+                    ydata=single(decimate(double(ydata),options.DSn));
+                    eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data=ydata;'])
+                end
+            end
+            eval(['PSIMdataDown.simview.' plots{p} '=wstruct{p};']); % update struct
+            
+            
+            %     options.DSfunction='matlab-plot-big';
+        case 'matlab-plot-big'      % Gets stuck
+%             for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
+%                 for c=0:eval(['wstruct{p}.screen' num2str(s) '.curvecount'])-1 % Curves Loop
+%                     ydata = eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data']);
+%                     %                     ydata=single(decimate(double(ydata),options.DSn));
+%                     figure
+%                     hR=reduce_plot(wstruct{p}.main.xdata,ydata)
+%                     xdataR=get(hR,'XData');
+%                     ydataR=get(hR,'YData');
+%                     close(gcf)
+%                     eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data=ydataR;'])
+%                 end
+%                 wstruct{p}.main.xdata=xdataR;
+%             end
+%             eval(['PSIMdataDown.simview.' plots{p} '=wstruct{p};']); % update struct
+        case 'DSplot'
+            xdata=wstruct{p}.main.xdata;
+            ydata = [];
+            for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
+                for c=0:eval(['wstruct{p}.screen' num2str(s) '.curvecount'])-1 % Curves Loop
+                    ydata = [ydata eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data'])];
+                end
+            end
+            
+            %                     figure % creates new figure
+            % specifies the  options.DSnPoints number of points (roughly) to display on the screen. The default is
+            %   50000 points (~390 kB doubles).
+            hR=dsplot(xdata, ydata, options.DSpoints);
+            
+            h=0;
+            for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
+                for c=0:eval(['wstruct{p}.screen' num2str(s) '.curvecount'])-1 % Curves Loop
+                    h=h+1;
+                    xdataR=get(hR(h),'XData');
+                    ydataR=get(hR(h),'YData');
+                    xdataR=xdataR(:); % force vector to be vertical
+                    ydataR=ydataR(:); % force vector to be vertical
+                    eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data=ydataR;'])
+                end
+            end
+            
+            close(gcf)% Closes the figure
+            wstruct{p}.main.xdata=xdataR;
+            wstruct{p}.main.xfrom=wstruct{p}.main.xdata(1); % x lower limit
+            wstruct{p}.main.xto=wstruct{p}.main.xdata(end); % x upper limit
+            
+            eval(['PSIMdataDown.simview.' plots{p} '=wstruct{p};']); % update struct
+        otherwise
+            disp('Select function to reduce data, return with 1!')
+            status=1;
+            return
+    end % end of Select function
 end % end of simview plots
 
 

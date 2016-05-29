@@ -183,7 +183,7 @@ end
 for s=0:simview.main.numscreen-1 % Screens Loop
     for c=0:eval(['simview.screen' num2str(s) '.curvecount'])-1 % Curves Loop
         formula{s+1,c+1}= eval(['simview.screen' num2str(s) '.curve' num2str(c) '.formula']);
-        [form, modified] = matlab.lang.makeValidName(formula{s+1,c+1}); % Problem here for minus signal
+        [form, modified] = matlab.lang.makeValidName(formula{s+1,c+1},'ReplacementStyle','delete'); % Problem here for minus signal
         formuladata=evalin('base',form);
         
         eval(['simview.screen' num2str(s) '.curve' num2str(c) '.data=formuladata;'])

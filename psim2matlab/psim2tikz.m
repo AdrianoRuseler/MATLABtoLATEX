@@ -1,7 +1,6 @@
 % =========================================================================
 %  PSIM Plot function
 %
-%
 % =========================================================================
 %
 %  The MIT License (MIT)
@@ -51,6 +50,7 @@ if nargin <2 % Look for options entry
     options.English=1; % Output in English?
     options.simviewcolor=0; % Plot with simview color settings
     options.shadesgray=0; % Plot with shades of gray
+    options.ManualTips=1;
     options.PutTips=1; % Put arrow
     options.PutLegend=1;
     options.PutYLabel=1;
@@ -197,77 +197,77 @@ for p = 1:length(plots)
 %             end
 %         end
 %     end % end of DSplot
+
+for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
+    csvheader='xdata';
+    SCREENdata=wstruct{p}.main.xdata; %
     
-    for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
-        csvheader='xdata';
-        SCREENdata=wstruct{p}.main.xdata; %
-        
-        if options.PutYLabel
-            prompt = {['Enter YLabel String for Screen: ' num2str(s)]};
-            dlg_title = 'YLabel Input';
-            num_lines = 1;
-            def = {['$Screen_' num2str(s) '$']};
-            answer = inputdlg(prompt,dlg_title,num_lines,def);
-            if isempty(answer)
-                YLabelstring=['$Screen_' num2str(s) '$']; % enters string value
-            else
-                YLabelstring=answer{1};
-            end
-            eval(['wstruct{p}.screen' num2str(s) '.YLabel=''' YLabelstring ''';' ]);
+    if options.PutYLabel
+        prompt = {['Enter YLabel String for Screen: ' num2str(s)]};
+        dlg_title = 'YLabel Input';
+        num_lines = 1;
+        def = {['$Screen_' num2str(s) '$']};
+        answer = inputdlg(prompt,dlg_title,num_lines,def);
+        if isempty(answer)
+            YLabelstring=['$Screen_' num2str(s) '$']; % enters string value
+        else
+            YLabelstring=answer{1};
         end
-        
-        for c=0:eval(['wstruct{p}.screen' num2str(s) '.curvecount'])-1 % Curves Loop
-            ydata = eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data']);
-            SCREENdata=horzcat(SCREENdata,ydata);
-            csvheader=[csvheader [', curve' num2str(c)]];
-            
-            if options.ManualTips % Gets tips points from plot
-                if eval(['isfield(wstruct{p}.screen' num2str(s) '.curve' num2str(c) ',''tip'')'])
-                    % Well, something can be done.
-                else
-                    hfig=plot(wstruct{p}.main.xdata,ydata);
-                    grid on
-                    xlim([xfrom  xto])
-                    yfrom = eval(['wstruct{p}.screen' num2str(s) '.yfrom']);
-                    yto = eval(['wstruct{p}.screen' num2str(s) '.yto']);
-%                     yinc = eval(['wstruct{p}.screen' num2str(s) '.yinc']);
-                    ylim([yfrom yto])
-                    clabel = eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.label']);
-                    legend(clabel)
-                    title(['Get tip location for curve ' clabel])
-                    [xtip,ytip] = ginput(2); % Get two points for putting tips
-                    Dxtip=xtip/(xto-xfrom); % Scales to get angle
-                    Dytip=ytip/(yto-yfrom);
-                    
-                    tip.theta = round(angle((Dxtip(2)-Dxtip(1))+1i*(Dytip(2)-Dytip(1)))*180/pi);
-                    
-                    tip.x=xtip(1); % Tip x position
-                    tip.y=ytip(1); % Tip y position
-                    if options.SetVar
-                        prompt = {['Enter tip String for ' clabel]};
-                        dlg_title = 'Input';
-                        num_lines = 1;
-                        def = {['$' clabel '$']};
-                        answer = inputdlg(prompt,dlg_title,num_lines,def);
-                        if isempty(answer)
-                            tip.string=['$' clabel '$']; % enters string value
-                        else
-                            tip.string=answer{1};
-                        end
-                    else
-                        tip.string=clabel; % enters string value
-                    end
-                    eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.tip=tip;']);
-                    %                     eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.tip'])
-                    close(get(get(hfig,'Parent'),'Parent'))% Closes the figure
-                end
-            end % end of manual tips            
-        end
-        
-        csvfilename = [dirstruct.psimstorage '\' plots{p} 'screen' num2str(s) '.csv'];
-        savecsvfile(SCREENdata, csvheader, csvfilename);
+        eval(['wstruct{p}.screen' num2str(s) '.YLabel=''' YLabelstring ''';' ]);
     end
-    %
+    
+    for c=0:eval(['wstruct{p}.screen' num2str(s) '.curvecount'])-1 % Curves Loop
+        ydata = eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data']);
+        SCREENdata=horzcat(SCREENdata,ydata);
+        csvheader=[csvheader [', curve' num2str(c)]];
+        
+        if options.ManualTips % Gets tips points from plot
+            if eval(['isfield(wstruct{p}.screen' num2str(s) '.curve' num2str(c) ',''tip'')'])
+                % Well, something can be done.
+            else
+                hfig=plot(wstruct{p}.main.xdata,ydata);
+                grid on
+                xlim([xfrom  xto])
+                yfrom = eval(['wstruct{p}.screen' num2str(s) '.yfrom']);
+                yto = eval(['wstruct{p}.screen' num2str(s) '.yto']);
+                %                     yinc = eval(['wstruct{p}.screen' num2str(s) '.yinc']);
+                ylim([yfrom yto])
+                clabel = eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.label']);
+                legend(clabel)
+                title(['Get tip location for curve ' clabel])
+                [xtip,ytip] = ginput(2); % Get two points for putting tips
+                Dxtip=xtip/(xto-xfrom); % Scales to get angle
+                Dytip=ytip/(yto-yfrom);
+                
+                tip.theta = round(angle((Dxtip(2)-Dxtip(1))+1i*(Dytip(2)-Dytip(1)))*180/pi);
+                
+                tip.x=xtip(1); % Tip x position
+                tip.y=ytip(1); % Tip y position
+                if options.SetVar
+                    prompt = {['Enter tip String for ' clabel]};
+                    dlg_title = 'Input';
+                    num_lines = 1;
+                    def = {['$' clabel '$']};
+                    answer = inputdlg(prompt,dlg_title,num_lines,def);
+                    if isempty(answer)
+                        tip.string=['$' clabel '$']; % enters string value
+                    else
+                        tip.string=answer{1};
+                    end
+                else
+                    tip.string=clabel; % enters string value
+                end
+                eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.tip=tip;']);
+                %                     eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.tip'])
+                close(get(get(hfig,'Parent'),'Parent'))% Closes the figure
+            end
+        end % end of manual tips
+    end
+    
+    csvfilename = [dirstruct.psimstorage '\' plots{p} 'screen' num2str(s) '.csv'];
+    savecsvfile(SCREENdata, csvheader, csvfilename);
+end
+%
     
     
     %% Update structure     Why?????

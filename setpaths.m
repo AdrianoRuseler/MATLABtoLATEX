@@ -53,6 +53,7 @@ addfolder{7}=[folder '\fftsope2tikz'];
 addfolder{8}=[folder '\bode2tikz'];
 addfolder{9}=[folder '\maxwell2matlab'];
 addfolder{10}=[folder '\plecs2matlab']; % For PLECS related functions
+addfolder{11}=[folder '\matlab-plot-big'];
 
 for f=1:length(addfolder)
     if isequal(exist(addfolder{f},'dir'),7) % verifies if folder exist

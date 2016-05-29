@@ -2,13 +2,13 @@
 
  %% Convert pdf to png
 %  tic
-%  [status,cmdout] = system('convert "tek0047full.pdf" "tek0047full.png"','-echo');
+%  [status,cmdout] = system('convert "Inversor3c3nMagnetics.pdf" "Inversor3c3nMagnetics.png"','-echo');
 %  toc
 %  
-%  tic
-%  command='convert -density 300 -depth 8 -quality 85 "tek0047full.pdf" "tek0047full.png"';
-%  [status,cmdout] = system(command,'-echo');
-%  toc % Elapsed time is 5364.397533 seconds.
+ tic
+ command='convert -density 300 -depth 8 -quality 85 "Inversor3c3nMagnetics.pdf" "Inversor3c3nMagnetics.png"';
+ toc % Elapsed time is 5364.397533 seconds.
+ [status,cmdout] = system(command,'-echo');
 %  
 %  tic
 %  command='convert -density 300  "tek0047full.pdf" "tek0047full.eps"';
