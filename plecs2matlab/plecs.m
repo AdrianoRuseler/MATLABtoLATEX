@@ -37,4 +37,4 @@ PLECSdata = plecs2matlab();
 
 % PSIMdata = csv2matlab();
 
-matlab2simview(MATLABdata);
+matlab2simview(PSIMdata);

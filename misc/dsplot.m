@@ -185,7 +185,8 @@ end
     
     % Determine the variable name
     allVarNames = evalin('base', 'who');
-    newVarName = genvarname('dsplotData', allVarNames);
+%     newVarName = genvarname('dsplotData', allVarNames);
+    newVarName = matlab.lang.makeValidName('dsplotData', allVarNames);
     
     % X
     if ~noXVar

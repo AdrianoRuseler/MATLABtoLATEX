@@ -36,8 +36,8 @@ PSIMdataDown=PSIMdata; % Just copy
 
 % PSIMdataDown.time = downsample(PSIMdata.time,options.DSn);
 
-% for s=1:nsignals
-%  PSIMdataDown.signals(s).values = downsample(PSIMdata.signals(s).values,options.DSn);
+% for s=1:nsignals    
+%  PSIMdataDown.signals(s).values = downsample(PSIMdata.signals(s).values,options.DSn); 
 % end
 
 
@@ -65,7 +65,7 @@ if options.DSmain
     for s=1:nsignals
         PSIMdataDown.signals(s).values = decimate(double(PSIMdataDown.signals(s).values),options.DSn);
         PSIMdataDown.signals(s).values=single(PSIMdataDown.signals(s).values);
-    end
+    end    
 end
 %% Decimate simview data points.
 
@@ -115,7 +115,7 @@ for p = 1:length(plots)
             %             end
             %             eval(['PSIMdataDown.simview.' plots{p} '=wstruct{p};']); % update struct
         case 'DSplot'
-            xdata=wstruct{p}.main.xdata;
+            xdata=wstruct{p}.main.xdata;            
             for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
                 ydata = [];
                 nvars=1;
@@ -133,53 +133,52 @@ for p = 1:length(plots)
                     xdataR=xdataR(:); % force vector to be vertical
                     ydataR=ydataR(:); % force vector to be vertical
                     
-                    %                      disp(['The Screen' num2str(s) '.curve' num2str(c) ' xdata length is:' num2str(length(xdataR))])
-                    %                      disp(['The Screen' num2str(s) '.curve' num2str(c) ' ydata length is:' num2str(length(ydataR))])
+%                      disp(['The Screen' num2str(s) '.curve' num2str(c) ' xdata length is:' num2str(length(xdataR))])
+%                      disp(['The Screen' num2str(s) '.curve' num2str(c) ' ydata length is:' num2str(length(ydataR))])
                     XdataLength(s+1,c+1) = length(xdataR);
                     YdataLength(s+1,c+1) = length(ydataR);
                     
                     eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data=ydataR;'])
                     eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.xdata=xdataR;'])
-                end
+                end           
                 
                 eval(['wstruct{p}.screen' num2str(s) '.xdata=xdataR;'])
                 xfrom=xdataR(1);
                 xto=xdataR(end);
                 eval(['wstruct{p}.screen' num2str(s) '.xfrom=xfrom;'])
                 eval(['wstruct{p}.screen' num2str(s) '.xto=xto;'])
-                close(gcf)% Closes the figure
+                close(gcf)% Closes the figure                
             end
-            %             close(gcf)% Closes the figure
-            wstruct{p}.main.xdata=xdataR; % Must verify this
-            wstruct{p}.main.xfrom=wstruct{p}.main.xdata(1); % x lower limit
-            wstruct{p}.main.xto=wstruct{p}.main.xdata(end); % x upper limit
+            
             
             % If data length are different, interpolate to match
             if (abs(diff(XdataLength)))
-                [xB yB]= find(XdataLength==min(XdataLength(:)),1); % Base curve
-                eval(['xBase=wstruct{p}.screen' num2str(xB-1) '.curve' num2str(yB-1) '.xdata;'])
-                %                assignin('base', 'xBase', xBase);
-                for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
-                    for c=0:eval(['wstruct{p}.screen' num2str(s) '.curvecount'])-1 % Curves Loop
-                        eval(['xdataR=wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.xdata;'])
-                        eval(['ydataR=wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data;'])
-                        assignin('base', ['ydata' num2str(s) num2str(c)], ydataR);
-                        ydata = interp1(xdataR,ydataR,xBase);
-                        eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data=ydata;'])
-                        eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.xdata=xBase;'])
-                    end
-                    eval(['wstruct{p}.screen' num2str(s) '.xdata=xBase;'])
-                    xfrom=xBase(1);
-                    xto=xBase(end);
-                    eval(['wstruct{p}.screen' num2str(s) '.xfrom=xfrom;'])
-                    eval(['wstruct{p}.screen' num2str(s) '.xto=xto;'])
-                    %                 close(gcf)% Closes the figure
-                end
-                wstruct{p}.main.xdata=xBase; % Must verify this
-                wstruct{p}.main.xfrom=wstruct{p}.main.xdata(1); % x lower limit
-                wstruct{p}.main.xto=wstruct{p}.main.xdata(end); % x upper limit
+                [xB yB]= find(XdataLength==min(XdataLength(:)),1); % Base curve                                        
+               eval(['xBase=wstruct{p}.screen' num2str(xB-1) '.curve' num2str(yB-1) '.xdata;'])
+%                assignin('base', 'xBase', xBase);
+               for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
+                   for c=0:eval(['wstruct{p}.screen' num2str(s) '.curvecount'])-1 % Curves Loop
+                       eval(['xdataR=wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.xdata;'])
+                       eval(['ydataR=wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data;'])
+                       assignin('base', ['ydata' num2str(s) num2str(c)], ydataR);
+                       ydata = interp1(xdataR,ydataR,xBase);
+                       eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data=ydata;'])
+                       eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.xdata=xBase;'])
+                   end                   
+                eval(['wstruct{p}.screen' num2str(s) '.xdata=xBase;'])
+                xfrom=xBase(1);
+                xto=xBase(end);
+                eval(['wstruct{p}.screen' num2str(s) '.xfrom=xfrom;'])
+                eval(['wstruct{p}.screen' num2str(s) '.xto=xto;'])
+%                 close(gcf)% Closes the figure                    
+               end
+               
             end
             
+%             close(gcf)% Closes the figure
+            wstruct{p}.main.xdata=xdataR; % Must verify this
+            wstruct{p}.main.xfrom=wstruct{p}.main.xdata(1); % x lower limit
+            wstruct{p}.main.xto=wstruct{p}.main.xdata(end); % x upper limit
             
             eval(['PSIMdataDown.simview.' plots{p} '=wstruct{p};']); % update struct
         otherwise
@@ -193,5 +192,6 @@ end % end of simview plots
 
 
 
-
-
+    
+    
+    

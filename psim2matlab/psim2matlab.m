@@ -104,7 +104,7 @@ dirstruct.psimstorage = [dirstruct.psimdir '\' name]; % Not sure
 
 
 %%  Load file .txt
-disp('Reading txt file....     Wait!')
+disp(['Reading ' name '.txt file....     Wait!'])
 tic
 cd(dirstruct.simulatedir)
 [fileID,errmsg] = fopen(PSIMtxt);
@@ -119,9 +119,9 @@ tline = fgetl(fileID);
 [header] = strread(tline,'%s','delimiter',' ');
 
 fstr='%f';
- for tt=2:length(header)
-    fstr=[fstr '%f']; 
- end
+for tt=2:length(header)
+    fstr=[fstr '%f'];
+end
  
 M = cell2mat(textscan(fileID,fstr));            
 fclose(fileID);
@@ -132,8 +132,8 @@ disp('Done!')
 
  disp('Converting to simulink struct data ....')
 
- PSIMdata.time=single(M(:,1));
-
+ PSIMdata.time=M(:,1);
+ PSIMdata.Ts=M(2,1)-M(1,1); % Time step
  
  % Verifies header name
  for i=2:length(header)
@@ -147,7 +147,7 @@ disp('Done!')
          disp(['Name ' header{i} ' modified to ' U ' (MATLAB valid name for variables)!!'])
      end
      PSIMdata.signals(i-1).label=U;
-     PSIMdata.signals(i-1).values=single(M(:,i));
+     PSIMdata.signals(i-1).values=M(:,i);
      PSIMdata.signals(i-1).dimensions=1;   
      PSIMdata.signals(i-1).title=U;
      PSIMdata.signals(i-1).plotStyle=[0,0];

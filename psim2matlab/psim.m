@@ -35,6 +35,7 @@
 % [folder, name, ext] = fileparts(which('psim')); 
 clear all
 clc
+
 % Read simulated data
 PSIMdata = psim2matlab();
 
@@ -62,7 +63,6 @@ options.DSpoints=5000; % number of points (roughly) to display on the screen. Th
 %   50000 points (~390 kB doubles).
 
 [PSIMdataDown]=psim2down(PSIMdata,options);
-
 
 %% Now we are ready to plot from PSIM data;
 

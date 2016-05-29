@@ -52,13 +52,13 @@ fclose(fileID); % Close it.
 % write data
 % disp('Data size to record:')
 % size(csvdata)
-% dlmwrite('myFile.txt',M,'delimiter','\t','precision',5)
+% dlmwrite('myFile.txt',M,'delimiter','\t','precision',15)
 
 % 15.550297613166409  .15f
 
 disp(['Saving ' txtname '.txt data file...'])
 tic
-dlmwrite(filemane, txtdata,'delimiter',' ','-append','newline','pc');
+dlmwrite(filemane, txtdata,'delimiter',' ','precision',6,'-append','newline','pc');
 toc
 cd(wdir)
 
