@@ -50,19 +50,16 @@ disp(PSIMdata.simview)
 % [PSIMdataDown]=psim2down(PSIMdata,3);
 options.DSmain=0; % Downsaple main data points
 
-% options.DSfunction='decimate';
-% options.DSn=100;
-
-
-% lengthY = ceil(length(PSIMdata.time)/options.DSn)
-
-% options.DSfunction='matlab-plot-big'; % Problems here
+%  options.DSfunction='decimate'; % Applies a filter - Not recomended
+%  options.DSn=100;
 
 options.DSfunction='DSplot';
-options.DSpoints=5000; % number of points (roughly) to display on the screen. The default is
+options.DSpoints=2500; % number of points (roughly) to display on the screen. The default is
 %   50000 points (~390 kB doubles).
 
 [PSIMdataDown]=psim2down(PSIMdata,options);
+
+down2compare(PSIMdata,PSIMdataDown); % Compare downsample 
 
 %% Now we are ready to plot from PSIM data;
 
@@ -83,7 +80,6 @@ options.DSpoints=5000; % number of points (roughly) to display on the screen. Th
     options.AxisType=1; % tipo de eixo utilizado
     
 % psim2tikz(PSIMdata,options) 
-
  psim2tikz(PSIMdataDown,options) 
 
 %% Can be used with

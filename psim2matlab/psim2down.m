@@ -83,7 +83,7 @@ for p = 1:length(plots)
     %          xfrom = wstruct{p}.main.xfrom; % x lower limit
     %     xto = wstruct{p}.main.xto; % x upper limit
     switch options.DSfunction % Select function
-        case 'decimate' % Waiting for code implementation
+        case 'decimate' %  
             wstruct{p}.main.xdata=single(decimate(double(wstruct{p}.main.xdata),options.DSn)); %
             % Atualizar limites do eixo x
             wstruct{p}.main.xfrom=wstruct{p}.main.xdata(1); % x lower limit
@@ -98,23 +98,8 @@ for p = 1:length(plots)
             eval(['PSIMdataDown.simview.' plots{p} '=wstruct{p};']); % update struct
             
             
-            %     options.DSfunction='matlab-plot-big';
-        case 'matlab-plot-big'      % Gets stuck
-            %             for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
-            %                 for c=0:eval(['wstruct{p}.screen' num2str(s) '.curvecount'])-1 % Curves Loop
-            %                     ydata = eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data']);
-            %                     %                     ydata=single(decimate(double(ydata),options.DSn));
-            %                     figure
-            %                     hR=reduce_plot(wstruct{p}.main.xdata,ydata)
-            %                     xdataR=get(hR,'XData');
-            %                     ydataR=get(hR,'YData');
-            %                     close(gcf)
-            %                     eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data=ydataR;'])
-            %                 end
-            %                 wstruct{p}.main.xdata=xdataR;
-            %             end
-            %             eval(['PSIMdataDown.simview.' plots{p} '=wstruct{p};']); % update struct
-        case 'DSplot'
+ % --------------------------------  DSplot   ------------------------------------------------      
+        case 'DSplot' % Recomended
             xdata=wstruct{p}.main.xdata;
             for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
                 ydata = [];
@@ -163,7 +148,7 @@ for p = 1:length(plots)
                     for c=0:eval(['wstruct{p}.screen' num2str(s) '.curvecount'])-1 % Curves Loop
                         eval(['xdataR=wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.xdata;'])
                         eval(['ydataR=wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data;'])
-                        assignin('base', ['ydata' num2str(s) num2str(c)], ydataR);
+%                         assignin('base', ['ydata' num2str(s) num2str(c)], ydataR);
                         ydata = interp1(xdataR,ydataR,xBase);
                         eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data=ydata;'])
                         eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.xdata=xBase;'])

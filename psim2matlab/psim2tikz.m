@@ -133,10 +133,9 @@ for p = 1:length(plots)
     for s=0:wstruct{p}.main.numscreen-1 % Screens Loop
         csvheader='xdata';
     
-        SCREENdata=wstruct{p}.main.xdata; %
-     
+        SCREENdata=wstruct{p}.main.xdata; %    
         
-            disp(['The xdata length is:' num2str(length(SCREENdata))])
+%             disp(['The xdata length is:' num2str(length(SCREENdata))])
         if options.PutYLabel
             prompt = {['Enter YLabel String for Screen: ' num2str(s)]};
             dlg_title = 'YLabel Input';
@@ -153,7 +152,7 @@ for p = 1:length(plots)
         
         for c=0:eval(['wstruct{p}.screen' num2str(s) '.curvecount'])-1 % Curves Loop
             ydata = eval(['wstruct{p}.screen' num2str(s) '.curve' num2str(c) '.data']);
-                     disp(['The ydata length is:' num2str(length(ydata))])
+%                      disp(['The ydata length is:' num2str(length(ydata))])
             SCREENdata=horzcat(SCREENdata,ydata);
             csvheader=[csvheader [', curve' num2str(c)]];
             

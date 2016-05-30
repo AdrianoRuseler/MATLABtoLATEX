@@ -6,7 +6,7 @@
 %  toc
 %  
  tic
- command='convert -density 300 -depth 8 -quality 85 "Inversor3c3nMagnetics.pdf" "Inversor3c3nMagnetics.png"';
+ command='convert -density 300 -depth 8 -quality 85 "TPISHBTVc.pdf" "TPISHBTVc.png"';
  toc % Elapsed time is 5364.397533 seconds.
  [status,cmdout] = system(command,'-echo');
 %  
