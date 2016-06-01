@@ -1,4 +1,5 @@
 
+
 % =========================================================================
 % ***
 % *** This code is intended to verify all m files required to properly run this
@@ -33,8 +34,7 @@
 % ***
 % =========================================================================
 
-function status = setpaths()
-status = 0; % Lets assume that we are good to go!
+function status = checkFileDependencies()
 
 %% Set all relevant folders in matlab serach path.
 disp(' ')
@@ -60,12 +60,10 @@ addfolder{11}=[folder '\gecko2matlab']; % For GeckoCIRCUITS related functions
 
 for f=1:length(addfolder)
     if isequal(exist(addfolder{f},'dir'),7) % verifies if folder exist
-        addpath(addfolder{f}) % add to MATLAB search path
+        % addpath(addfolder{f}) % add to MATLAB search path
         disp([addfolder{f} ' added to MATLAB search path!'])
-        
         cd(addfolder{f})
-          mfiles{f} =cellstr(ls('*.m'));       
-        
+        mfiles{f} =cellstr(ls('*.m'));
     else
         disp([addfolder{f} ' Not found!!'])
     end
@@ -78,21 +76,41 @@ else
     disp('savepath successful saved folders MATLAB paths')
 end
 
-cd(wdir)
+%% Verifies m files dependencies;
+% This code is intended to verify all m files required to properly run this
+% pakage;
 
+nf=0; % Number of not found m files
+for f=1:length(mfiles)
+    for m=1:length(mfiles{f})
+        if exist(mfiles{f}{m},'file') % is not empty or exist
+            disp(' ')
+            tic
+            [fList{f}{m},pList{f}{m}] = matlab.codetools.requiredFilesAndProducts(mfiles{f}{m});
+            disp(['Files dependencies for: ' mfiles{f}{m}])
+            disp(fList{f}{m}')
+            disp(' ')
+            disp(['Programs dependencies for: ' mfiles{f}{m}])
+            disp(pList{f}{m})
+            disp(' ')
+            
+            for e=1:length(fList{f}{m})
+                if exist(fList{f}{m}{e},'file')
+                    disp([fList{f}{m}{e} ' Found!!' ])
+                else
+                    warning([fList{f}{m}{e} 'NOT Found!!' ])
+                    notfound{nf+1}=fList{f}{m}{e};
+                    nf=nf+1;
+                end
+            end
+            toc
+            disp('**************   ********************   ************')
+        end
+    end
+end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+if ~nf
+    disp('All m files are present!')
+end
+    
+status = nf;
