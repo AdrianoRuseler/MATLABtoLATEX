@@ -74,7 +74,7 @@ switch ext % Make a simple check of file extensions
         PSIMdata =[];
         return
     case '.fra' % Waiting for code implementation
-        disp('fra analysis from PSIM.')        
+        disp('Frequency analysis from PSIM.')        
         PSIMdata = psimfra2matlab(PSIMtxt);
         cd(dirstruct.wdir)
         return

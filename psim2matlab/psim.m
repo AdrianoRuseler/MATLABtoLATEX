@@ -30,11 +30,15 @@
 
 % Test enviroment
 
+status = testenviroment(); % Test if some error were encontered
+
 %% Test some examples
 % Example 01 
 % [folder, name, ext] = fileparts(which('psim')); 
 clear all
 clc
+
+PSIMdata = psimfra2matlab()
 
 % Read simulated data
 PSIMdata = psim2matlab();

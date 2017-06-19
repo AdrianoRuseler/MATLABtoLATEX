@@ -84,10 +84,10 @@ catch
     end
 end
 
-if isempty(PSIMdata) % If there is no data, just return
-    PSIMdata = psim2matlab();  % Ask for PSIM data file
-    return
-end
+% if isempty(PSIMdata) % If there is no data, just return
+%     PSIMdata = psim2matlab();  % Ask for PSIM data file
+%     return
+% end
 
 [pathstr, name, ext] = fileparts(PSIMfra);
 switch ext % Make a simple check of file extensions
@@ -98,6 +98,12 @@ switch ext % Make a simple check of file extensions
         cd(dirstruct.wdir)
         return
 end
+
+dirstruct.simulatedir=pathstr; % Update simulations dir
+    
+%  Create folder under psimdir to store mat file
+[s,mess,messid] = mkdir(dirstruct.psimdir, name); % Check here
+dirstruct.psimstorage = [dirstruct.psimdir '\' name]; % Not sure
 
 % Make name valid in MATLAB
 name = matlab.lang.makeValidName(name);
