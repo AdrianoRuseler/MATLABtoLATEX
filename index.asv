@@ -44,9 +44,12 @@ disp(' ')
 
 %% Lets plot some figures
 
-[TEK0003] = csv2struct();
+[TEK0002] = csv2struct();
 
-power_fftscope
+
+SCOPEdata.time=SCOPEdata.time-SCOPEdata.time(1)
+
+
 
 
 

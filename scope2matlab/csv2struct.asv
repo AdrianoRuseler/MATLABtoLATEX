@@ -9,7 +9,7 @@
 % ***
 % *** The MIT License (MIT)
 % ***
-% *** Copyright (c) 2017 AdrianoRuseler
+% *** Copyright (c) 2015 AdrianoRuseler
 % ***
 % *** Permission is hereby granted, free of charge, to any person obtaining a copy
 % *** of this software and associated documentation files (the "Software"), to deal
@@ -68,10 +68,6 @@ end
 switch ext % Make a simple check of file extensions
     case '.csv'
         % Good to go!!
-        version='new';
-    case '.CSV'
-        version='old';
-        % Good to go!!
     otherwise
         disp('We expect an *.csv file.')
         cd(dirstruct.wdir)
@@ -87,6 +83,8 @@ dirstruct.aquisitiondir=pathstr;
 
 dirstruct.scopestorage = [dirstruct.scopedir '\' name]; % Not sure
 
+version='old';
+% version='new';
 
 switch version % Make a simple check of file extensions
     case 'old'
@@ -109,8 +107,6 @@ switch version % Make a simple check of file extensions
             time(i)=str2double(sheader{i}{3});
             data(i)=str2double(sheader{i}{4});
         end
-        time(19)=str2double(csvdata.textdata{19,4});
-        data(19)=str2double(csvdata.textdata{19,5});
         
         SCOPEdata.scopedata.model=sheader{16}{2};
         SCOPEdata.scopedata.firmware=sheader{18}{2};
@@ -123,14 +119,15 @@ switch version % Make a simple check of file extensions
         SCOPEdata.scopedata.xlength=str2double(sheader{1}{2});
         SCOPEdata.scopedata.source=sheader{7}{2};
         
-        SCOPEdata.time=vertcat(single(time)',single(csvdata.data(:,4)));       
-      
+        SCOPEdata.time=single(csvdata.data(:,4));
+        
+        
         
         U = matlab.lang.makeValidName(sheader{7}{2}); % Verifica validade do nome        
         SCOPEdata.signals(1).label=U;
         SCOPEdata.signals(1).title=U;
         SCOPEdata.signals(1).plotStyle=[0,0];
-        SCOPEdata.signals(1).values=vertcat(single(data)',single(csvdata.data(:,5)));
+        SCOPEdata.signals(1).values=single(csvdata.data(:,5));
         SCOPEdata.signals(1).dimensions=1;     
             
     case 'new'
