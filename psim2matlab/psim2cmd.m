@@ -34,9 +34,8 @@ catch
     [status, dirstruct]= checkdirstruct(); % Well, check this out
 end
 
-dirstruct
-
 if ~isfield(PSIMdata.PSIMCMD,'infile')
+    disp('Field infile not Found!')
     [PSIMFile, PSIMPath] = uigetfile({'*.psimsch;*.sch','PSIM Files (*.psimsch,*.sch)'; ...
         '*.psimsch','PSIM File';'*.sch','PSIM File'; '*.*','All files'}, 'Pick an PSIM-file');    
     if isequal(PSIMFile,0)
@@ -46,6 +45,7 @@ if ~isfield(PSIMdata.PSIMCMD,'infile')
     PSIMdata.PSIMCMD.infile=[PSIMPath PSIMFile];
 else
     if ~exist(PSIMdata.PSIMCMD.infile,'file')
+         disp('File infile not Found!')
         [PSIMFile, PSIMPath] = uigetfile({'*.psimsch;*.sch','PSIM Files (*.psimsch,*.sch)'; ...
             '*.psimsch','PSIM File';'*.sch','PSIM File'; '*.*','All files'}, 'Pick an PSIM-file');        
         if isequal(PSIMFile,0)
@@ -76,15 +76,19 @@ PsimCmdsrt= ['-i ' infile ' -o ' outfile ' -m ' msgfile ' -t ' totaltime ' -s ' 
 
 tic
 disp(PsimCmdsrt)
-disp('Simulando conversor...')
+disp('Simulating PSIM file...')
 [status,cmdout] = system(['PsimCmd ' PsimCmdsrt]); % Executa simulação
 disp(cmdout)
 PSIMdata.PSIMCMD.cmdout=cmdout;
-temp=PSIMdata.PSIMCMD;
-if ~status
-    PSIMdata = psim2matlab(PSIMdata.PSIMCMD.outfile); 
+% temp=PSIMdata.PSIMCMD;
+
+if ~status % Simulated OK!
+    PSIMdata = psim2matlab(PSIMdata); 
+    PSIMdata = simview2matlab(PSIMdata); % Read simview data
 end
 
-PSIMdata.PSIMCMD=temp;
+
+
+% PSIMdata.PSIMCMD=temp;
 
 

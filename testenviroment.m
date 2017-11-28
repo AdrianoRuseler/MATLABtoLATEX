@@ -193,8 +193,6 @@ disp(' ')
 [statusdir, dirstruct]=checkdirstruct();
 status = xor(status,statusdir);
 
-
-
 disp(' ')
 disp('***************************  END **********************************')
 

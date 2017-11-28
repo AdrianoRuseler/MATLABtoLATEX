@@ -25,7 +25,7 @@
 % ***
 % =========================================================================
 
-function [status, dirstruct] = checkdirstruct()
+function [status,dirstruct] = checkdirstruct()
 
 status = 0; % All good
 

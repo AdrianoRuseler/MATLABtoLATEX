@@ -30,7 +30,7 @@
 % ***
 % =========================================================================
 
-function PSIMdata = psim2matlab(PSIMtxt)
+function PSIMdata = psim2matlab(PSIMdata)
 
 % Loads directory structure
 try
@@ -38,6 +38,8 @@ try
 catch
     [status, dirstruct]= checkdirstruct(); % Well, check this out
 end
+
+PSIMtxt=PSIMdata.PSIMCMD.outfile;
 
 if nargin <1  % PSIMtxt not supplied
     if isfield(dirstruct,'simulatedir')
@@ -50,7 +52,6 @@ if nargin <1  % PSIMtxt not supplied
         '*.*','All files'}, 'Pick an PSIM-file');
     if isequal(PSIMtxtFile,0)
         disp('User selected Cancel')
-        PSIMdata =[]; % Return empty data
         return
     end
     PSIMtxt=[PSIMtxtPath PSIMtxtFile]; % Provide

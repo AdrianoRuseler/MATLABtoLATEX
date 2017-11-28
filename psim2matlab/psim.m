@@ -25,8 +25,9 @@
 % ***
 % =========================================================================
 
-% Test enviroment
-
+%% Clear and Test enviroment
+clear all
+clc
 status = testenviroment(); % Test if some error were encontered
 
 %% CMD
@@ -45,7 +46,7 @@ PSIMdata = psim2cmd(PSIMdata);
 clear all
 clc
 
-PSIMdata = psimfra2matlab()
+PSIMdata = psimfra2matlab();
 
 % Read simulated data
 PSIMdata = psim2matlab();
