@@ -50,6 +50,39 @@ else
     disp('<a href = "http://downloads.sourceforge.net/mingw/MSYS-1.0.11.exe">http://downloads.sourceforge.net/mingw/MSYS-1.0.11.exe</a>')
 end
 
+
+disp(' ')
+disp('************************ Test GNU bash ****************************')
+disp(' ')
+[status,cmdout] = system('bash --version'); % verifies if GNU bash is present
+if ~status
+    disp(cmdout)   
+    disp('<a href = " https://www.gnu.org/software/bash/manual/">GNU Bash manual</a>')
+    disp(' ')
+else
+    status = xor(status,1); % Well, something is missed
+    warning('bash.exe is NOT present via system cmd')
+    disp('Install GNU bash (MinGW MSYS) and set System Enviroment Variables')
+    disp('PATH to point bin directory (ex: C:\msys\1.0\bin)')    
+    disp('<a href = "http://downloads.sourceforge.net/mingw/MSYS-1.0.11.exe">http://downloads.sourceforge.net/mingw/MSYS-1.0.11.exe</a>')
+end
+
+disp(' ')
+disp('************************ Test Git ****************************')
+disp(' ')
+[status,cmdout] = system('git --version'); % verifies if GNU bash is present
+if ~status
+    disp(cmdout)   
+    disp('<a href = "https://git-scm.com/docs">Git manual</a>')
+    disp(' ')
+else
+    status = xor(status,1); % Well, something is missed
+    warning('bash.exe is NOT present via system cmd')
+    disp('Install Git and set System Enviroment Variables')
+%     disp('PATH to point bin directory (ex: C:\Program Files\Git)')    
+    disp('<a href = "https://git-scm.com/downloads">https://git-scm.com/downloads</a>')
+end
+
 disp('*************** Test Latex intallation - pdflatex.exe **************')
 disp(' ')
 % verifies if pdflatex is present via system cmd

@@ -27,32 +27,21 @@
 
 
 
-%% Single matlab2tikz test 96 max
+%% Generate .tex files
 
 wdir=pwd; % Get current directory
-[folder, name, ext] = fileparts(which('matlab2tikz_acidtest')); % Change directory
-
+[folder, name, ext] = fileparts(which('runMatlab2TikzTests')); % Change directory
 cd(folder)
-ok=0;
-er=0;
-for t=1:96
-    matlab2tikz_acidtest(t)
-    cd tex
-    [status,cmdout] = system('make','-echo');
-    
-    if status % error
-        testERROR{er+1}=t;
-        er=er+1;
-    else
-        testOK{ok+1}=t;
-        ok=ok+1;
-        
-        copyfile('acid.pdf',['acid_test' num2str(t) '.pdf'])
-    end
-    
-    % winopen('acid.pdf')
-     cd(folder)
-end
+
+runMatlab2TikzTests % Executes test routine
+
+%% Compiles all test .tex files
+outfile=[folder '\output\current\data\converted'];
+cd(outfile)
+texfiles = ls('*.tex');
+
+[status,cmdout] = system('make','-echo');
+
 cd(wdir)
 
 %% Build reference
