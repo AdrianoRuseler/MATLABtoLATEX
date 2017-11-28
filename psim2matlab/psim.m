@@ -39,6 +39,10 @@ PSIMdata.PSIMCMD.infile=[dirstruct.wdir '\psim2matlab\test\ex01.psimsch'];
 
 PSIMdata = psim2cmd(PSIMdata);
 
+%% Leitura de dados
+PSIMdata = simview2matlab(PSIMdata);
+[status]=psim2plot(PSIMdata);
+
 %% Frequency response
 
 PSIMdata.PSIMCMD.totaltime = 0.05; % Ajuste o tempo para atingir o regime permanente
@@ -49,22 +53,20 @@ PSIMdata.PSIMCMD.infile=[dirstruct.wdir '\psim2matlab\test\BuckACSweep.psimsch']
 PSIMdata = psim2cmd(PSIMdata);
 
 % PSIMdata = psimfra2matlab(PSIMdata);
-
+%%
 PSIMdata.fra.freq
 
+np = 2;
+nz = 1;
+iodelay = NaN;
+sysC0 = tfest(vC0,np,nz);
+sysiL0 = tfest(iL0,np,nz);
 
-Ts = 0; % For continuous-time models
-response = mag.*exp(1j*phase*pi/180);
-m = idfrd(response,f,0.08);
-m.Report.Method
-
-s=1
-
+figure
+bode(vC0,sysC0);
  
-
-
-    
-    
+figure
+bode(iL0,sysiL0);   
     
 %% Test some examples
 % Example 01 

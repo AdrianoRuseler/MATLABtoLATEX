@@ -172,7 +172,6 @@ xto = simview.main.xto;
 
 xdata=PSIMdata.time(PSIMdata.time>=xfrom&PSIMdata.time<=xto);
 
-
 for i=1:length(PSIMdata.signals)
    ydata = PSIMdata.signals(:,i).values(PSIMdata.time>=xfrom&PSIMdata.time<=xto);    
     assignin('base',PSIMdata.signals(i).label,ydata); % Not sure if this is the best way to do so;
