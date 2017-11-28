@@ -131,7 +131,7 @@ for s=1:length(PSIMdata.fra.signals)
    phase= PSIMdata.fra.signals(s).phase;      
    response = mag.*exp(1j*phase*pi/180);
    PSIMdata.fra.idfrd(s) = idfrd(response,freq,0);
-   assignin('base',PSIMdata.fra.signals(s).label,PSIMdata.fra.idfrd(s));
+   assignin('base','dirstruct',dirstruct);
 end
 
 % disp('Saving data file....')

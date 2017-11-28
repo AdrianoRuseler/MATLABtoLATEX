@@ -56,6 +56,8 @@ else
     end    
 end
 
+disp(PSIMdata.PSIMCMD.infile)
+
 [filepath,name,ext] = fileparts(PSIMdata.PSIMCMD.infile);
 
 PSIMdata.PSIMCMD.outfile = [filepath '\' name '.txt'];
@@ -78,17 +80,26 @@ tic
 disp(PsimCmdsrt)
 disp('Simulating PSIM file...')
 [status,cmdout] = system(['PsimCmd ' PsimCmdsrt]); % Executa simulação
+toc
 disp(cmdout)
 PSIMdata.PSIMCMD.cmdout=cmdout;
 % temp=PSIMdata.PSIMCMD;
 
-if ~status % Simulated OK!
-    PSIMdata = psim2matlab(PSIMdata); 
-    PSIMdata = simview2matlab(PSIMdata); % Read simview data
+% disp(PSIMdata.PSIMCMD.outfile)
+if ~status % Simulated OK!    
+    if exist([filepath '\' name '.txt'],'file')
+        PSIMdata = psim2matlab(PSIMdata);
+    end
+    
+    if exist([filepath '\' name '.fra'],'file')
+        PSIMdata = psimfra2matlab(PSIMdata);
+    end
+    
+    if exist([filepath '\' name '.ini'],'file')
+        PSIMdata = simview2matlab(PSIMdata); % Read simview data
+    end
 end
 
 
-
-% PSIMdata.PSIMCMD=temp;
 
 

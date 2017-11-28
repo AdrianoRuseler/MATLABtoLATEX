@@ -50,8 +50,12 @@ PSIMdata = psim2cmd(PSIMdata);
 
 % PSIMdata = psimfra2matlab(PSIMdata);
 
-PSIMdata.fra.freq
+PSIMdata.fra
 
+% data = iddata(y,u,Ts,'Frequency',w)
+
+f = logspace(-1,1,100);
+[mag,phase] = bode(idtf([1 .2],[1 2 1 1]),f);
 
 Ts = 0; % For continuous-time models
 response = mag.*exp(1j*phase*pi/180);
@@ -60,12 +64,13 @@ m.Report.Method
 
 s=1
 
- 
+    PSIMdata.fra.signals(s).amp
+    PSIMdata.fra.signals(s).phase;
+    
+    response 
 
 
-    
-    
-    
+
 %% Test some examples
 % Example 01 
 % [folder, name, ext] = fileparts(which('psim')); 

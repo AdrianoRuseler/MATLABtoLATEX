@@ -39,7 +39,18 @@ catch
     [status, dirstruct]= checkdirstruct(); % Well, check this out
 end
 
-PSIMtxt=PSIMdata.PSIMCMD.outfile;
+if isfield(PSIMdata.PSIMCMD,'outfile')
+    PSIMtxt=PSIMdata.PSIMCMD.outfile;
+else
+    [PSIMtxtFile, PSIMtxtPath] = uigetfile({'*.txt;*.fft;*.fra;*.csv;*.smv','PSIM Files (*.txt,*.fft,*.fra,*.csv,*.smv)'; ...
+        '*.txt','PSIM - txt (*.txt)';'*.fft','FFT Data (*.fft)';'*.fra','AC-Sweed (*.fra)';'*.csv','PSIM Excel (*.csv)';...
+        '*.*','All files'}, 'Pick an PSIM-file');
+    if isequal(PSIMtxtFile,0)
+        disp('User selected Cancel')
+        return
+    end
+    PSIMtxt=[PSIMtxtPath PSIMtxtFile]; % Provide
+end
 
 if nargin <1  % PSIMtxt not supplied
     if isfield(dirstruct,'simulatedir')
@@ -55,10 +66,11 @@ if nargin <1  % PSIMtxt not supplied
         return
     end
     PSIMtxt=[PSIMtxtPath PSIMtxtFile]; % Provide
+    PSIMdata.PSIMCMD.outfile=PSIMtxt;
 else
     if ~isequal(exist(PSIMtxt,'file'),2) % If file NOT exists
         disp([PSIMtxt ' Not found!'])
-        PSIMdata = psim2matlab(); % Load again
+%         PSIMdata = psim2matlab(); % Load again
         return
     end
 end
@@ -72,11 +84,11 @@ switch ext % Make a simple check of file extensions
     case '.csv' % Waiting for code implementation
         disp('Export PSIM data to a *.txt file.')
         cd(dirstruct.wdir)
-        PSIMdata =[];
+%         PSIMdata =[];
         return
     case '.fra' % Waiting for code implementation
         disp('Frequency analysis from PSIM.')        
-        PSIMdata = psimfra2matlab(PSIMtxt);
+        PSIMdata = psimfra2matlab(PSIMdata);
         cd(dirstruct.wdir)
         return
     case '.fft' % Waiting for code implementation
@@ -88,12 +100,12 @@ switch ext % Make a simple check of file extensions
     case '.smv' % Waiting for code implementation
         disp('Wrong file extension. Convert the file to a *.txt file.')
         cd(dirstruct.wdir)
-        PSIMdata =[];
+%         PSIMdata =[];
         return
     otherwise
         disp('Save simview data as *.txt file.')
         cd(dirstruct.wdir)
-        PSIMdata =[];
+%         PSIMdata =[];
         return
 end
     
