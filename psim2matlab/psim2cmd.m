@@ -27,6 +27,15 @@
 
 function  PSIMdata = psim2cmd(PSIMdata)
 
+% Loads directory structure
+try
+    dirstruct = evalin('base', 'dirstruct'); % Load dirstruct from base workspace
+catch
+    [status, dirstruct]= checkdirstruct(); % Well, check this out
+end
+
+dirstruct
+
 if ~isfield(PSIMdata.PSIMCMD,'infile')
     [PSIMFile, PSIMPath] = uigetfile({'*.psimsch;*.sch','PSIM Files (*.psimsch,*.sch)'; ...
         '*.psimsch','PSIM File';'*.sch','PSIM File'; '*.*','All files'}, 'Pick an PSIM-file');    

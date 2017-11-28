@@ -190,10 +190,10 @@ disp(' ')
 
 %% checkdirstruct
 
-[statusdir, dirstruct]=checkdirstruct();
+statusdir=checkdirstruct();
 status = xor(status,statusdir);
 
-
+assignin('base','dirstruct',dirstruct); % Assign dirs structure in workspace
 
 disp(' ')
 disp('***************************  END **********************************')
