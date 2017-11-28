@@ -1,12 +1,9 @@
-% =========================================================================
-% *** PSIM INDEX file
-% ***  
-% ***  
+
 % =========================================================================
 % ***
 % *** The MIT License (MIT)
 % *** 
-% *** Copyright (c) 2015 AdrianoRuseler
+% *** Copyright (c) 2017 AdrianoRuseler
 % *** 
 % *** Permission is hereby granted, free of charge, to any person obtaining a copy
 % *** of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +28,16 @@
 % Test enviroment
 
 status = testenviroment(); % Test if some error were encontered
+
+%% CMD
+PSIMdata.PSIMCMD.totaltime = 0.167; % Ajuste o tempo para atingir o regime permanente
+PSIMdata.PSIMCMD.steptime = 1E-005; 
+PSIMdata.PSIMCMD.printtime = 0;
+PSIMdata.PSIMCMD.printstep = 1;
+PSIMdata.PSIMCMD.infile=[dirstruct.wdir '\psim2matlab\test\ex01.psimsch'];
+
+PSIMdata = psim2cmd(PSIMdata);
+
 
 %% Test some examples
 % Example 01 

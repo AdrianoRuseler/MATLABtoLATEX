@@ -83,6 +83,26 @@ else
     disp('<a href = "https://git-scm.com/downloads">https://git-scm.com/downloads</a>')
 end
 
+% Verifica se é possivel executar o PSIM via CMD
+disp(' ')
+disp('************************ PSIM from CMD  ****************************')
+disp(' ')
+[status,cmdout] = system('PsimCmd');
+disp(cmdout)
+
+if status % Verifica se é possivel executar o PSIM pelo prompt do DOS
+    warning('PsimCmd.exe not found!')
+    [PSIMexeFile,PSIMPath] = uigetfile('PsimCmd.exe','Set PSIM install dir!');
+    if isequal(PSIMexeFile,0)
+        disp('User selected Cancel')
+    else
+        setenv('PATH', [getenv('PATH') [';' PSIMPath]]); % Coloca nas variáveis de ambiente o local do PSIM
+        [status,cmdout] = system('PsimCmd');
+        disp(cmdout)
+    end
+end
+
+
 disp('*************** Test Latex intallation - pdflatex.exe **************')
 disp(' ')
 % verifies if pdflatex is present via system cmd
