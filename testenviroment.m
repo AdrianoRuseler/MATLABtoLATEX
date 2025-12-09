@@ -3,31 +3,7 @@ function status=testenviroment()
 % *** Test system enviroment for using this package
 % *** status = 0; % All fine
 % *** status = 1; % Something got wrong
-% =========================================================================
-% ***
-% *** The MIT License (MIT)
-% *** 
-% *** Copyright (c) 2015 AdrianoRuseler
-% *** 
-% *** Permission is hereby granted, free of charge, to any person obtaining a copy
-% *** of this software and associated documentation files (the "Software"), to deal
-% *** in the Software without restriction, including without limitation the rights
-% *** to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-% *** copies of the Software, and to permit persons to whom the Software is
-% *** furnished to do so, subject to the following conditions:
-% *** 
-% *** The above copyright notice and this permission notice shall be included in all
-% *** copies or substantial portions of the Software.
-% *** 
-% *** THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-% *** IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-% *** FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-% *** AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-% *** LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-% *** OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-% *** SOFTWARE.
-% ***
-% =========================================================================
+
 status = 0; % Lets assume that we are good to go!
 
 %% Test GNU make and Latex intallation
@@ -83,20 +59,20 @@ else
     disp('<a href = "https://git-scm.com/downloads">https://git-scm.com/downloads</a>')
 end
 
-% Verifica se é possivel executar o PSIM via CMD
+% Verifica se ï¿½ possivel executar o PSIM via CMD
 disp(' ')
 disp('************************ PSIM from CMD  ****************************')
 disp(' ')
 [status,cmdout] = system('PsimCmd');
 disp(cmdout)
 
-if status % Verifica se é possivel executar o PSIM pelo prompt do DOS
+if status % Verifica se ï¿½ possivel executar o PSIM pelo prompt do DOS
     warning('PsimCmd.exe not found!')
     [PSIMexeFile,PSIMPath] = uigetfile('PsimCmd.exe','Set PSIM install dir!');
     if isequal(PSIMexeFile,0)
         disp('User selected Cancel')
     else
-        setenv('PATH', [getenv('PATH') [';' PSIMPath]]); % Coloca nas variáveis de ambiente o local do PSIM
+        setenv('PATH', [getenv('PATH') [';' PSIMPath]]); % Coloca nas variï¿½veis de ambiente o local do PSIM
         [status,cmdout] = system('PsimCmd');
         disp(cmdout)
     end
