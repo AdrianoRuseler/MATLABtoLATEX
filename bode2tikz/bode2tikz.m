@@ -12,7 +12,7 @@ function bode2tikz(hbode,options)
 try
     dirstruct = evalin('base', 'dirstruct'); % Load dirstruct from base workspace
 catch
-    [status, dirstruct]= checkdirstruct(); % Well, check this out
+    [status, dirstruct] = checkdirstruct(); % Well, check this out
 end
 
 
